@@ -1,0 +1,9 @@
+{
+  "currency": "GBP",
+  "maxQuantity": 99,
+  "institutions": [
+    { "id": "pembroke", "name": "Pembroke Library", "budgetPence": 250000, "collectionCodes": ["GEN", "REF", "CHILD"] },
+    { "id": "newcastle", "name": "Newcastle Library", "budgetPence": 500000, "collectionCodes": ["GEN", "REF", "LOCAL", "RESEARCH"] },
+    { "id": "training", "name": "Training College Library", "budgetPence": 100000, "collectionCodes": ["GEN", "COURSE", "RESEARCH"] }
+  ]
+}

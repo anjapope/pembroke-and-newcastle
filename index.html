@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Pembroke &amp; Newcastle — Library acquisitions</title>
+  <link rel="stylesheet" href="css/styles.css">
+  <script type="module" src="js/app.js"></script>
+</head>
+<body>
+  <header>
+    <h1>Pembroke &amp; Newcastle</h1>
+    <p>A fictional library acquisitions desk</p>
+    <p>Training simulation only. No real accounts, payments, messages or orders.</p>
+  </header>
+  <main>
+    <p id="notice" role="status" aria-live="polite">Loading catalog…</p>
+    <section id="login-panel" hidden>
+      <h2>Staff sign in</h2>
+      <p>Use a fictional name. No password is required. Do not enter personal information.</p>
+      <form id="login-form">
+        <label>Fictional staff name <input id="staff-name" required maxlength="60" autocomplete="off"></label>
+        <button>Enter acquisitions desk</button>
+      </form>
+    </section>
+    <div id="desk" hidden>
+      <nav aria-label="Session">
+        <span id="session-name"></span>
+        <button id="logout" type="button">Sign out</button>
+      </nav>
+      <section>
+        <h2>Institution setup</h2>
+        <form id="institution-form">
+          <label>Institution <select id="institution"></select></label>
+          <label>Order budget (£) <input id="budget" type="number" min="0.01" max="1000000" step="0.01" required></label>
+          <button>Apply setup</button>
+        </form>
+        <p id="policy"></p>
+      </section>
+      <section aria-labelledby="catalog-heading">
+        <h2 id="catalog-heading">Catalog</h2>
+        <div class="controls">
+          <label>Search title, author or ID <input id="search" type="search"></label>
+          <label>Subject <select id="subject"><option value="">All subjects</option></select></label>
+        </div>
+        <p id="catalog-count"></p>
+        <div class="table-wrap">
+          <table>
+            <caption>Available fictional titles — prices in GBP</caption>
+            <thead><tr><th scope="col">ID / Title</th><th scope="col">Author / Subject</th><th scope="col">Price</th><th scope="col">Collection</th><th scope="col">Quantity</th><th scope="col">Action</th></tr></thead>
+            <tbody id="catalog"></tbody>
+          </table>
+        </div>
+        <div class="controls">
+          <button id="previous" type="button">Previous page</button>
+          <span id="page"></span>
+          <button id="next" type="button">Next page</button>
+        </div>
+      </section>
+      <section>
+        <h2>Order cart</h2>
+        <p id="order-status"></p>
+        <div class="table-wrap">
+          <table>
+            <caption>Current order lines</caption>
+            <thead><tr><th scope="col">Title</th><th scope="col">Collection</th><th scope="col">Quantity</th><th scope="col">Subtotal</th><th scope="col">Action</th></tr></thead>
+            <tbody id="cart"></tbody>
+          </table>
+        </div>
+        <p id="totals"></p>
+        <div class="controls">
+          <button id="save" type="button">Save draft</button>
+          <button id="export" type="button">Download to share</button>
+          <label>Open shared draft <input id="import" type="file" accept=".json,application/json"></label>
+          <button id="new-order" type="button">New order</button>
+        </div>
+        <p>Drafts are saved in this browser. Share the downloaded JSON file with another fictional staff member.</p>
+      </section>
+      <section>
+        <h2>Doris — Technical Services</h2>
+        <p>Doris checks collection codes, quantities and budgets before approving an order.</p>
+        <div class="controls">
+          <button id="validate" type="button">Send to Doris for validation</button>
+          <button id="process" type="button" disabled>Process approved order</button>
+        </div>
+        <ol id="correspondence" aria-label="Doris correspondence"></ol>
+      </section>
+    </div>
+  </main>
+  <footer>PN-001 Foundation · PN-002 Acquisitions · PN-003 Technical Services · PN-004 Inventory &amp; QA</footer>
+</body>
+</html>
