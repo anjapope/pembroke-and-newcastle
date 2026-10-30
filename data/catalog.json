@@ -1,102 +1,1882 @@
 [
-  { "id": "PN001", "title": "The Quiet Estuary", "author": "Alex Reed", "subject": "Fiction", "pricePence": 1299 },
-  { "id": "PN002", "title": "Maps of an Imagined City", "author": "Robin Vale", "subject": "History", "pricePence": 2495 },
-  { "id": "PN003", "title": "A Field Guide to Clouds", "author": "Morgan Finch", "subject": "Science", "pricePence": 1899 },
-  { "id": "PN004", "title": "The Little Lantern", "author": "Casey Brook", "subject": "Children", "pricePence": 799 },
-  { "id": "PN005", "title": "Practical Library Cataloging", "author": "Jamie North", "subject": "Reference", "pricePence": 4500 },
-  { "id": "PN006", "title": "Gardens by the Sea", "author": "Taylor Moss", "subject": "Nature", "pricePence": 1699 },
-  { "id": "PN007", "title": "Patterns in Clay", "author": "Avery Stone", "subject": "Arts", "pricePence": 2250 },
-  { "id": "PN008", "title": "Learning to Code Together", "author": "Quinn Lake", "subject": "Computing", "pricePence": 2999 },
-  { "id": "PN009", "title": "The Clockmaker's Walk", "author": "Alex Reed", "subject": "Fiction", "pricePence": 1099 },
-  { "id": "PN010", "title": "Harbours Through Time", "author": "Robin Vale", "subject": "History", "pricePence": 2100 },
-  { "id": "PN011", "title": "Experiments with Light", "author": "Morgan Finch", "subject": "Science", "pricePence": 1799 },
-  { "id": "PN012", "title": "Otter's New Neighbour", "author": "Casey Brook", "subject": "Children", "pricePence": 899 },
-  { "id": "PN013", "title": "The Reference Desk Handbook", "author": "Jamie North", "subject": "Reference", "pricePence": 3995 },
-  { "id": "PN014", "title": "Woodland Seasons", "author": "Taylor Moss", "subject": "Nature", "pricePence": 1550 },
-  { "id": "PN015", "title": "Drawing Everyday Objects", "author": "Avery Stone", "subject": "Arts", "pricePence": 1999 },
-  { "id": "PN016", "title": "Understanding the Web", "author": "Quinn Lake", "subject": "Computing", "pricePence": 3250 },
-  { "id": "PN017", "title": "Letters from Willow Street", "author": "Alex Reed", "subject": "Fiction", "pricePence": 999 },
-  { "id": "PN018", "title": "Railways of the North", "author": "Robin Vale", "subject": "History", "pricePence": 2799 },
-  { "id": "PN019", "title": "The Shape of Sound", "author": "Morgan Finch", "subject": "Science", "pricePence": 2050 },
-  { "id": "PN020", "title": "A Kite for Every Season", "author": "Casey Brook", "subject": "Children", "pricePence": 750 },
-  { "id": "PN021", "title": "Collection Development Basics", "author": "Jamie North", "subject": "Reference", "pricePence": 3499 },
-  { "id": "PN022", "title": "Birds of the Riverside", "author": "Taylor Moss", "subject": "Nature", "pricePence": 1895 },
-  { "id": "PN023", "title": "Colour and Composition", "author": "Avery Stone", "subject": "Arts", "pricePence": 2599 },
-  { "id": "PN024", "title": "Accessible Interface Design", "author": "Quinn Lake", "subject": "Computing", "pricePence": 3599 },
-  { "id": "PN025", "title": "The Last Ferry Home", "author": "Alex Reed", "subject": "Fiction", "pricePence": 1399 },
-  { "id": "PN026", "title": "Markets and Meeting Places", "author": "Robin Vale", "subject": "History", "pricePence": 2399 },
-  { "id": "PN027", "title": "Everyday Astronomy", "author": "Morgan Finch", "subject": "Science", "pricePence": 2299 },
-  { "id": "PN028", "title": "The Enormous Tiny Garden", "author": "Casey Brook", "subject": "Children", "pricePence": 850 },
-  { "id": "PN029", "title": "Preserving Paper Collections", "author": "Jamie North", "subject": "Reference", "pricePence": 4200 },
-  { "id": "PN030", "title": "Life Beneath the Pond", "author": "Taylor Moss", "subject": "Nature", "pricePence": 1499 },
-  { "id": "PN031", "title": "Printmaking at Home", "author": "Avery Stone", "subject": "Arts", "pricePence": 2199 },
-  { "id": "PN032", "title": "Data Structures in Practice", "author": "Quinn Lake", "subject": "Computing", "pricePence": 3899 },
-  { "id": "PN033", "title": "A Window Facing West", "author": "Alex Reed", "subject": "Fiction", "pricePence": 1199 },
-  { "id": "PN034", "title": "Bridges and Their Builders", "author": "Robin Vale", "subject": "History", "pricePence": 2695 },
-  { "id": "PN035", "title": "Materials All Around Us", "author": "Morgan Finch", "subject": "Science", "pricePence": 1950 },
-  { "id": "PN036", "title": "Mole Finds a Map", "author": "Casey Brook", "subject": "Children", "pricePence": 699 },
-  { "id": "PN037", "title": "Metadata for Beginners", "author": "Jamie North", "subject": "Reference", "pricePence": 3750 },
-  { "id": "PN038", "title": "Wildflowers of Open Ground", "author": "Taylor Moss", "subject": "Nature", "pricePence": 1799 },
-  { "id": "PN039", "title": "The Community Theatre", "author": "Avery Stone", "subject": "Arts", "pricePence": 2099 },
-  { "id": "PN040", "title": "A Friendly Guide to Databases", "author": "Quinn Lake", "subject": "Computing", "pricePence": 3100 },
-  { "id": "PN041", "title": "The Borrowed Bicycle", "author": "Alex Reed", "subject": "Fiction", "pricePence": 1095 },
-  { "id": "PN042", "title": "Stories of the Old Town Hall", "author": "Robin Vale", "subject": "History", "pricePence": 1999 },
-  { "id": "PN043", "title": "Water in Motion", "author": "Morgan Finch", "subject": "Science", "pricePence": 2150 },
-  { "id": "PN044", "title": "The Moonlight Picnic", "author": "Casey Brook", "subject": "Children", "pricePence": 950 },
-  { "id": "PN045", "title": "Planning Library Spaces", "author": "Jamie North", "subject": "Reference", "pricePence": 4800 },
-  { "id": "PN046", "title": "The Urban Orchard", "author": "Taylor Moss", "subject": "Nature", "pricePence": 1650 },
-  { "id": "PN047", "title": "Sketching the Coast", "author": "Avery Stone", "subject": "Arts", "pricePence": 2450 },
-  { "id": "PN048", "title": "Testing Small Applications", "author": "Quinn Lake", "subject": "Computing", "pricePence": 3400 },
-  { "id": "PN049", "title": "An Unexpected Reading Room", "author": "Alex Reed", "subject": "Fiction", "pricePence": 1295 },
-  { "id": "PN050", "title": "Workshops of Yesterday", "author": "Robin Vale", "subject": "History", "pricePence": 2595 },
-  { "id": "PN051", "title": "Measuring the Weather", "author": "Morgan Finch", "subject": "Science", "pricePence": 1850 },
-  { "id": "PN052", "title": "The Paper Boat Race", "author": "Casey Brook", "subject": "Children", "pricePence": 799 },
-  { "id": "PN053", "title": "Managing Digital Collections", "author": "Jamie North", "subject": "Reference", "pricePence": 4400 },
-  { "id": "PN054", "title": "A Year of Hedgerows", "author": "Taylor Moss", "subject": "Nature", "pricePence": 1995 },
-  { "id": "PN055", "title": "Music for Shared Spaces", "author": "Avery Stone", "subject": "Arts", "pricePence": 2350 },
-  { "id": "PN056", "title": "Networks Without Mystery", "author": "Quinn Lake", "subject": "Computing", "pricePence": 3650 },
-  { "id": "PN057", "title": "The Station at Morning", "author": "Alex Reed", "subject": "Fiction", "pricePence": 1499 },
-  { "id": "PN058", "title": "Local Newspapers and Memory", "author": "Robin Vale", "subject": "History", "pricePence": 2250 },
-  { "id": "PN059", "title": "The Chemistry of Cooking", "author": "Morgan Finch", "subject": "Science", "pricePence": 2499 },
-  { "id": "PN060", "title": "Badger's Busy Saturday", "author": "Casey Brook", "subject": "Children", "pricePence": 899 },
-  { "id": "PN061", "title": "Practical Subject Indexing", "author": "Jamie North", "subject": "Reference", "pricePence": 4100 },
-  { "id": "PN062", "title": "Rock Pools and Tides", "author": "Taylor Moss", "subject": "Nature", "pricePence": 1750 },
-  { "id": "PN063", "title": "Working with Watercolour", "author": "Avery Stone", "subject": "Arts", "pricePence": 2699 },
-  { "id": "PN064", "title": "Responsible Data Handling", "author": "Quinn Lake", "subject": "Computing", "pricePence": 3999 },
-  { "id": "PN065", "title": "The House on Orchard Lane", "author": "Alex Reed", "subject": "Fiction", "pricePence": 1195 },
-  { "id": "PN066", "title": "Canals and Communities", "author": "Robin Vale", "subject": "History", "pricePence": 2850 },
-  { "id": "PN067", "title": "An Introduction to Energy", "author": "Morgan Finch", "subject": "Science", "pricePence": 2395 },
-  { "id": "PN068", "title": "The Very Patient Dragon", "author": "Casey Brook", "subject": "Children", "pricePence": 999 },
-  { "id": "PN069", "title": "Library Service Evaluation", "author": "Jamie North", "subject": "Reference", "pricePence": 4600 },
-  { "id": "PN070", "title": "Butterflies in the City", "author": "Taylor Moss", "subject": "Nature", "pricePence": 1599 },
-  { "id": "PN071", "title": "Photographing Everyday Life", "author": "Avery Stone", "subject": "Arts", "pricePence": 2799 },
-  { "id": "PN072", "title": "Version Control Fundamentals", "author": "Quinn Lake", "subject": "Computing", "pricePence": 2899 },
-  { "id": "PN073", "title": "A Season of Small Adventures", "author": "Alex Reed", "subject": "Fiction", "pricePence": 1395 },
-  { "id": "PN074", "title": "Schools Across the Centuries", "author": "Robin Vale", "subject": "History", "pricePence": 2499 },
-  { "id": "PN075", "title": "Looking Inside the Earth", "author": "Morgan Finch", "subject": "Science", "pricePence": 2195 },
-  { "id": "PN076", "title": "Pip and the Lost Button", "author": "Casey Brook", "subject": "Children", "pricePence": 750 },
-  { "id": "PN077", "title": "Acquisitions Desk Companion", "author": "Jamie North", "subject": "Reference", "pricePence": 3895 },
-  { "id": "PN078", "title": "The Secret Life of Soil", "author": "Taylor Moss", "subject": "Nature", "pricePence": 2099 },
-  { "id": "PN079", "title": "Textiles and Texture", "author": "Avery Stone", "subject": "Arts", "pricePence": 2295 },
-  { "id": "PN080", "title": "Building for the Browser", "author": "Quinn Lake", "subject": "Computing", "pricePence": 3799 },
-  { "id": "PN081", "title": "The Blue Notebook", "author": "Alex Reed", "subject": "Fiction", "pricePence": 999 },
-  { "id": "PN082", "title": "A History of Public Gardens", "author": "Robin Vale", "subject": "History", "pricePence": 2999 },
-  { "id": "PN083", "title": "Numbers in the Natural World", "author": "Morgan Finch", "subject": "Science", "pricePence": 2599 },
-  { "id": "PN084", "title": "The Library Tree", "author": "Casey Brook", "subject": "Children", "pricePence": 850 },
-  { "id": "PN085", "title": "Archives and Finding Aids", "author": "Jamie North", "subject": "Reference", "pricePence": 4999 },
-  { "id": "PN086", "title": "Walking the Riverbank", "author": "Taylor Moss", "subject": "Nature", "pricePence": 1495 },
-  { "id": "PN087", "title": "Sculpture from Simple Materials", "author": "Avery Stone", "subject": "Arts", "pricePence": 2495 },
-  { "id": "PN088", "title": "Algorithms in Everyday Life", "author": "Quinn Lake", "subject": "Computing", "pricePence": 3199 },
-  { "id": "PN089", "title": "When the Bell Rang Twice", "author": "Alex Reed", "subject": "Fiction", "pricePence": 1299 },
-  { "id": "PN090", "title": "The Changing High Street", "author": "Robin Vale", "subject": "History", "pricePence": 2395 },
-  { "id": "PN091", "title": "A Small Book of Big Questions", "author": "Morgan Finch", "subject": "Science", "pricePence": 1999 },
-  { "id": "PN092", "title": "Fox Builds a Bookshelf", "author": "Casey Brook", "subject": "Children", "pricePence": 899 },
-  { "id": "PN093", "title": "Information Literacy Workshops", "author": "Jamie North", "subject": "Reference", "pricePence": 3595 },
-  { "id": "PN094", "title": "Seeds on the Wind", "author": "Taylor Moss", "subject": "Nature", "pricePence": 1899 },
-  { "id": "PN095", "title": "Making a Community Exhibition", "author": "Avery Stone", "subject": "Arts", "pricePence": 2195 },
-  { "id": "PN096", "title": "Clear and Maintainable Code", "author": "Quinn Lake", "subject": "Computing", "pricePence": 4299 },
-  { "id": "PN097", "title": "The Bookshop at the Bend", "author": "Alex Reed", "subject": "Fiction", "pricePence": 1495 },
-  { "id": "PN098", "title": "Ferries, Footpaths and Frontiers", "author": "Robin Vale", "subject": "History", "pricePence": 2699 },
-  { "id": "PN099", "title": "Exploring the Night Sky", "author": "Morgan Finch", "subject": "Science", "pricePence": 2295 },
-  { "id": "PN100", "title": "Everyone Has a Story", "author": "Casey Brook", "subject": "Children", "pricePence": 799 }
+  {
+    "id": "PN001",
+    "title": "The Quiet Estuary",
+    "creator": "Alex Reed",
+    "materialCategory": "Adult fiction",
+    "format": "Print book",
+    "creationDate": "2012",
+    "publisherDescription": "Fictional training imprint; publisher metadata is simulated.",
+    "description": "The Quiet Estuary is a fictional adult fiction selection for this training catalog.",
+    "unitPriceCents": 1299,
+    "availability": "Limited availability",
+    "maxQuantity": 99,
+    "unique": false,
+    "metadata": {
+      "fictionalRecord": true,
+      "sourceSubject": "Fiction",
+      "identifierStatus": "No verified external identifier supplied"
+    }
+  },
+  {
+    "id": "PN002",
+    "title": "Maps of an Imagined City",
+    "creator": "Robin Vale",
+    "materialCategory": "Adult nonfiction",
+    "format": "Print book",
+    "creationDate": "2013",
+    "publisherDescription": "Fictional training imprint; publisher metadata is simulated.",
+    "description": "Maps of an Imagined City is a fictional adult nonfiction selection for this training catalog.",
+    "unitPriceCents": 2495,
+    "availability": "Available",
+    "maxQuantity": 99,
+    "unique": false,
+    "metadata": {
+      "fictionalRecord": true,
+      "sourceSubject": "History",
+      "identifierStatus": "No verified external identifier supplied"
+    }
+  },
+  {
+    "id": "PN003",
+    "title": "A Field Guide to Clouds",
+    "creator": "Morgan Finch",
+    "materialCategory": "Adult nonfiction",
+    "format": "Ebook",
+    "creationDate": "2014",
+    "publisherDescription": "Fictional training imprint; publisher metadata is simulated.",
+    "description": "A Field Guide to Clouds is a fictional adult nonfiction selection for this training catalog.",
+    "unitPriceCents": 1899,
+    "availability": "Digital license available",
+    "maxQuantity": 99,
+    "unique": false,
+    "metadata": {
+      "fictionalRecord": true,
+      "sourceSubject": "Science",
+      "identifierStatus": "No verified external identifier supplied"
+    }
+  },
+  {
+    "id": "PN004",
+    "title": "The Little Lantern",
+    "creator": "Casey Brook",
+    "materialCategory": "Juvenile fiction",
+    "format": "Print book",
+    "creationDate": "2015",
+    "publisherDescription": "Fictional training imprint; publisher metadata is simulated.",
+    "description": "The Little Lantern is a fictional juvenile fiction selection for this training catalog.",
+    "unitPriceCents": 799,
+    "availability": "Available",
+    "maxQuantity": 99,
+    "unique": false,
+    "metadata": {
+      "fictionalRecord": true,
+      "sourceSubject": "Children",
+      "identifierStatus": "No verified external identifier supplied"
+    }
+  },
+  {
+    "id": "PN005",
+    "title": "Practical Library Cataloging",
+    "creator": "Jamie North",
+    "materialCategory": "Academic monographs and reference materials",
+    "format": "Print book",
+    "creationDate": "2016",
+    "publisherDescription": "Fictional training imprint; publisher metadata is simulated.",
+    "description": "Practical Library Cataloging is a fictional academic monographs and reference materials selection for this training catalog.",
+    "unitPriceCents": 4500,
+    "availability": "Available",
+    "maxQuantity": 99,
+    "unique": false,
+    "metadata": {
+      "fictionalRecord": true,
+      "sourceSubject": "Reference",
+      "identifierStatus": "No verified external identifier supplied"
+    }
+  },
+  {
+    "id": "PN006",
+    "title": "Gardens by the Sea",
+    "creator": "Taylor Moss",
+    "materialCategory": "Adult nonfiction",
+    "format": "Print book",
+    "creationDate": "2017",
+    "publisherDescription": "Fictional training imprint; publisher metadata is simulated.",
+    "description": "Gardens by the Sea is a fictional adult nonfiction selection for this training catalog.",
+    "unitPriceCents": 1699,
+    "availability": "Available",
+    "maxQuantity": 99,
+    "unique": false,
+    "metadata": {
+      "fictionalRecord": true,
+      "sourceSubject": "Nature",
+      "identifierStatus": "No verified external identifier supplied"
+    }
+  },
+  {
+    "id": "PN007",
+    "title": "Patterns in Clay",
+    "creator": "Avery Stone",
+    "materialCategory": "Adult nonfiction",
+    "format": "Print book",
+    "creationDate": "2018",
+    "publisherDescription": "Fictional training imprint; publisher metadata is simulated.",
+    "description": "Patterns in Clay is a fictional adult nonfiction selection for this training catalog.",
+    "unitPriceCents": 2250,
+    "availability": "Available",
+    "maxQuantity": 99,
+    "unique": false,
+    "metadata": {
+      "fictionalRecord": true,
+      "sourceSubject": "Arts",
+      "identifierStatus": "No verified external identifier supplied"
+    }
+  },
+  {
+    "id": "PN008",
+    "title": "Learning to Code Together",
+    "creator": "Quinn Lake",
+    "materialCategory": "Academic monographs and reference materials",
+    "format": "Audiobook",
+    "creationDate": "2019",
+    "publisherDescription": "Fictional training imprint; publisher metadata is simulated.",
+    "description": "Learning to Code Together is a fictional academic monographs and reference materials selection for this training catalog.",
+    "unitPriceCents": 2999,
+    "availability": "Available",
+    "maxQuantity": 99,
+    "unique": false,
+    "metadata": {
+      "fictionalRecord": true,
+      "sourceSubject": "Computing",
+      "identifierStatus": "No verified external identifier supplied"
+    }
+  },
+  {
+    "id": "PN009",
+    "title": "The Clockmaker's Walk",
+    "creator": "Alex Reed",
+    "materialCategory": "Adult fiction",
+    "format": "Print book",
+    "creationDate": "2020",
+    "publisherDescription": "Fictional training imprint; publisher metadata is simulated.",
+    "description": "The Clockmaker's Walk is a fictional adult fiction selection for this training catalog.",
+    "unitPriceCents": 1099,
+    "availability": "Available",
+    "maxQuantity": 99,
+    "unique": false,
+    "metadata": {
+      "fictionalRecord": true,
+      "sourceSubject": "Fiction",
+      "identifierStatus": "No verified external identifier supplied"
+    }
+  },
+  {
+    "id": "PN010",
+    "title": "Harbours Through Time",
+    "creator": "Robin Vale",
+    "materialCategory": "Adult nonfiction",
+    "format": "Print book",
+    "creationDate": "2021",
+    "publisherDescription": "Fictional training imprint; publisher metadata is simulated.",
+    "description": "Harbours Through Time is a fictional adult nonfiction selection for this training catalog.",
+    "unitPriceCents": 2100,
+    "availability": "Available",
+    "maxQuantity": 99,
+    "unique": false,
+    "metadata": {
+      "fictionalRecord": true,
+      "sourceSubject": "History",
+      "identifierStatus": "No verified external identifier supplied"
+    }
+  },
+  {
+    "id": "PN011",
+    "title": "Experiments with Light",
+    "creator": "Morgan Finch",
+    "materialCategory": "Adult nonfiction",
+    "format": "Print book",
+    "creationDate": "2022",
+    "publisherDescription": "Fictional training imprint; publisher metadata is simulated.",
+    "description": "Experiments with Light is a fictional adult nonfiction selection for this training catalog.",
+    "unitPriceCents": 1799,
+    "availability": "Available",
+    "maxQuantity": 99,
+    "unique": false,
+    "metadata": {
+      "fictionalRecord": true,
+      "sourceSubject": "Science",
+      "identifierStatus": "No verified external identifier supplied"
+    }
+  },
+  {
+    "id": "PN012",
+    "title": "Otter's New Neighbour",
+    "creator": "Casey Brook",
+    "materialCategory": "Juvenile fiction",
+    "format": "Print book",
+    "creationDate": "2023",
+    "publisherDescription": "Fictional training imprint; publisher metadata is simulated.",
+    "description": "Otter's New Neighbour is a fictional juvenile fiction selection for this training catalog.",
+    "unitPriceCents": 899,
+    "availability": "Available",
+    "maxQuantity": 99,
+    "unique": false,
+    "metadata": {
+      "fictionalRecord": true,
+      "sourceSubject": "Children",
+      "identifierStatus": "No verified external identifier supplied"
+    }
+  },
+  {
+    "id": "PN013",
+    "title": "The Reference Desk Handbook",
+    "creator": "Jamie North",
+    "materialCategory": "Academic monographs and reference materials",
+    "format": "Print book",
+    "creationDate": "2024",
+    "publisherDescription": "Fictional training imprint; publisher metadata is simulated.",
+    "description": "The Reference Desk Handbook is a fictional academic monographs and reference materials selection for this training catalog.",
+    "unitPriceCents": 3995,
+    "availability": "Available",
+    "maxQuantity": 99,
+    "unique": false,
+    "metadata": {
+      "fictionalRecord": true,
+      "sourceSubject": "Reference",
+      "identifierStatus": "No verified external identifier supplied"
+    }
+  },
+  {
+    "id": "PN014",
+    "title": "Woodland Seasons",
+    "creator": "Taylor Moss",
+    "materialCategory": "Adult nonfiction",
+    "format": "Print book",
+    "creationDate": "2025",
+    "publisherDescription": "Fictional training imprint; publisher metadata is simulated.",
+    "description": "Woodland Seasons is a fictional adult nonfiction selection for this training catalog.",
+    "unitPriceCents": 1550,
+    "availability": "Available",
+    "maxQuantity": 99,
+    "unique": false,
+    "metadata": {
+      "fictionalRecord": true,
+      "sourceSubject": "Nature",
+      "identifierStatus": "No verified external identifier supplied"
+    }
+  },
+  {
+    "id": "PN015",
+    "title": "Drawing Everyday Objects",
+    "creator": "Avery Stone",
+    "materialCategory": "Adult nonfiction",
+    "format": "Print book",
+    "creationDate": "2012",
+    "publisherDescription": "Fictional training imprint; publisher metadata is simulated.",
+    "description": "Drawing Everyday Objects is a fictional adult nonfiction selection for this training catalog.",
+    "unitPriceCents": 1999,
+    "availability": "Available",
+    "maxQuantity": 99,
+    "unique": false,
+    "metadata": {
+      "fictionalRecord": true,
+      "sourceSubject": "Arts",
+      "identifierStatus": "No verified external identifier supplied"
+    }
+  },
+  {
+    "id": "PN016",
+    "title": "Understanding the Web",
+    "creator": "Quinn Lake",
+    "materialCategory": "Academic monographs and reference materials",
+    "format": "Print book",
+    "creationDate": "2013",
+    "publisherDescription": "Fictional training imprint; publisher metadata is simulated.",
+    "description": "Understanding the Web is a fictional academic monographs and reference materials selection for this training catalog.",
+    "unitPriceCents": 3250,
+    "availability": "Available",
+    "maxQuantity": 99,
+    "unique": false,
+    "metadata": {
+      "fictionalRecord": true,
+      "sourceSubject": "Computing",
+      "identifierStatus": "No verified external identifier supplied"
+    }
+  },
+  {
+    "id": "PN017",
+    "title": "Letters from Willow Street",
+    "creator": "Alex Reed",
+    "materialCategory": "Adult fiction",
+    "format": "Print book",
+    "creationDate": "2014",
+    "publisherDescription": "Fictional training imprint; publisher metadata is simulated.",
+    "description": "Letters from Willow Street is a fictional adult fiction selection for this training catalog.",
+    "unitPriceCents": 999,
+    "availability": "Available",
+    "maxQuantity": 99,
+    "unique": false,
+    "metadata": {
+      "fictionalRecord": true,
+      "sourceSubject": "Fiction",
+      "identifierStatus": "No verified external identifier supplied"
+    }
+  },
+  {
+    "id": "PN018",
+    "title": "Railways of the North",
+    "creator": "Robin Vale",
+    "materialCategory": "Adult nonfiction",
+    "format": "Print book",
+    "creationDate": "2015",
+    "publisherDescription": "Fictional training imprint; publisher metadata is simulated.",
+    "description": "Railways of the North is a fictional adult nonfiction selection for this training catalog.",
+    "unitPriceCents": 2799,
+    "availability": "Limited availability",
+    "maxQuantity": 99,
+    "unique": false,
+    "metadata": {
+      "fictionalRecord": true,
+      "sourceSubject": "History",
+      "identifierStatus": "No verified external identifier supplied"
+    }
+  },
+  {
+    "id": "PN019",
+    "title": "The Shape of Sound",
+    "creator": "Morgan Finch",
+    "materialCategory": "Adult nonfiction",
+    "format": "Print book",
+    "creationDate": "2016",
+    "publisherDescription": "Fictional training imprint; publisher metadata is simulated.",
+    "description": "The Shape of Sound is a fictional adult nonfiction selection for this training catalog.",
+    "unitPriceCents": 2050,
+    "availability": "Available",
+    "maxQuantity": 99,
+    "unique": false,
+    "metadata": {
+      "fictionalRecord": true,
+      "sourceSubject": "Science",
+      "identifierStatus": "No verified external identifier supplied"
+    }
+  },
+  {
+    "id": "PN020",
+    "title": "A Kite for Every Season",
+    "creator": "Casey Brook",
+    "materialCategory": "Juvenile fiction",
+    "format": "Print book",
+    "creationDate": "2017",
+    "publisherDescription": "Fictional training imprint; publisher metadata is simulated.",
+    "description": "A Kite for Every Season is a fictional juvenile fiction selection for this training catalog.",
+    "unitPriceCents": 750,
+    "availability": "Available",
+    "maxQuantity": 99,
+    "unique": false,
+    "metadata": {
+      "fictionalRecord": true,
+      "sourceSubject": "Children",
+      "identifierStatus": "No verified external identifier supplied"
+    }
+  },
+  {
+    "id": "PN021",
+    "title": "Collection Development Basics",
+    "creator": "Jamie North",
+    "materialCategory": "Academic monographs and reference materials",
+    "format": "Print book",
+    "creationDate": "2018",
+    "publisherDescription": "Fictional training imprint; publisher metadata is simulated.",
+    "description": "Collection Development Basics is a fictional academic monographs and reference materials selection for this training catalog.",
+    "unitPriceCents": 3499,
+    "availability": "Available",
+    "maxQuantity": 99,
+    "unique": false,
+    "metadata": {
+      "fictionalRecord": true,
+      "sourceSubject": "Reference",
+      "identifierStatus": "No verified external identifier supplied"
+    }
+  },
+  {
+    "id": "PN022",
+    "title": "Birds of the Riverside",
+    "creator": "Taylor Moss",
+    "materialCategory": "Juvenile nonfiction",
+    "format": "Ebook",
+    "creationDate": "2019",
+    "publisherDescription": "Fictional training imprint; publisher metadata is simulated.",
+    "description": "Birds of the Riverside is a fictional juvenile nonfiction selection for this training catalog.",
+    "unitPriceCents": 1895,
+    "availability": "Digital license available",
+    "maxQuantity": 99,
+    "unique": false,
+    "metadata": {
+      "fictionalRecord": true,
+      "sourceSubject": "Nature",
+      "identifierStatus": "No verified external identifier supplied"
+    }
+  },
+  {
+    "id": "PN023",
+    "title": "Colour and Composition",
+    "creator": "Avery Stone",
+    "materialCategory": "Adult nonfiction",
+    "format": "Print book",
+    "creationDate": "2020",
+    "publisherDescription": "Fictional training imprint; publisher metadata is simulated.",
+    "description": "Colour and Composition is a fictional adult nonfiction selection for this training catalog.",
+    "unitPriceCents": 2599,
+    "availability": "Available",
+    "maxQuantity": 99,
+    "unique": false,
+    "metadata": {
+      "fictionalRecord": true,
+      "sourceSubject": "Arts",
+      "identifierStatus": "No verified external identifier supplied"
+    }
+  },
+  {
+    "id": "PN024",
+    "title": "Accessible Interface Design",
+    "creator": "Quinn Lake",
+    "materialCategory": "Academic monographs and reference materials",
+    "format": "Print book",
+    "creationDate": "2021",
+    "publisherDescription": "Fictional training imprint; publisher metadata is simulated.",
+    "description": "Accessible Interface Design is a fictional academic monographs and reference materials selection for this training catalog.",
+    "unitPriceCents": 3599,
+    "availability": "Available",
+    "maxQuantity": 99,
+    "unique": false,
+    "metadata": {
+      "fictionalRecord": true,
+      "sourceSubject": "Computing",
+      "identifierStatus": "No verified external identifier supplied"
+    }
+  },
+  {
+    "id": "PN025",
+    "title": "The Last Ferry Home",
+    "creator": "Alex Reed",
+    "materialCategory": "Adult fiction",
+    "format": "Print book",
+    "creationDate": "2022",
+    "publisherDescription": "Fictional training imprint; publisher metadata is simulated.",
+    "description": "The Last Ferry Home is a fictional adult fiction selection for this training catalog.",
+    "unitPriceCents": 1399,
+    "availability": "Available",
+    "maxQuantity": 99,
+    "unique": false,
+    "metadata": {
+      "fictionalRecord": true,
+      "sourceSubject": "Fiction",
+      "identifierStatus": "No verified external identifier supplied"
+    }
+  },
+  {
+    "id": "PN026",
+    "title": "Markets and Meeting Places",
+    "creator": "Robin Vale",
+    "materialCategory": "Adult nonfiction",
+    "format": "Print book",
+    "creationDate": "2023",
+    "publisherDescription": "Fictional training imprint; publisher metadata is simulated.",
+    "description": "Markets and Meeting Places is a fictional adult nonfiction selection for this training catalog.",
+    "unitPriceCents": 2399,
+    "availability": "Available",
+    "maxQuantity": 99,
+    "unique": false,
+    "metadata": {
+      "fictionalRecord": true,
+      "sourceSubject": "History",
+      "identifierStatus": "No verified external identifier supplied"
+    }
+  },
+  {
+    "id": "PN027",
+    "title": "Everyday Astronomy",
+    "creator": "Morgan Finch",
+    "materialCategory": "Young adult materials",
+    "format": "Audiobook",
+    "creationDate": "2024",
+    "publisherDescription": "Fictional training imprint; publisher metadata is simulated.",
+    "description": "Everyday Astronomy is a fictional young adult materials selection for this training catalog.",
+    "unitPriceCents": 2299,
+    "availability": "Available",
+    "maxQuantity": 99,
+    "unique": false,
+    "metadata": {
+      "fictionalRecord": true,
+      "sourceSubject": "Science",
+      "identifierStatus": "No verified external identifier supplied"
+    }
+  },
+  {
+    "id": "PN028",
+    "title": "The Enormous Tiny Garden",
+    "creator": "Casey Brook",
+    "materialCategory": "Juvenile fiction",
+    "format": "Print book",
+    "creationDate": "2025",
+    "publisherDescription": "Fictional training imprint; publisher metadata is simulated.",
+    "description": "The Enormous Tiny Garden is a fictional juvenile fiction selection for this training catalog.",
+    "unitPriceCents": 850,
+    "availability": "Available",
+    "maxQuantity": 99,
+    "unique": false,
+    "metadata": {
+      "fictionalRecord": true,
+      "sourceSubject": "Children",
+      "identifierStatus": "No verified external identifier supplied"
+    }
+  },
+  {
+    "id": "PN029",
+    "title": "Preserving Paper Collections",
+    "creator": "Jamie North",
+    "materialCategory": "Academic monographs and reference materials",
+    "format": "Print book",
+    "creationDate": "2012",
+    "publisherDescription": "Fictional training imprint; publisher metadata is simulated.",
+    "description": "Preserving Paper Collections is a fictional academic monographs and reference materials selection for this training catalog.",
+    "unitPriceCents": 4200,
+    "availability": "Available",
+    "maxQuantity": 99,
+    "unique": false,
+    "metadata": {
+      "fictionalRecord": true,
+      "sourceSubject": "Reference",
+      "identifierStatus": "No verified external identifier supplied"
+    }
+  },
+  {
+    "id": "PN030",
+    "title": "Life Beneath the Pond",
+    "creator": "Taylor Moss",
+    "materialCategory": "Juvenile nonfiction",
+    "format": "Print book",
+    "creationDate": "2013",
+    "publisherDescription": "Fictional training imprint; publisher metadata is simulated.",
+    "description": "Life Beneath the Pond is a fictional juvenile nonfiction selection for this training catalog.",
+    "unitPriceCents": 1499,
+    "availability": "Available",
+    "maxQuantity": 99,
+    "unique": false,
+    "metadata": {
+      "fictionalRecord": true,
+      "sourceSubject": "Nature",
+      "identifierStatus": "No verified external identifier supplied"
+    }
+  },
+  {
+    "id": "PN031",
+    "title": "Printmaking at Home",
+    "creator": "Avery Stone",
+    "materialCategory": "Adult nonfiction",
+    "format": "Print book",
+    "creationDate": "2014",
+    "publisherDescription": "Fictional training imprint; publisher metadata is simulated.",
+    "description": "Printmaking at Home is a fictional adult nonfiction selection for this training catalog.",
+    "unitPriceCents": 2199,
+    "availability": "Available",
+    "maxQuantity": 99,
+    "unique": false,
+    "metadata": {
+      "fictionalRecord": true,
+      "sourceSubject": "Arts",
+      "identifierStatus": "No verified external identifier supplied"
+    }
+  },
+  {
+    "id": "PN032",
+    "title": "Data Structures in Practice",
+    "creator": "Quinn Lake",
+    "materialCategory": "Academic monographs and reference materials",
+    "format": "Print book",
+    "creationDate": "2015",
+    "publisherDescription": "Fictional training imprint; publisher metadata is simulated.",
+    "description": "Data Structures in Practice is a fictional academic monographs and reference materials selection for this training catalog.",
+    "unitPriceCents": 3899,
+    "availability": "Available",
+    "maxQuantity": 99,
+    "unique": false,
+    "metadata": {
+      "fictionalRecord": true,
+      "sourceSubject": "Computing",
+      "identifierStatus": "No verified external identifier supplied"
+    }
+  },
+  {
+    "id": "PN033",
+    "title": "A Window Facing West",
+    "creator": "Alex Reed",
+    "materialCategory": "Adult fiction",
+    "format": "Print book",
+    "creationDate": "2016",
+    "publisherDescription": "Fictional training imprint; publisher metadata is simulated.",
+    "description": "A Window Facing West is a fictional adult fiction selection for this training catalog.",
+    "unitPriceCents": 1199,
+    "availability": "Available",
+    "maxQuantity": 99,
+    "unique": false,
+    "metadata": {
+      "fictionalRecord": true,
+      "sourceSubject": "Fiction",
+      "identifierStatus": "No verified external identifier supplied"
+    }
+  },
+  {
+    "id": "PN034",
+    "title": "Bridges and Their Builders",
+    "creator": "Robin Vale",
+    "materialCategory": "Adult nonfiction",
+    "format": "Print book",
+    "creationDate": "2017",
+    "publisherDescription": "Fictional training imprint; publisher metadata is simulated.",
+    "description": "Bridges and Their Builders is a fictional adult nonfiction selection for this training catalog.",
+    "unitPriceCents": 2695,
+    "availability": "Available",
+    "maxQuantity": 99,
+    "unique": false,
+    "metadata": {
+      "fictionalRecord": true,
+      "sourceSubject": "History",
+      "identifierStatus": "No verified external identifier supplied"
+    }
+  },
+  {
+    "id": "PN035",
+    "title": "Materials All Around Us",
+    "creator": "Morgan Finch",
+    "materialCategory": "Adult nonfiction",
+    "format": "Print book",
+    "creationDate": "2018",
+    "publisherDescription": "Fictional training imprint; publisher metadata is simulated.",
+    "description": "Materials All Around Us is a fictional adult nonfiction selection for this training catalog.",
+    "unitPriceCents": 1950,
+    "availability": "Limited availability",
+    "maxQuantity": 99,
+    "unique": false,
+    "metadata": {
+      "fictionalRecord": true,
+      "sourceSubject": "Science",
+      "identifierStatus": "No verified external identifier supplied"
+    }
+  },
+  {
+    "id": "PN036",
+    "title": "Mole Finds a Map",
+    "creator": "Casey Brook",
+    "materialCategory": "Juvenile fiction",
+    "format": "Print book",
+    "creationDate": "2019",
+    "publisherDescription": "Fictional training imprint; publisher metadata is simulated.",
+    "description": "Mole Finds a Map is a fictional juvenile fiction selection for this training catalog.",
+    "unitPriceCents": 699,
+    "availability": "Available",
+    "maxQuantity": 99,
+    "unique": false,
+    "metadata": {
+      "fictionalRecord": true,
+      "sourceSubject": "Children",
+      "identifierStatus": "No verified external identifier supplied"
+    }
+  },
+  {
+    "id": "PN037",
+    "title": "Metadata for Beginners",
+    "creator": "Jamie North",
+    "materialCategory": "Academic monographs and reference materials",
+    "format": "Print book",
+    "creationDate": "2020",
+    "publisherDescription": "Fictional training imprint; publisher metadata is simulated.",
+    "description": "Metadata for Beginners is a fictional academic monographs and reference materials selection for this training catalog.",
+    "unitPriceCents": 3750,
+    "availability": "Available",
+    "maxQuantity": 99,
+    "unique": false,
+    "metadata": {
+      "fictionalRecord": true,
+      "sourceSubject": "Reference",
+      "identifierStatus": "No verified external identifier supplied"
+    }
+  },
+  {
+    "id": "PN038",
+    "title": "Wildflowers of Open Ground",
+    "creator": "Taylor Moss",
+    "materialCategory": "Adult nonfiction",
+    "format": "Print book",
+    "creationDate": "2021",
+    "publisherDescription": "Fictional training imprint; publisher metadata is simulated.",
+    "description": "Wildflowers of Open Ground is a fictional adult nonfiction selection for this training catalog.",
+    "unitPriceCents": 1799,
+    "availability": "Available",
+    "maxQuantity": 99,
+    "unique": false,
+    "metadata": {
+      "fictionalRecord": true,
+      "sourceSubject": "Nature",
+      "identifierStatus": "No verified external identifier supplied"
+    }
+  },
+  {
+    "id": "PN039",
+    "title": "The Community Theatre",
+    "creator": "Avery Stone",
+    "materialCategory": "Adult nonfiction",
+    "format": "Print book",
+    "creationDate": "2022",
+    "publisherDescription": "Fictional training imprint; publisher metadata is simulated.",
+    "description": "The Community Theatre is a fictional adult nonfiction selection for this training catalog.",
+    "unitPriceCents": 2099,
+    "availability": "Available",
+    "maxQuantity": 99,
+    "unique": false,
+    "metadata": {
+      "fictionalRecord": true,
+      "sourceSubject": "Arts",
+      "identifierStatus": "No verified external identifier supplied"
+    }
+  },
+  {
+    "id": "PN040",
+    "title": "A Friendly Guide to Databases",
+    "creator": "Quinn Lake",
+    "materialCategory": "Academic monographs and reference materials",
+    "format": "Print book",
+    "creationDate": "2023",
+    "publisherDescription": "Fictional training imprint; publisher metadata is simulated.",
+    "description": "A Friendly Guide to Databases is a fictional academic monographs and reference materials selection for this training catalog.",
+    "unitPriceCents": 3100,
+    "availability": "Available",
+    "maxQuantity": 99,
+    "unique": false,
+    "metadata": {
+      "fictionalRecord": true,
+      "sourceSubject": "Computing",
+      "identifierStatus": "No verified external identifier supplied"
+    }
+  },
+  {
+    "id": "PN041",
+    "title": "The Borrowed Bicycle",
+    "creator": "Alex Reed",
+    "materialCategory": "Adult fiction",
+    "format": "Ebook",
+    "creationDate": "2024",
+    "publisherDescription": "Fictional training imprint; publisher metadata is simulated.",
+    "description": "The Borrowed Bicycle is a fictional adult fiction selection for this training catalog.",
+    "unitPriceCents": 1095,
+    "availability": "Digital license available",
+    "maxQuantity": 99,
+    "unique": false,
+    "metadata": {
+      "fictionalRecord": true,
+      "sourceSubject": "Fiction",
+      "identifierStatus": "No verified external identifier supplied"
+    }
+  },
+  {
+    "id": "PN042",
+    "title": "Stories of the Old Town Hall",
+    "creator": "Robin Vale",
+    "materialCategory": "Adult nonfiction",
+    "format": "Print book",
+    "creationDate": "2025",
+    "publisherDescription": "Fictional training imprint; publisher metadata is simulated.",
+    "description": "Stories of the Old Town Hall is a fictional adult nonfiction selection for this training catalog.",
+    "unitPriceCents": 1999,
+    "availability": "Available",
+    "maxQuantity": 99,
+    "unique": false,
+    "metadata": {
+      "fictionalRecord": true,
+      "sourceSubject": "History",
+      "identifierStatus": "No verified external identifier supplied"
+    }
+  },
+  {
+    "id": "PN043",
+    "title": "Water in Motion",
+    "creator": "Morgan Finch",
+    "materialCategory": "Adult nonfiction",
+    "format": "Print book",
+    "creationDate": "2012",
+    "publisherDescription": "Fictional training imprint; publisher metadata is simulated.",
+    "description": "Water in Motion is a fictional adult nonfiction selection for this training catalog.",
+    "unitPriceCents": 2150,
+    "availability": "Available",
+    "maxQuantity": 99,
+    "unique": false,
+    "metadata": {
+      "fictionalRecord": true,
+      "sourceSubject": "Science",
+      "identifierStatus": "No verified external identifier supplied"
+    }
+  },
+  {
+    "id": "PN044",
+    "title": "The Moonlight Picnic",
+    "creator": "Casey Brook",
+    "materialCategory": "Juvenile fiction",
+    "format": "Print book",
+    "creationDate": "2013",
+    "publisherDescription": "Fictional training imprint; publisher metadata is simulated.",
+    "description": "The Moonlight Picnic is a fictional juvenile fiction selection for this training catalog.",
+    "unitPriceCents": 950,
+    "availability": "Available",
+    "maxQuantity": 99,
+    "unique": false,
+    "metadata": {
+      "fictionalRecord": true,
+      "sourceSubject": "Children",
+      "identifierStatus": "No verified external identifier supplied"
+    }
+  },
+  {
+    "id": "PN045",
+    "title": "Planning Library Spaces",
+    "creator": "Jamie North",
+    "materialCategory": "Academic monographs and reference materials",
+    "format": "Print book",
+    "creationDate": "2014",
+    "publisherDescription": "Fictional training imprint; publisher metadata is simulated.",
+    "description": "Planning Library Spaces is a fictional academic monographs and reference materials selection for this training catalog.",
+    "unitPriceCents": 4800,
+    "availability": "Available",
+    "maxQuantity": 99,
+    "unique": false,
+    "metadata": {
+      "fictionalRecord": true,
+      "sourceSubject": "Reference",
+      "identifierStatus": "No verified external identifier supplied"
+    }
+  },
+  {
+    "id": "PN046",
+    "title": "The Urban Orchard",
+    "creator": "Taylor Moss",
+    "materialCategory": "Adult nonfiction",
+    "format": "Audiobook",
+    "creationDate": "2015",
+    "publisherDescription": "Fictional training imprint; publisher metadata is simulated.",
+    "description": "The Urban Orchard is a fictional adult nonfiction selection for this training catalog.",
+    "unitPriceCents": 1650,
+    "availability": "Available",
+    "maxQuantity": 99,
+    "unique": false,
+    "metadata": {
+      "fictionalRecord": true,
+      "sourceSubject": "Nature",
+      "identifierStatus": "No verified external identifier supplied"
+    }
+  },
+  {
+    "id": "PN047",
+    "title": "Sketching the Coast",
+    "creator": "Avery Stone",
+    "materialCategory": "Adult nonfiction",
+    "format": "Print book",
+    "creationDate": "2016",
+    "publisherDescription": "Fictional training imprint; publisher metadata is simulated.",
+    "description": "Sketching the Coast is a fictional adult nonfiction selection for this training catalog.",
+    "unitPriceCents": 2450,
+    "availability": "Available",
+    "maxQuantity": 99,
+    "unique": false,
+    "metadata": {
+      "fictionalRecord": true,
+      "sourceSubject": "Arts",
+      "identifierStatus": "No verified external identifier supplied"
+    }
+  },
+  {
+    "id": "PN048",
+    "title": "Testing Small Applications",
+    "creator": "Quinn Lake",
+    "materialCategory": "Academic monographs and reference materials",
+    "format": "Print book",
+    "creationDate": "2017",
+    "publisherDescription": "Fictional training imprint; publisher metadata is simulated.",
+    "description": "Testing Small Applications is a fictional academic monographs and reference materials selection for this training catalog.",
+    "unitPriceCents": 3400,
+    "availability": "Available",
+    "maxQuantity": 99,
+    "unique": false,
+    "metadata": {
+      "fictionalRecord": true,
+      "sourceSubject": "Computing",
+      "identifierStatus": "No verified external identifier supplied"
+    }
+  },
+  {
+    "id": "PN049",
+    "title": "An Unexpected Reading Room",
+    "creator": "Alex Reed",
+    "materialCategory": "Adult fiction",
+    "format": "Print book",
+    "creationDate": "2018",
+    "publisherDescription": "Fictional training imprint; publisher metadata is simulated.",
+    "description": "An Unexpected Reading Room is a fictional adult fiction selection for this training catalog.",
+    "unitPriceCents": 1295,
+    "availability": "Available",
+    "maxQuantity": 99,
+    "unique": false,
+    "metadata": {
+      "fictionalRecord": true,
+      "sourceSubject": "Fiction",
+      "identifierStatus": "No verified external identifier supplied"
+    }
+  },
+  {
+    "id": "PN050",
+    "title": "Workshops of Yesterday",
+    "creator": "Robin Vale",
+    "materialCategory": "Adult nonfiction",
+    "format": "Print book",
+    "creationDate": "2019",
+    "publisherDescription": "Fictional training imprint; publisher metadata is simulated.",
+    "description": "Workshops of Yesterday is a fictional adult nonfiction selection for this training catalog.",
+    "unitPriceCents": 2595,
+    "availability": "Available",
+    "maxQuantity": 99,
+    "unique": false,
+    "metadata": {
+      "fictionalRecord": true,
+      "sourceSubject": "History",
+      "identifierStatus": "No verified external identifier supplied"
+    }
+  },
+  {
+    "id": "PN051",
+    "title": "Measuring the Weather",
+    "creator": "Morgan Finch",
+    "materialCategory": "Adult nonfiction",
+    "format": "Print book",
+    "creationDate": "2020",
+    "publisherDescription": "Fictional training imprint; publisher metadata is simulated.",
+    "description": "Measuring the Weather is a fictional adult nonfiction selection for this training catalog.",
+    "unitPriceCents": 1850,
+    "availability": "Available",
+    "maxQuantity": 99,
+    "unique": false,
+    "metadata": {
+      "fictionalRecord": true,
+      "sourceSubject": "Science",
+      "identifierStatus": "No verified external identifier supplied"
+    }
+  },
+  {
+    "id": "PN052",
+    "title": "The Paper Boat Race",
+    "creator": "Casey Brook",
+    "materialCategory": "Juvenile fiction",
+    "format": "Print book",
+    "creationDate": "2021",
+    "publisherDescription": "Fictional training imprint; publisher metadata is simulated.",
+    "description": "The Paper Boat Race is a fictional juvenile fiction selection for this training catalog.",
+    "unitPriceCents": 799,
+    "availability": "Limited availability",
+    "maxQuantity": 99,
+    "unique": false,
+    "metadata": {
+      "fictionalRecord": true,
+      "sourceSubject": "Children",
+      "identifierStatus": "No verified external identifier supplied"
+    }
+  },
+  {
+    "id": "PN053",
+    "title": "Managing Digital Collections",
+    "creator": "Jamie North",
+    "materialCategory": "Academic monographs and reference materials",
+    "format": "Print book",
+    "creationDate": "2022",
+    "publisherDescription": "Fictional training imprint; publisher metadata is simulated.",
+    "description": "Managing Digital Collections is a fictional academic monographs and reference materials selection for this training catalog.",
+    "unitPriceCents": 4400,
+    "availability": "Available",
+    "maxQuantity": 99,
+    "unique": false,
+    "metadata": {
+      "fictionalRecord": true,
+      "sourceSubject": "Reference",
+      "identifierStatus": "No verified external identifier supplied"
+    }
+  },
+  {
+    "id": "PN054",
+    "title": "A Year of Hedgerows",
+    "creator": "Taylor Moss",
+    "materialCategory": "Adult nonfiction",
+    "format": "Print book",
+    "creationDate": "2023",
+    "publisherDescription": "Fictional training imprint; publisher metadata is simulated.",
+    "description": "A Year of Hedgerows is a fictional adult nonfiction selection for this training catalog.",
+    "unitPriceCents": 1995,
+    "availability": "Available",
+    "maxQuantity": 99,
+    "unique": false,
+    "metadata": {
+      "fictionalRecord": true,
+      "sourceSubject": "Nature",
+      "identifierStatus": "No verified external identifier supplied"
+    }
+  },
+  {
+    "id": "PN055",
+    "title": "Music for Shared Spaces",
+    "creator": "Avery Stone",
+    "materialCategory": "Adult nonfiction",
+    "format": "Print book",
+    "creationDate": "2024",
+    "publisherDescription": "Fictional training imprint; publisher metadata is simulated.",
+    "description": "Music for Shared Spaces is a fictional adult nonfiction selection for this training catalog.",
+    "unitPriceCents": 2350,
+    "availability": "Available",
+    "maxQuantity": 99,
+    "unique": false,
+    "metadata": {
+      "fictionalRecord": true,
+      "sourceSubject": "Arts",
+      "identifierStatus": "No verified external identifier supplied"
+    }
+  },
+  {
+    "id": "PN056",
+    "title": "Networks Without Mystery",
+    "creator": "Quinn Lake",
+    "materialCategory": "Academic monographs and reference materials",
+    "format": "Print book",
+    "creationDate": "2025",
+    "publisherDescription": "Fictional training imprint; publisher metadata is simulated.",
+    "description": "Networks Without Mystery is a fictional academic monographs and reference materials selection for this training catalog.",
+    "unitPriceCents": 3650,
+    "availability": "Available",
+    "maxQuantity": 99,
+    "unique": false,
+    "metadata": {
+      "fictionalRecord": true,
+      "sourceSubject": "Computing",
+      "identifierStatus": "No verified external identifier supplied"
+    }
+  },
+  {
+    "id": "PN057",
+    "title": "The Station at Morning",
+    "creator": "Alex Reed",
+    "materialCategory": "Adult fiction",
+    "format": "Print book",
+    "creationDate": "2012",
+    "publisherDescription": "Fictional training imprint; publisher metadata is simulated.",
+    "description": "The Station at Morning is a fictional adult fiction selection for this training catalog.",
+    "unitPriceCents": 1499,
+    "availability": "Available",
+    "maxQuantity": 99,
+    "unique": false,
+    "metadata": {
+      "fictionalRecord": true,
+      "sourceSubject": "Fiction",
+      "identifierStatus": "No verified external identifier supplied"
+    }
+  },
+  {
+    "id": "PN058",
+    "title": "Local Newspapers and Memory",
+    "creator": "Robin Vale",
+    "materialCategory": "Adult nonfiction",
+    "format": "Print book",
+    "creationDate": "2013",
+    "publisherDescription": "Fictional training imprint; publisher metadata is simulated.",
+    "description": "Local Newspapers and Memory is a fictional adult nonfiction selection for this training catalog.",
+    "unitPriceCents": 2250,
+    "availability": "Available",
+    "maxQuantity": 99,
+    "unique": false,
+    "metadata": {
+      "fictionalRecord": true,
+      "sourceSubject": "History",
+      "identifierStatus": "No verified external identifier supplied"
+    }
+  },
+  {
+    "id": "PN059",
+    "title": "The Chemistry of Cooking",
+    "creator": "Morgan Finch",
+    "materialCategory": "Adult nonfiction",
+    "format": "Print book",
+    "creationDate": "2014",
+    "publisherDescription": "Fictional training imprint; publisher metadata is simulated.",
+    "description": "The Chemistry of Cooking is a fictional adult nonfiction selection for this training catalog.",
+    "unitPriceCents": 2499,
+    "availability": "Available",
+    "maxQuantity": 99,
+    "unique": false,
+    "metadata": {
+      "fictionalRecord": true,
+      "sourceSubject": "Science",
+      "identifierStatus": "No verified external identifier supplied"
+    }
+  },
+  {
+    "id": "PN060",
+    "title": "Badger's Busy Saturday",
+    "creator": "Casey Brook",
+    "materialCategory": "Juvenile fiction",
+    "format": "Ebook",
+    "creationDate": "2015",
+    "publisherDescription": "Fictional training imprint; publisher metadata is simulated.",
+    "description": "Badger's Busy Saturday is a fictional juvenile fiction selection for this training catalog.",
+    "unitPriceCents": 899,
+    "availability": "Digital license available",
+    "maxQuantity": 99,
+    "unique": false,
+    "metadata": {
+      "fictionalRecord": true,
+      "sourceSubject": "Children",
+      "identifierStatus": "No verified external identifier supplied"
+    }
+  },
+  {
+    "id": "PN061",
+    "title": "Practical Subject Indexing",
+    "creator": "Jamie North",
+    "materialCategory": "Academic monographs and reference materials",
+    "format": "Print book",
+    "creationDate": "2016",
+    "publisherDescription": "Fictional training imprint; publisher metadata is simulated.",
+    "description": "Practical Subject Indexing is a fictional academic monographs and reference materials selection for this training catalog.",
+    "unitPriceCents": 4100,
+    "availability": "Available",
+    "maxQuantity": 99,
+    "unique": false,
+    "metadata": {
+      "fictionalRecord": true,
+      "sourceSubject": "Reference",
+      "identifierStatus": "No verified external identifier supplied"
+    }
+  },
+  {
+    "id": "PN062",
+    "title": "Rock Pools and Tides",
+    "creator": "Taylor Moss",
+    "materialCategory": "Adult nonfiction",
+    "format": "Print book",
+    "creationDate": "2017",
+    "publisherDescription": "Fictional training imprint; publisher metadata is simulated.",
+    "description": "Rock Pools and Tides is a fictional adult nonfiction selection for this training catalog.",
+    "unitPriceCents": 1750,
+    "availability": "Available",
+    "maxQuantity": 99,
+    "unique": false,
+    "metadata": {
+      "fictionalRecord": true,
+      "sourceSubject": "Nature",
+      "identifierStatus": "No verified external identifier supplied"
+    }
+  },
+  {
+    "id": "PN063",
+    "title": "Working with Watercolour",
+    "creator": "Avery Stone",
+    "materialCategory": "Adult nonfiction",
+    "format": "Print book",
+    "creationDate": "2018",
+    "publisherDescription": "Fictional training imprint; publisher metadata is simulated.",
+    "description": "Working with Watercolour is a fictional adult nonfiction selection for this training catalog.",
+    "unitPriceCents": 2699,
+    "availability": "Available",
+    "maxQuantity": 99,
+    "unique": false,
+    "metadata": {
+      "fictionalRecord": true,
+      "sourceSubject": "Arts",
+      "identifierStatus": "No verified external identifier supplied"
+    }
+  },
+  {
+    "id": "PN064",
+    "title": "Responsible Data Handling",
+    "creator": "Quinn Lake",
+    "materialCategory": "Academic monographs and reference materials",
+    "format": "Print book",
+    "creationDate": "2019",
+    "publisherDescription": "Fictional training imprint; publisher metadata is simulated.",
+    "description": "Responsible Data Handling is a fictional academic monographs and reference materials selection for this training catalog.",
+    "unitPriceCents": 3999,
+    "availability": "Available",
+    "maxQuantity": 99,
+    "unique": false,
+    "metadata": {
+      "fictionalRecord": true,
+      "sourceSubject": "Computing",
+      "identifierStatus": "No verified external identifier supplied"
+    }
+  },
+  {
+    "id": "PN065",
+    "title": "The House on Orchard Lane",
+    "creator": "Alex Reed",
+    "materialCategory": "Adult fiction",
+    "format": "Audiobook",
+    "creationDate": "2020",
+    "publisherDescription": "Fictional training imprint; publisher metadata is simulated.",
+    "description": "The House on Orchard Lane is a fictional adult fiction selection for this training catalog.",
+    "unitPriceCents": 1195,
+    "availability": "Available",
+    "maxQuantity": 99,
+    "unique": false,
+    "metadata": {
+      "fictionalRecord": true,
+      "sourceSubject": "Fiction",
+      "identifierStatus": "No verified external identifier supplied"
+    }
+  },
+  {
+    "id": "PN066",
+    "title": "Canals and Communities",
+    "creator": "Robin Vale",
+    "materialCategory": "Adult nonfiction",
+    "format": "Print book",
+    "creationDate": "2021",
+    "publisherDescription": "Fictional training imprint; publisher metadata is simulated.",
+    "description": "Canals and Communities is a fictional adult nonfiction selection for this training catalog.",
+    "unitPriceCents": 2850,
+    "availability": "Available",
+    "maxQuantity": 99,
+    "unique": false,
+    "metadata": {
+      "fictionalRecord": true,
+      "sourceSubject": "History",
+      "identifierStatus": "No verified external identifier supplied"
+    }
+  },
+  {
+    "id": "PN067",
+    "title": "An Introduction to Energy",
+    "creator": "Morgan Finch",
+    "materialCategory": "Adult nonfiction",
+    "format": "Print book",
+    "creationDate": "2022",
+    "publisherDescription": "Fictional training imprint; publisher metadata is simulated.",
+    "description": "An Introduction to Energy is a fictional adult nonfiction selection for this training catalog.",
+    "unitPriceCents": 2395,
+    "availability": "Available",
+    "maxQuantity": 99,
+    "unique": false,
+    "metadata": {
+      "fictionalRecord": true,
+      "sourceSubject": "Science",
+      "identifierStatus": "No verified external identifier supplied"
+    }
+  },
+  {
+    "id": "PN068",
+    "title": "The Very Patient Dragon",
+    "creator": "Casey Brook",
+    "materialCategory": "Juvenile fiction",
+    "format": "Print book",
+    "creationDate": "2023",
+    "publisherDescription": "Fictional training imprint; publisher metadata is simulated.",
+    "description": "The Very Patient Dragon is a fictional juvenile fiction selection for this training catalog.",
+    "unitPriceCents": 999,
+    "availability": "Available",
+    "maxQuantity": 99,
+    "unique": false,
+    "metadata": {
+      "fictionalRecord": true,
+      "sourceSubject": "Children",
+      "identifierStatus": "No verified external identifier supplied"
+    }
+  },
+  {
+    "id": "PN069",
+    "title": "Library Service Evaluation",
+    "creator": "Jamie North",
+    "materialCategory": "Academic monographs and reference materials",
+    "format": "Print book",
+    "creationDate": "2024",
+    "publisherDescription": "Fictional training imprint; publisher metadata is simulated.",
+    "description": "Library Service Evaluation is a fictional academic monographs and reference materials selection for this training catalog.",
+    "unitPriceCents": 4600,
+    "availability": "Limited availability",
+    "maxQuantity": 99,
+    "unique": false,
+    "metadata": {
+      "fictionalRecord": true,
+      "sourceSubject": "Reference",
+      "identifierStatus": "No verified external identifier supplied"
+    }
+  },
+  {
+    "id": "PN070",
+    "title": "Butterflies in the City",
+    "creator": "Taylor Moss",
+    "materialCategory": "Adult nonfiction",
+    "format": "Print book",
+    "creationDate": "2025",
+    "publisherDescription": "Fictional training imprint; publisher metadata is simulated.",
+    "description": "Butterflies in the City is a fictional adult nonfiction selection for this training catalog.",
+    "unitPriceCents": 1599,
+    "availability": "Available",
+    "maxQuantity": 99,
+    "unique": false,
+    "metadata": {
+      "fictionalRecord": true,
+      "sourceSubject": "Nature",
+      "identifierStatus": "No verified external identifier supplied"
+    }
+  },
+  {
+    "id": "PN071",
+    "title": "Photographing Everyday Life",
+    "creator": "Avery Stone",
+    "materialCategory": "Adult nonfiction",
+    "format": "Print book",
+    "creationDate": "2012",
+    "publisherDescription": "Fictional training imprint; publisher metadata is simulated.",
+    "description": "Photographing Everyday Life is a fictional adult nonfiction selection for this training catalog.",
+    "unitPriceCents": 2799,
+    "availability": "Available",
+    "maxQuantity": 99,
+    "unique": false,
+    "metadata": {
+      "fictionalRecord": true,
+      "sourceSubject": "Arts",
+      "identifierStatus": "No verified external identifier supplied"
+    }
+  },
+  {
+    "id": "PN072",
+    "title": "Version Control Fundamentals",
+    "creator": "Quinn Lake",
+    "materialCategory": "Academic monographs and reference materials",
+    "format": "Print book",
+    "creationDate": "2013",
+    "publisherDescription": "Fictional training imprint; publisher metadata is simulated.",
+    "description": "Version Control Fundamentals is a fictional academic monographs and reference materials selection for this training catalog.",
+    "unitPriceCents": 2899,
+    "availability": "Available",
+    "maxQuantity": 99,
+    "unique": false,
+    "metadata": {
+      "fictionalRecord": true,
+      "sourceSubject": "Computing",
+      "identifierStatus": "No verified external identifier supplied"
+    }
+  },
+  {
+    "id": "PN073",
+    "title": "A Season of Small Adventures",
+    "creator": "Alex Reed",
+    "materialCategory": "Adult fiction",
+    "format": "Print book",
+    "creationDate": "2014",
+    "publisherDescription": "Fictional training imprint; publisher metadata is simulated.",
+    "description": "A Season of Small Adventures is a fictional adult fiction selection for this training catalog.",
+    "unitPriceCents": 1395,
+    "availability": "Available",
+    "maxQuantity": 99,
+    "unique": false,
+    "metadata": {
+      "fictionalRecord": true,
+      "sourceSubject": "Fiction",
+      "identifierStatus": "No verified external identifier supplied"
+    }
+  },
+  {
+    "id": "PN074",
+    "title": "Schools Across the Centuries",
+    "creator": "Robin Vale",
+    "materialCategory": "Young adult materials",
+    "format": "Print book",
+    "creationDate": "2015",
+    "publisherDescription": "Fictional training imprint; publisher metadata is simulated.",
+    "description": "Schools Across the Centuries is a fictional young adult materials selection for this training catalog.",
+    "unitPriceCents": 2499,
+    "availability": "Available",
+    "maxQuantity": 99,
+    "unique": false,
+    "metadata": {
+      "fictionalRecord": true,
+      "sourceSubject": "History",
+      "identifierStatus": "No verified external identifier supplied"
+    }
+  },
+  {
+    "id": "PN075",
+    "title": "Looking Inside the Earth",
+    "creator": "Morgan Finch",
+    "materialCategory": "Adult nonfiction",
+    "format": "Print book",
+    "creationDate": "2016",
+    "publisherDescription": "Fictional training imprint; publisher metadata is simulated.",
+    "description": "Looking Inside the Earth is a fictional adult nonfiction selection for this training catalog.",
+    "unitPriceCents": 2195,
+    "availability": "Available",
+    "maxQuantity": 99,
+    "unique": false,
+    "metadata": {
+      "fictionalRecord": true,
+      "sourceSubject": "Science",
+      "identifierStatus": "No verified external identifier supplied"
+    }
+  },
+  {
+    "id": "PN076",
+    "title": "Pip and the Lost Button",
+    "creator": "Casey Brook",
+    "materialCategory": "Juvenile fiction",
+    "format": "Print book",
+    "creationDate": "2017",
+    "publisherDescription": "Fictional training imprint; publisher metadata is simulated.",
+    "description": "Pip and the Lost Button is a fictional juvenile fiction selection for this training catalog.",
+    "unitPriceCents": 750,
+    "availability": "Available",
+    "maxQuantity": 99,
+    "unique": false,
+    "metadata": {
+      "fictionalRecord": true,
+      "sourceSubject": "Children",
+      "identifierStatus": "No verified external identifier supplied"
+    }
+  },
+  {
+    "id": "PN077",
+    "title": "Acquisitions Desk Companion",
+    "creator": "Jamie North",
+    "materialCategory": "Academic monographs and reference materials",
+    "format": "Print book",
+    "creationDate": "2018",
+    "publisherDescription": "Fictional training imprint; publisher metadata is simulated.",
+    "description": "Acquisitions Desk Companion is a fictional academic monographs and reference materials selection for this training catalog.",
+    "unitPriceCents": 3895,
+    "availability": "Available",
+    "maxQuantity": 99,
+    "unique": false,
+    "metadata": {
+      "fictionalRecord": true,
+      "sourceSubject": "Reference",
+      "identifierStatus": "No verified external identifier supplied"
+    }
+  },
+  {
+    "id": "PN078",
+    "title": "The Secret Life of Soil",
+    "creator": "Taylor Moss",
+    "materialCategory": "Adult nonfiction",
+    "format": "Print book",
+    "creationDate": "2019",
+    "publisherDescription": "Fictional training imprint; publisher metadata is simulated.",
+    "description": "The Secret Life of Soil is a fictional adult nonfiction selection for this training catalog.",
+    "unitPriceCents": 2099,
+    "availability": "Available",
+    "maxQuantity": 99,
+    "unique": false,
+    "metadata": {
+      "fictionalRecord": true,
+      "sourceSubject": "Nature",
+      "identifierStatus": "No verified external identifier supplied"
+    }
+  },
+  {
+    "id": "PN079",
+    "title": "Textiles and Texture",
+    "creator": "Avery Stone",
+    "materialCategory": "Adult nonfiction",
+    "format": "Ebook",
+    "creationDate": "2020",
+    "publisherDescription": "Fictional training imprint; publisher metadata is simulated.",
+    "description": "Textiles and Texture is a fictional adult nonfiction selection for this training catalog.",
+    "unitPriceCents": 2295,
+    "availability": "Digital license available",
+    "maxQuantity": 99,
+    "unique": false,
+    "metadata": {
+      "fictionalRecord": true,
+      "sourceSubject": "Arts",
+      "identifierStatus": "No verified external identifier supplied"
+    }
+  },
+  {
+    "id": "PN080",
+    "title": "Building for the Browser",
+    "creator": "Quinn Lake",
+    "materialCategory": "Academic monographs and reference materials",
+    "format": "Print book",
+    "creationDate": "2021",
+    "publisherDescription": "Fictional training imprint; publisher metadata is simulated.",
+    "description": "Building for the Browser is a fictional academic monographs and reference materials selection for this training catalog.",
+    "unitPriceCents": 3799,
+    "availability": "Available",
+    "maxQuantity": 99,
+    "unique": false,
+    "metadata": {
+      "fictionalRecord": true,
+      "sourceSubject": "Computing",
+      "identifierStatus": "No verified external identifier supplied"
+    }
+  },
+  {
+    "id": "PN081",
+    "title": "The North Gate Reading Room: Glass-Plate Photograph",
+    "creator": "North Borough Photographic Survey",
+    "materialCategory": "Photographic and oral-history collections",
+    "format": "Archival photograph",
+    "creationDate": "1898",
+    "publisherDescription": "Simulated estate collection; provenance is fictional.",
+    "description": "The North Gate Reading Room: Glass-Plate Photograph. Simulated acquisition record for institutional training; no real item or transaction is offered.",
+    "unitPriceCents": 185000,
+    "availability": "Unique simulated object",
+    "maxQuantity": 1,
+    "unique": true,
+    "metadata": {
+      "source": "fictional simulation",
+      "identifierStatus": "No verified external identifier supplied"
+    }
+  },
+  {
+    "id": "PN082",
+    "title": "Minutes of the Borough Reading Society, 1842–1861",
+    "creator": "Borough Reading Society",
+    "materialCategory": "Rare books and manuscripts",
+    "format": "Manuscript volume",
+    "creationDate": "1842–1861",
+    "publisherDescription": "Simulated archival transfer; provenance is fictional.",
+    "description": "Minutes of the Borough Reading Society, 1842–1861. Simulated acquisition record for institutional training; no real item or transaction is offered.",
+    "unitPriceCents": 325000,
+    "availability": "Unique simulated object",
+    "maxQuantity": 1,
+    "unique": true,
+    "metadata": {
+      "source": "fictional simulation",
+      "identifierStatus": "No verified external identifier supplied"
+    }
+  },
+  {
+    "id": "PN083",
+    "title": "Harbour Voices: Oral History Collection",
+    "creator": "Pembroke Sound Archive",
+    "materialCategory": "Photographic and oral-history collections",
+    "format": "Digital audio collection",
+    "creationDate": "1987–2004",
+    "publisherDescription": "Fictional recorded interviews; simulated rights and provenance.",
+    "description": "Harbour Voices: Oral History Collection. Simulated acquisition record for institutional training; no real item or transaction is offered.",
+    "unitPriceCents": 148000,
+    "availability": "Unique simulated collection",
+    "maxQuantity": 1,
+    "unique": true,
+    "metadata": {
+      "source": "fictional simulation",
+      "identifierStatus": "No verified external identifier supplied"
+    }
+  },
+  {
+    "id": "PN084",
+    "title": "River District Lantern Slides",
+    "creator": "West Quay Survey Office",
+    "materialCategory": "Audiovisual resources",
+    "format": "Lantern-slide set",
+    "creationDate": "c. 1910",
+    "publisherDescription": "Simulated historical slide set; no physical object is offered.",
+    "description": "River District Lantern Slides. Simulated acquisition record for institutional training; no real item or transaction is offered.",
+    "unitPriceCents": 76000,
+    "availability": "Unique simulated set",
+    "maxQuantity": 1,
+    "unique": true,
+    "metadata": {
+      "source": "fictional simulation",
+      "identifierStatus": "No verified external identifier supplied"
+    }
+  },
+  {
+    "id": "PN085",
+    "title": "An Atlas of the Eastern Sound, Hand-Coloured Edition",
+    "creator": "Anonymous cartographer",
+    "materialCategory": "Rare books and manuscripts",
+    "format": "Rare atlas",
+    "creationDate": "1796",
+    "publisherDescription": "Simulated antiquarian listing; provenance is fictional.",
+    "description": "An Atlas of the Eastern Sound, Hand-Coloured Edition. Simulated acquisition record for institutional training; no real item or transaction is offered.",
+    "unitPriceCents": 925000,
+    "availability": "Unique simulated copy",
+    "maxQuantity": 1,
+    "unique": true,
+    "metadata": {
+      "source": "fictional simulation",
+      "identifierStatus": "No verified external identifier supplied"
+    }
+  },
+  {
+    "id": "PN086",
+    "title": "Dockworkers’ Mutual Aid Broadside",
+    "creator": "Dockworkers’ Mutual Aid Society",
+    "materialCategory": "Archival collections and ephemera",
+    "format": "Printed ephemera",
+    "creationDate": "1912",
+    "publisherDescription": "Simulated paper item from a fictional collection.",
+    "description": "Dockworkers’ Mutual Aid Broadside. Simulated acquisition record for institutional training; no real item or transaction is offered.",
+    "unitPriceCents": 48500,
+    "availability": "Unique simulated item",
+    "maxQuantity": 1,
+    "unique": true,
+    "metadata": {
+      "source": "fictional simulation",
+      "identifierStatus": "No verified external identifier supplied"
+    }
+  },
+  {
+    "id": "PN087",
+    "title": "Coastal Shell Cabinet: Reference Set",
+    "creator": "Pembroke Natural History Rooms",
+    "materialCategory": "Museum objects and cultural heritage materials",
+    "format": "Natural history specimen set",
+    "creationDate": "c. 1905",
+    "publisherDescription": "Simulated teaching collection; conservation and provenance are fictional.",
+    "description": "Coastal Shell Cabinet: Reference Set. Simulated acquisition record for institutional training; no real item or transaction is offered.",
+    "unitPriceCents": 640000,
+    "availability": "Unique simulated collection",
+    "maxQuantity": 1,
+    "unique": true,
+    "metadata": {
+      "source": "fictional simulation",
+      "identifierStatus": "No verified external identifier supplied"
+    }
+  },
+  {
+    "id": "PN088",
+    "title": "Pressed Flora of the Northern Marshes",
+    "creator": "E. Wren Field Survey",
+    "materialCategory": "Natural history and exhibition resources",
+    "format": "Herbarium specimen book",
+    "creationDate": "1889",
+    "publisherDescription": "Simulated botanical teaching resource; provenance is fictional.",
+    "description": "Pressed Flora of the Northern Marshes. Simulated acquisition record for institutional training; no real item or transaction is offered.",
+    "unitPriceCents": 218000,
+    "availability": "Unique simulated item",
+    "maxQuantity": 1,
+    "unique": true,
+    "metadata": {
+      "source": "fictional simulation",
+      "identifierStatus": "No verified external identifier supplied"
+    }
+  },
+  {
+    "id": "PN089",
+    "title": "Coastal Communities: Exhibition Resource Pack",
+    "creator": "Pembroke & Newcastle Education Office",
+    "materialCategory": "Natural history and exhibition resources",
+    "format": "Exhibition resource set",
+    "creationDate": "2025",
+    "publisherDescription": "Fictional exhibition materials supplied as a simulated set.",
+    "description": "Coastal Communities: Exhibition Resource Pack. Simulated acquisition record for institutional training; no real item or transaction is offered.",
+    "unitPriceCents": 12600,
+    "availability": "Limited to 4 sets",
+    "maxQuantity": 99,
+    "unique": false,
+    "metadata": {
+      "source": "fictional simulation",
+      "identifierStatus": "No verified external identifier supplied"
+    }
+  },
+  {
+    "id": "PN090",
+    "title": "Glass Plate Negatives: Market Street Collection",
+    "creator": "North Borough Photographic Survey",
+    "materialCategory": "Photographic and oral-history collections",
+    "format": "Photographic negative collection",
+    "creationDate": "1901–1910",
+    "publisherDescription": "Simulated archival collection; images and provenance are fictional.",
+    "description": "Glass Plate Negatives: Market Street Collection. Simulated acquisition record for institutional training; no real item or transaction is offered.",
+    "unitPriceCents": 785000,
+    "availability": "Unique simulated collection",
+    "maxQuantity": 1,
+    "unique": true,
+    "metadata": {
+      "source": "fictional simulation",
+      "identifierStatus": "No verified external identifier supplied"
+    }
+  },
+  {
+    "id": "PN091",
+    "title": "Journal of Community Archives, Volume 12",
+    "creator": "Community Archives Forum",
+    "materialCategory": "Periodicals and serials",
+    "format": "Print periodical",
+    "creationDate": "2026",
+    "publisherDescription": "Fictional serial issue; subscription is not included.",
+    "description": "Journal of Community Archives, Volume 12. Simulated acquisition record for institutional training; no real item or transaction is offered.",
+    "unitPriceCents": 6200,
+    "availability": "Available",
+    "maxQuantity": 99,
+    "unique": false,
+    "metadata": {
+      "source": "fictional simulation",
+      "identifierStatus": "No verified external identifier supplied"
+    }
+  },
+  {
+    "id": "PN092",
+    "title": "Cataloguing Moving Images: Professional Reference",
+    "creator": "Jamie North",
+    "materialCategory": "Academic monographs and reference materials",
+    "format": "Ebook",
+    "creationDate": "2024",
+    "publisherDescription": "Fictional professional resource; no real publisher or rights are represented.",
+    "description": "Cataloguing Moving Images: Professional Reference. Simulated acquisition record for institutional training; no real item or transaction is offered.",
+    "unitPriceCents": 4899,
+    "availability": "Digital license available",
+    "maxQuantity": 99,
+    "unique": false,
+    "metadata": {
+      "source": "fictional simulation",
+      "identifierStatus": "No verified external identifier supplied"
+    }
+  },
+  {
+    "id": "PN093",
+    "title": "Stories from the Estuary: Audio Edition",
+    "creator": "Alex Reed",
+    "materialCategory": "Audiovisual resources",
+    "format": "Audiobook",
+    "creationDate": "2023",
+    "publisherDescription": "Fictional narration and title record for training use.",
+    "description": "Stories from the Estuary: Audio Edition. Simulated acquisition record for institutional training; no real item or transaction is offered.",
+    "unitPriceCents": 1599,
+    "availability": "Available",
+    "maxQuantity": 99,
+    "unique": false,
+    "metadata": {
+      "source": "fictional simulation",
+      "identifierStatus": "No verified external identifier supplied"
+    }
+  },
+  {
+    "id": "PN094",
+    "title": "Early Pembroke Street Plan",
+    "creator": "Municipal Survey Office",
+    "materialCategory": "Archival collections and ephemera",
+    "format": "Map",
+    "creationDate": "1874",
+    "publisherDescription": "Simulated map acquisition; geographic details are fictional.",
+    "description": "Early Pembroke Street Plan. Simulated acquisition record for institutional training; no real item or transaction is offered.",
+    "unitPriceCents": 127500,
+    "availability": "Unique simulated item",
+    "maxQuantity": 1,
+    "unique": true,
+    "metadata": {
+      "source": "fictional simulation",
+      "identifierStatus": "No verified external identifier supplied"
+    }
+  },
+  {
+    "id": "PN095",
+    "title": "The Conservator’s Sample Book",
+    "creator": "Museum Materials Workshop",
+    "materialCategory": "Museum objects and cultural heritage materials",
+    "format": "Material sample collection",
+    "creationDate": "c. 1930",
+    "publisherDescription": "Simulated conservation teaching object; provenance is fictional.",
+    "description": "The Conservator’s Sample Book. Simulated acquisition record for institutional training; no real item or transaction is offered.",
+    "unitPriceCents": 352000,
+    "availability": "Unique simulated collection",
+    "maxQuantity": 1,
+    "unique": true,
+    "metadata": {
+      "source": "fictional simulation",
+      "identifierStatus": "No verified external identifier supplied"
+    }
+  },
+  {
+    "id": "PN096",
+    "title": "Digital Finding Aid: Seafront Theatre Papers",
+    "creator": "Pembroke Sound Archive",
+    "materialCategory": "Ebooks and licensed digital resources",
+    "format": "Licensed digital collection",
+    "creationDate": "2025",
+    "publisherDescription": "Fictional digital finding aid and license description.",
+    "description": "Digital Finding Aid: Seafront Theatre Papers. Simulated acquisition record for institutional training; no real item or transaction is offered.",
+    "unitPriceCents": 8900,
+    "availability": "Digital license available",
+    "maxQuantity": 99,
+    "unique": false,
+    "metadata": {
+      "source": "fictional simulation",
+      "identifierStatus": "No verified external identifier supplied"
+    }
+  },
+  {
+    "id": "PN097",
+    "title": "Field Recording: Dawn Chorus at Grey Point",
+    "creator": "Taylor Moss",
+    "materialCategory": "Audiovisual resources",
+    "format": "Digital audio recording",
+    "creationDate": "2021",
+    "publisherDescription": "Simulated natural-history recording; no real recording is supplied.",
+    "description": "Field Recording: Dawn Chorus at Grey Point. Simulated acquisition record for institutional training; no real item or transaction is offered.",
+    "unitPriceCents": 4350,
+    "availability": "Available",
+    "maxQuantity": 99,
+    "unique": false,
+    "metadata": {
+      "source": "fictional simulation",
+      "identifierStatus": "No verified external identifier supplied"
+    }
+  },
+  {
+    "id": "PN098",
+    "title": "Young Naturalists: Coastal Field Journal",
+    "creator": "Casey Brook",
+    "materialCategory": "Juvenile nonfiction",
+    "format": "Print book",
+    "creationDate": "2025",
+    "publisherDescription": "Fictional juvenile title; simulated publisher metadata.",
+    "description": "Young Naturalists: Coastal Field Journal. Simulated acquisition record for institutional training; no real item or transaction is offered.",
+    "unitPriceCents": 1299,
+    "availability": "Available",
+    "maxQuantity": 99,
+    "unique": false,
+    "metadata": {
+      "source": "fictional simulation",
+      "identifierStatus": "No verified external identifier supplied"
+    }
+  },
+  {
+    "id": "PN099",
+    "title": "A Cabinet of Curiosities: Exhibition Labels",
+    "creator": "Pembroke Museum Learning Team",
+    "materialCategory": "Natural history and exhibition resources",
+    "format": "Exhibition label set",
+    "creationDate": "2024",
+    "publisherDescription": "Fictional interpretive resource for a simulated exhibition.",
+    "description": "A Cabinet of Curiosities: Exhibition Labels. Simulated acquisition record for institutional training; no real item or transaction is offered.",
+    "unitPriceCents": 17800,
+    "availability": "Limited to 8 sets",
+    "maxQuantity": 99,
+    "unique": false,
+    "metadata": {
+      "source": "fictional simulation",
+      "identifierStatus": "No verified external identifier supplied"
+    }
+  },
+  {
+    "id": "PN100",
+    "title": "The Quiet Estuary: Special Collections Edition",
+    "creator": "Alex Reed",
+    "materialCategory": "Rare books and manuscripts",
+    "format": "Limited edition book",
+    "creationDate": "2020",
+    "publisherDescription": "Fictional special edition; edition and provenance details are simulated.",
+    "description": "The Quiet Estuary: Special Collections Edition. Simulated acquisition record for institutional training; no real item or transaction is offered.",
+    "unitPriceCents": 112500,
+    "availability": "Unique simulated copy",
+    "maxQuantity": 1,
+    "unique": true,
+    "metadata": {
+      "source": "fictional simulation",
+      "identifierStatus": "No verified external identifier supplied"
+    }
+  }
 ]
