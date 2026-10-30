@@ -4,6 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#172d36">
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
   <title>Pembroke &amp; Newcastle — Booksellers &amp; Purveyors of Rare Collections</title>
   <link rel="stylesheet" href="css/styles.css">
   <script defer src="js/institutions.js"></script>
@@ -18,6 +19,7 @@
       <p class="eyebrow">Booksellers &amp; Purveyors of Rare Collections</p>
       <h1>Pembroke &amp; Newcastle</h1>
       <p class="established">Established in London, 1998</p>
+      <p class="established">Institutional Acquisitions · Archives · Antiquities · Digital Resources</p>
     </div>
   </header>
 
@@ -28,6 +30,7 @@
       <p class="eyebrow">Institutional acquisitions portal</p>
       <h2 id="login-heading">Welcome to the collections desk</h2>
       <p>Sign in with your client ID to create an institutional profile. This is a training simulation; do not use a real password or personal information.</p>
+      <p class="form-hint">Your exercise stays in this browser profile on this device. Client IDs are fictional labels, not shared accounts. All transactions are fictional.</p>
       <form id="login-form">
         <label for="client-id">Client ID</label>
         <input id="client-id" name="clientId" type="text" autocomplete="username" maxlength="80" required>
@@ -47,6 +50,7 @@
         <button id="cancel-revision" class="button button-secondary" type="button" hidden>Cancel revision</button>
       </div>
       <p>Invent an institution and describe the community it serves and the collections it hopes to build.</p>
+      <p class="form-hint">Choose a category to see its annual allocation. Use your audience and priorities to guide selections; the exercise begins in January with eleven months still ahead.</p>
       <form id="institution-form">
         <label for="institution-name">Institution name</label>
         <input id="institution-name" name="institutionName" type="text" maxlength="100" required>
@@ -120,12 +124,19 @@
           <div><span>Committed expenditures</span><strong id="dashboard-committed">$0.00</strong></div>
           <div><span>Available balance</span><strong id="dashboard-available">$0.00</strong></div>
         </div>
+        <p>Begin with the <button class="text-button" type="button" data-page="catalog">acquisitions catalog</button>, add selections, then assign collection and fund codes in the <button class="text-button" type="button" data-page="order-worksheet">order worksheet</button>. Save before forwarding to Technical Services for Doris's explicit review.</p>
+        <p class="form-hint">Available balance is the annual allocation less processed requisitions. Saved, submitted and returned requisitions reserve no funds. Refresh preserves this browser's work; logging out clears it.</p>
+        <div class="history-section">
+          <button id="reset-simulation" class="button button-secondary" type="button">Reset Simulation</button>
+          <p class="form-hint">Permanently clear this browser's profile and all exercise history, then return to login. Confirmation is required. Other browser profiles and the shared catalog are unaffected.</p>
+        </div>
       </section>
 
       <section id="catalog-page" class="panel" aria-labelledby="catalog-heading" hidden>
         <p class="eyebrow">Shared institutional vendor catalog</p>
         <h2 id="catalog-heading">Acquisitions catalog</h2>
         <p class="section-intro">Browse simulated materials across formats and collecting areas. Catalog records and descriptive metadata are fictional training data.</p>
+        <p class="form-hint">Combine search, category, format and price filters. Use Details to compare offerings. Add selections here, then open the worksheet; adding does not spend funds.</p>
         <form id="catalog-filters" class="catalog-filters">
           <label for="catalog-search">Keyword search</label>
           <input id="catalog-search" type="search" placeholder="Title, creator, description, ID…">
@@ -147,7 +158,7 @@
           <button class="button button-secondary" type="reset">Clear filters</button>
         </form>
         <p id="catalog-count" class="muted-copy" aria-live="polite"></p>
-        <div class="table-wrap">
+        <div class="table-wrap" tabindex="0" role="region" aria-label="Catalog results; scroll for all columns">
           <table class="acquisition-table">
             <caption>Available simulated acquisitions</caption>
             <thead><tr><th scope="col">Title and creator</th><th scope="col">Category / format</th><th scope="col">Unit price</th><th scope="col">Availability</th><th scope="col">Actions</th></tr></thead>
@@ -165,6 +176,7 @@
         <p class="eyebrow">Requisition preparation</p>
         <h2 id="worksheet-heading">Order worksheet</h2>
         <p class="section-intro">Prepare a requisition for review. Saving does not commit funds; only a requisition processed by Technical Services counts as an expenditure.</p>
+        <p class="form-hint">Collection lines describe where materials belong; fund codes describe the accounting purpose, not separate budgets. GENERAL is permitted. Explain unconventional assignments in the selector note. Save, then Forward from history; afterward open Technical Services and request review.</p>
         <div class="budget-summary" aria-label="Requisition budget">
           <div><span>Annual allocation</span><strong id="worksheet-allocation">$0.00</strong></div>
           <div><span>Committed expenditures</span><strong id="worksheet-committed">$0.00</strong></div>
@@ -175,7 +187,7 @@
         <p class="muted-copy">Exercise begins in January. The annual allocation supports acquisitions needs across the remaining eleven months.</p>
         <p id="budget-warning" class="budget-warning" role="status" hidden></p>
         <p id="overspend-warning" class="budget-warning is-error" role="alert" hidden></p>
-        <div class="table-wrap">
+        <div class="table-wrap" tabindex="0" role="region" aria-label="Worksheet lines; scroll for all columns">
           <table class="acquisition-table">
             <caption>Current requisition lines</caption>
             <thead><tr><th scope="col">Catalog item</th><th scope="col">Quantity</th><th scope="col">Unit price</th><th scope="col">Extended price</th><th scope="col">Collection line</th><th scope="col">Fund</th><th scope="col">Selector note</th><th scope="col">Action</th></tr></thead>
@@ -197,7 +209,7 @@
         <p class="authority-notice"><strong>Purchasing authority:</strong> Students do not have direct purchasing privileges. Save requisitions and forward them to Technical Services.</p>
         <div class="history-section">
           <h3>Requisition history</h3>
-          <div class="table-wrap">
+          <div class="table-wrap" tabindex="0" role="region" aria-label="Requisition history; scroll for all columns">
             <table class="acquisition-table">
               <caption>Requisitions and their current procedural status</caption>
               <thead><tr><th scope="col">Requisition ID</th><th scope="col">Date</th><th scope="col">Items</th><th scope="col">Total</th><th scope="col">Status</th><th scope="col">Actions</th></tr></thead>
@@ -211,6 +223,7 @@
         <p class="eyebrow">Institutional processing desk · January</p>
         <h2 id="technical-heading">Technical Services Correspondence</h2>
         <p class="section-intro">Procedural review of submitted requisitions. Collection-development selections remain the institution's responsibility.</p>
+        <p class="form-hint">Request Review for each forwarded requisition. If returned, read Doris's findings, choose Edit and correct, save the changes and explicitly Resubmit. Only processed requisitions reduce the available balance.</p>
         <div class="doris-identity">
           <strong>Doris</strong>
           <span>Technical Services Clerk II · 45 years of service · No MLS · No supervisory authority</span>
@@ -219,7 +232,7 @@
 
         <section class="history-section" aria-labelledby="review-heading">
           <h3 id="review-heading">Requisition Review</h3>
-          <div class="table-wrap">
+          <div class="table-wrap" tabindex="0" role="region" aria-label="Pending reviews; scroll for all columns">
             <table class="acquisition-table">
               <caption>Submitted requisitions awaiting explicit review</caption>
               <thead><tr><th scope="col">Requisition ID</th><th scope="col">Submitted</th><th scope="col">Institution</th><th scope="col">Lines</th><th scope="col">Total</th><th scope="col">Status</th><th scope="col">Actions</th></tr></thead>
@@ -230,7 +243,7 @@
 
         <section class="history-section" aria-labelledby="corrections-heading">
           <h3 id="corrections-heading">Outstanding Corrections</h3>
-          <div class="table-wrap">
+          <div class="table-wrap" tabindex="0" role="region" aria-label="Returned requisitions; scroll for all columns">
             <table class="acquisition-table">
               <caption>Returned requisitions awaiting student correction</caption>
               <thead><tr><th scope="col">Requisition ID</th><th scope="col">Last reviewed</th><th scope="col">Outstanding items</th><th scope="col">Total</th><th scope="col">Status</th><th scope="col">Actions</th></tr></thead>
@@ -241,7 +254,7 @@
 
         <section class="history-section" aria-labelledby="processing-heading">
           <h3 id="processing-heading">Processing History</h3>
-          <div class="table-wrap">
+          <div class="table-wrap" tabindex="0" role="region" aria-label="Processing history; scroll for all columns">
             <table class="acquisition-table">
               <caption>Requisitions processed against the annual allocation</caption>
               <thead><tr><th scope="col">Requisition ID</th><th scope="col">Processed</th><th scope="col">Institution</th><th scope="col">Lines</th><th scope="col">Total</th><th scope="col">Status</th><th scope="col">Action</th></tr></thead>
@@ -271,7 +284,7 @@
 
   <footer>
     <span>Pembroke &amp; Newcastle · Established in London, 1998</span>
-    <span>PN-003 Technical Services · Training simulation only</span>
+    <span>PN-004 Classroom Simulation · All transactions fictional</span>
   </footer>
   <dialog id="catalog-detail" aria-labelledby="detail-title">
     <div class="dialog-heading">

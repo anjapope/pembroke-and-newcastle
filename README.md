@@ -6,6 +6,13 @@ no real authentication, supplier integration, purchase, payment, or server-side
 processing. All catalog offerings and bibliographic/provenance metadata are
 simulated; no ISBNs or other external identifiers are represented as verified.
 
+## PN-004 classroom release
+
+The complete simulation supports independent browser-local exercises using a
+shared **1,500-record** catalog. Instructor timings, learning outcomes,
+discussion prompts and troubleshooting are in
+[the instructor guide](docs/INSTRUCTOR_GUIDE.md). All transactions are fictional.
+
 ## Run locally and deploy
 
 Serve this directory from a static web server and open `index.html`. For example,
@@ -17,8 +24,19 @@ python -m http.server 8000
 
 Open <http://localhost:8000/>. The site has no install, build, backend, database,
 package manager, or external service. Relative asset paths support GitHub Pages
-project sites, including
-`https://<owner>.github.io/pembroke-and-newcastle/`.
+project sites. The public classroom URL is
+<https://anjapope.github.io/pembroke-and-newcastle/>.
+
+GitHub Pages is configured for **Deploy from a branch: main / (root)** in
+`anjapope/pembroke-and-newcastle`. `.nojekyll` publishes the static files without
+Jekyll processing. No application build or Actions workflow is required.
+Use ordinary commits and fast-forward pushes to `main`; then verify Pages has
+finished publishing before assuming the new release is available. Configuration
+alone is not deployment verification.
+
+After deployment, check the PN-004 footer, the 1,500-record count, relative CSS/JS
+and catalog requests, and a fresh requisition through Technical Services.
+Hard-refresh and confirm that history and the budget remain unchanged.
 
 ## PN-001 foundation
 
@@ -40,13 +58,29 @@ project sites, including
 
 ## PN-002 catalog and requisitions
 
-The shared vendor catalog has **100 simulated records** across fiction,
+The shared vendor catalog has **1,500 simulated records** across fiction,
 nonfiction, juvenile materials, reference, serials, audiovisual resources,
 licensed digital resources, rare books, manuscripts, archival material,
 photographs, oral histories, museum objects, natural history, and exhibition
 resources. Record detail views include creator, category, format, date,
 publisher/provenance note, description, unit price, availability, and identifier
-disclaimer. Twelve simulated unique records are quantity-limited to one.
+disclaimer. There are 271 simulated unique offerings, each quantity-limited to
+one, including acquisitions that cost more than some institutions' annual budgets.
+
+| Catalog grouping | Records |
+| --- | ---: |
+| Adult fiction and nonfiction | 450 |
+| Juvenile and young adult | 300 |
+| Academic and reference | 250 |
+| Archival and manuscript collections | 200 |
+| Museum and special collections | 150 |
+| Digital and audiovisual | 150 |
+| **Total** | **1,500** |
+
+`catalogGroup` is a descriptive grouping, separate from the existing material
+category/format compatibility policy. Ebook and audio versions may be grouped
+with digital offerings rather than their print audience. Search includes the
+group name; material-category and format filters retain their established meaning.
 
 `data/catalog.json` is a JSON array with this record schema:
 
@@ -55,6 +89,7 @@ disclaimer. Twelve simulated unique records are quantity-limited to one.
 | `id` | string | Stable unique catalog identifier |
 | `title` | string | Title or object name |
 | `creator` | string | Creator, author, or originating organization |
+| `catalogGroup` | string | One of the six inventory groupings above |
 | `materialCategory` | string | Descriptive material category; not a collection-code restriction |
 | `format` | string | Physical or digital format |
 | `creationDate` | string | Publication or creation date, when known |
@@ -69,6 +104,27 @@ disclaimer. Twelve simulated unique records are quantity-limited to one.
 Search, category, format, minimum/maximum price, and title/price sorting combine
 as filters. Twenty records are displayed per page; the complete catalog is never
 inserted into the DOM at once.
+
+### Reproducible inventory generation
+
+The committed JSON loads directly at runtime. Optional development command:
+
+```sh
+node scripts/generate-catalog.cjs
+```
+
+The generator preserves all original 100 records and their identifiers/prices,
+adding only `catalogGroup`. A SHA-256 preservation check refuses a changed seed.
+It reads those first 100 records from the existing JSON and deterministically
+recreates the other 1,400 offerings using curated subjects, invented places,
+creators, publication/creation periods, meaningful title patterns and
+format-specific descriptions/price bands. It uses no random numbers, network,
+external bibliographic identifiers or real provenance claims.
+
+Generating twice produces identical bytes. All 1,500 titles and IDs are unique.
+Generated books are generally $6.99-$38.99, academic resources $35-$225, while
+archival and museum offerings range into thousands of dollars. Generator/tests
+use built-in Node modules only; Node is not required by students or the website.
 
 ### Institution-specific collection lines and funds
 
@@ -110,9 +166,8 @@ Saved requisition records contain:
 
 Supported statuses are `draft`, `saved`, `submitted`, `returned`, and
 `processed`. The editable worksheet is a draft until saved. Submitted
-requisitions are read-only and cannot be forwarded again. PN-002 never assigns
-`processed`; only `processed` records count as committed expenditures, ready for
-the PN-003 workflow.
+requisitions are read-only and cannot be forwarded again. Only Technical
+Services assigns `processed`; those records alone count as committed expenditures.
 
 ### Annual budget rules
 
@@ -250,6 +305,84 @@ The `window.PN_APP` methods remain `getSession()`, `updateSession(updates)`,
 `refreshDashboard()`, and `navigate(page)`. PN-002 adds
 `window.PN_ACQUISITIONS` helpers for budget refresh and catalog filtering/
 pagination; requisition state itself continues through `PN_APP`.
+
+## Local sessions and Reset Simulation
+
+The only application storage key is `pn-foundation-session`. Reloading preserves
+profile, worksheet, requisitions, correspondence, revisions and processing
+history in this browser profile on this device and origin. Client IDs are
+fictional labels, not remote accounts: entering the same ID in a different
+browser does not retrieve or modify the first browser's state. There is no
+central storage, instructor dashboard or cross-device synchronization.
+
+Tabs/windows sharing the same browser profile and origin are not separate
+student sessions. Use separate devices/profiles for independent exercises.
+Private/incognito sessions are separate from regular storage, may share storage
+with other private windows, and normally lose data when that private session
+closes. The password `collections` provides no real security.
+
+Dashboard **Reset Simulation** presents an explicit destructive confirmation
+listing the profile, worksheet, requisitions, correspondence and budget history.
+Cancel changes nothing. Confirm removes only the application key, returns to
+login, and restores a full allocation with the next newly established profile.
+The catalog, code and unrelated storage keys are untouched. Reset never runs on
+refresh. A storage failure is reported rather than silently claiming success.
+**Logout also clears this browser's session**; it is not a way to save an exercise
+for retrieval by Client ID.
+
+## PN-004 policy and verification
+
+The expanded catalog retains the 14 established material categories and all
+33 existing category/format combinations, adding a Picture book format under
+Juvenile fiction (34 combinations total). The established E collection rule
+already recognizes picture books. No competing compatibility model or financial
+policy was introduced. Tests exercise every pair across all five
+institution types; a customary or explained defensible designation is available.
+Unknown categories now report an explicit catalog-policy configuration problem
+instead of silently accepting or indiscriminately rejecting them.
+
+Run all dependency-free Node regressions:
+
+```sh
+node --test tests/pn003.test.cjs tests/pn004.test.cjs
+```
+
+The **41 original PN-003 tests plus 15 PN-004 tests (56 total)** passed after
+expansion. New tests check exact distribution, unique IDs and titles, preservation
+of the original records, reproducible output, required metadata, safe prices and
+quantities, simulation disclaimers and catalog-policy coverage. The **27 original
+browser scenarios** also passed with all 1,500 records loaded; their initial
+catalog-readiness guard now requires the expanded inventory's exact record count.
+
+`tests/pn004-browser.cjs` exports an async acceptance helper accepting a Playwright
+`Page` and a base URL ending in `/`. Supply it from a development browser runner
+with Playwright and an installed browser; those tools are not website dependencies.
+For example, from such a runner:
+
+```js
+const run = require("./tests/pn004-browser.cjs");
+console.log(await run(page, "http://localhost:8000/"));
+```
+
+The helper creates and closes two independent private browser contexts. Student
+actions use visible UI controls, not injected application state. An unrelated
+storage sentinel is used only to test reset isolation. The complete scenario
+selects three materials, receives a deliberate rejection, saves corrections,
+resubmits under the same ID, processes a second requisition, verifies cumulative
+spending, reloads, cancels and confirms reset, and establishes a new profile.
+It also tests combined filters, all four sort orders, pagination, details,
+keyboard dialog dismissal/focus, same-ID browser independence and responsive
+layouts at 1440, 1366, 768 and 375 pixels.
+
+Local Chromium verification processed **$90.96**, left **$4,909.04**, and retained
+two requisitions, both revisions and three correspondence notices after reload.
+Reset restored $5,000 and empty history without changing the other browser or
+unrelated storage. No page-level horizontal overflow or console errors occurred;
+wide tables remain keyboard-focusable horizontal scroll regions. Local initial
+load was about 80 ms and a combined 1,500-record filter about 2 ms on the
+development machine. Automated task timings are not evidence of human completion
+speed; the instructor guide proposes a 20-minute exercise, not a usability-study
+result. No physical-device, cross-browser or 20-student classroom pilot is claimed.
 
 ## Executed PN-003 verification
 

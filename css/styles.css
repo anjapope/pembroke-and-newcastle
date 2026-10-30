@@ -74,6 +74,7 @@ main {
 }
 
 .panel {
+  min-width: 0;
   margin: 1.25rem 0;
   padding: clamp(1.25rem, 4vw, 2rem);
   border: 1px solid var(--line);
@@ -206,6 +207,7 @@ input:focus-visible, select:focus-visible, textarea:focus-visible, button:focus-
 .catalog-filters label { font-size: .85rem; }
 .catalog-filters input, .catalog-filters select { min-width: 0; }
 .table-wrap { width: 100%; margin: 1rem 0; overflow-x: auto; }
+.table-wrap:focus-visible { outline: 3px solid #bd7d4a; outline-offset: 3px; }
 .acquisition-table { width: 100%; min-width: 760px; border-collapse: collapse; text-align: left; }
 .acquisition-table caption { padding: .6rem 0; text-align: left; font-weight: 700; }
 .acquisition-table th, .acquisition-table td {
@@ -304,8 +306,8 @@ dialog {
   border: 1px solid var(--line);
   background: var(--paper);
   color: var(--ink);
-  .procedure-register > div, .requisition-metadata > div { grid-template-columns: 1fr; gap: .25rem; }
 }
+dialog .requisition-metadata > div { grid-template-columns: 1fr; gap: .25rem; }
 dialog::backdrop { background: rgb(18 32 37 / 65%); }
 .dialog-heading { display: flex; justify-content: space-between; align-items: flex-start; gap: 1rem; }
 .dialog-heading h2 { margin-top: 0; font-size: 1.5rem; font-weight: 500; }
@@ -335,6 +337,7 @@ footer {
   .nav-links { width: 100%; }
   .nav-link { padding: .65rem .5rem; }
   .dashboard-grid { grid-template-columns: 1fr; }
+  .procedure-register > div { grid-template-columns: 1fr; gap: .25rem; }
   .catalog-filters { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .budget-summary { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   #detail-content dl > div { grid-template-columns: 1fr; gap: .25rem; }

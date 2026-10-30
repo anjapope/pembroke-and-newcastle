@@ -249,7 +249,7 @@
     showSetup(session);
   });
 
-  document.getElementById("logout").addEventListener("click", () => {
+  function clearSession(message) {
     try {
       window.localStorage.removeItem(STORAGE_KEY);
       session = null;
@@ -259,10 +259,20 @@
       application.hidden = true;
       setupPanel.hidden = true;
       loginPanel.hidden = false;
-      showNotice("You have been logged out.", false);
+      showNotice(message, false);
       document.getElementById("client-id").focus();
     } catch (error) {
       reportError(error);
+    }
+  }
+
+  document.getElementById("logout").addEventListener("click", () => {
+    clearSession("You have been logged out.");
+  });
+
+  document.getElementById("reset-simulation").addEventListener("click", () => {
+    if (window.confirm("Reset Simulation? This permanently clears this browser's locally saved institutional profile, worksheet, requisitions, Doris correspondence and budget history. The catalog and other websites' data are unchanged. You will return to login and begin with a new annual allocation. This cannot be undone.")) {
+      clearSession("Simulation reset. Sign in to establish a new institution and starting allocation.");
     }
   });
 

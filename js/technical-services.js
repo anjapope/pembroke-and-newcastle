@@ -13,6 +13,14 @@
     "museum-cultural-heritage",
     "school-library-media-center"
   ]);
+  const MATERIAL_CATEGORIES = new Set([
+    "Adult fiction", "Adult nonfiction", "Juvenile fiction", "Juvenile nonfiction",
+    "Young adult materials", "Academic monographs and reference materials",
+    "Periodicals and serials", "Photographic and oral-history collections",
+    "Rare books and manuscripts", "Audiovisual resources",
+    "Archival collections and ephemera", "Museum objects and cultural heritage materials",
+    "Natural history and exhibition resources", "Ebooks and licensed digital resources"
+  ]);
   const pendingBody = document.getElementById("pending-review-history");
   const returnedBody = document.getElementById("returned-history");
   const processedBody = document.getElementById("processed-history");
@@ -48,6 +56,7 @@
   }
 
   function classifyCollection(item, code, institution) {
+    if (!MATERIAL_CATEGORIES.has(item.materialCategory)) return "unsupported";
     const material = `${item.materialCategory || ""} ${item.format || ""}`.toLowerCase();
     const id = institution.id;
     const exactPatterns = {
@@ -111,7 +120,7 @@
       "MONO", "SERIAL", "ERES", "SPEC", "MEDIA", "MSS", "PHOTO", "DIG", "ORAL",
       "EPHEM", "RARE", "ART", "HIST", "NAT", "ETHNO", "DOC", "EXHIBIT", "E",
       "CURRICULUM", "LITERACY"].includes(code)) return "reviewable";
-    return "valid";
+    return "unsupported";
   }
 
   function classifyFund(item, code) {
@@ -273,7 +282,10 @@
           "Select a collection line authorized for this institution.", "14-C", lineInfo, details);
       } else if (item) {
         const classification = classifyCollection(item, collectionCode, institution);
-        if (classification === "invalid") {
+        if (classification === "unsupported") {
+          addError(errors, "unsupported_catalog_policy", `Line ${index + 1}, ${item.title}: the catalog material has no defined compatibility policy.`,
+            "Report this catalog-policy configuration issue to the instructor; a selector explanation cannot replace a missing policy.", "14-C", lineInfo, details);
+        } else if (classification === "invalid") {
           addError(errors, "incompatible_collection", `Line ${index + 1}, ${item.title}: the collection designation provided does exist. Its existence does not make its use appropriate.`,
             "Correct the designation before resubmission. A selector note cannot override a clearly incompatible assignment.", "14-C", lineInfo, details);
         } else if (classification === "reviewable" && !text(line.selectorNote)) {
@@ -775,6 +787,9 @@
     heading.textContent = "Submitted line items";
     const wrap = document.createElement("div");
     wrap.className = "table-wrap";
+    wrap.tabIndex = 0;
+    wrap.setAttribute("role", "region");
+    wrap.setAttribute("aria-label", "Requisition details; scroll for all columns");
     const table = document.createElement("table");
     table.className = "acquisition-table";
     const caption = document.createElement("caption");

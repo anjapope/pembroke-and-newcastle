@@ -492,7 +492,7 @@
     const query = String(filters.query || "").trim().toLocaleLowerCase();
     return records.filter(item => {
       const searchable = [
-        item.id, item.title, item.creator, item.materialCategory, item.format,
+        item.id, item.title, item.creator, item.catalogGroup, item.materialCategory, item.format,
         item.creationDate, item.publisherDescription, item.description,
         JSON.stringify(item.metadata || {})
       ].join(" ").toLocaleLowerCase();
@@ -631,6 +631,7 @@
     const list = document.createElement("dl");
     if (allowAdd) {
       addMetadataRow(list, "Catalog identifier", item.id);
+      if (item.catalogGroup) addMetadataRow(list, "Catalog grouping", item.catalogGroup);
       addMetadataRow(list, "Creator / originating organization", item.creator);
       addMetadataRow(list, "Material category", item.materialCategory);
       addMetadataRow(list, "Format", item.format);
