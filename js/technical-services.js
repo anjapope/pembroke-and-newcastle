@@ -180,7 +180,8 @@
     }
 
     if (typeof snapshot.requisitionId !== "string" ||
-        !/^PN-[A-Z0-9]{1,12}-\d{4,}$/.test(snapshot.requisitionId)) {
+        !/^PN-[A-Z0-9]{1,12}-\d{4,}$/.test(snapshot.requisitionId) ||
+        (context.requisitionId && snapshot.requisitionId !== context.requisitionId)) {
       addError(errors, "invalid_requisition_id", "A valid requisition identifier is required.",
         "Use the requisition identifier issued by the application.", "3-F", null, details);
     }
@@ -189,7 +190,8 @@
       addError(errors, "invalid_client_id", "The requisition client identifier is missing or does not match the active client.",
         "Submit the requisition from the correct institutional session.", "3-F", null, details);
     }
-    if (!institution || !text(institutionSnapshot?.institutionName)) {
+    if (!institution || !text(institutionSnapshot?.institutionName) ||
+        (context.categoryId && institution.id !== context.categoryId)) {
       addError(errors, "invalid_institution", "A valid institutional identity is required for processing.",
         "Provide a recognized institution category and institution name.", "3-F", null, details);
     } else if (institution.requiresDepartment && !text(institutionSnapshot.department)) {
@@ -207,6 +209,7 @@
     }
 
     const itemsById = new Map((context.catalog || []).map(item => [item.id, item]));
+    const seenItems = new Set();
     (Array.isArray(snapshot.lines) ? snapshot.lines : []).forEach((line, index) => {
       const lineInfo = {
         lineNumber: index + 1,
@@ -219,15 +222,22 @@
       }
 
       const item = itemsById.get(line.catalogId);
+      if (seenItems.has(line.catalogId)) {
+        addError(errors, "duplicate_catalog_line", `Line ${index + 1} repeats catalog item ${line.catalogId}.`,
+          "Combine quantities on one line within the catalog limit. Unique offerings may be requested only once.", "11-A", lineInfo, details);
+      }
+      seenItems.add(line.catalogId);
       if (!item) {
         addError(errors, "invalid_catalog_reference", `Requisition line ${index + 1} refers to a catalog item that is not available in the active catalog.`,
           "Select an item from the current acquisitions catalog.", "3-F", lineInfo, details);
       }
 
       if (!Number.isSafeInteger(line.quantity) || line.quantity <= 0 ||
-          (item && line.quantity > item.maxQuantity)) {
+          (item && (line.quantity > item.maxQuantity || (item.unique && line.quantity > 1)))) {
+        const exceedsAvailable = item && Number.isSafeInteger(line.quantity) &&
+          (line.quantity > item.maxQuantity || (item.unique && line.quantity > 1));
         addError(errors, "invalid_quantity",
-          item?.unique
+          exceedsAvailable
             ? `Line ${index + 1}, ${item.title}: the requested quantity exceeds the number of units available for acquisition.`
             : `Line ${index + 1}${item ? `, ${item.title}` : ""}: quantity must be a positive whole number within the catalog limit.`,
           "Amend the quantity to a positive whole number within the available catalog limit.", "11-A", lineInfo, details);
@@ -297,9 +307,13 @@
         "Recalculate the requisition total from the active catalog and resubmit.", "11-A", null, details);
     }
 
-    const committedCents = Number.isSafeInteger(context.committedCents) && context.committedCents >= 0
-      ? context.committedCents
-      : 0;
+    const committedCents = context.committedCents;
+    if (!Number.isSafeInteger(committedCents) || committedCents < 0 ||
+        !Number.isSafeInteger(committedCents + computedTotalCents)) {
+      addError(errors, "invalid_committed_total", "The committed expenditure total is invalid.",
+        "Restore a valid processing history before requesting further review.", "22-D", null, details);
+      return { valid: false, errors, computedTotalCents, allocationCents, committedCents: null };
+    }
     const availableCents = Math.max(0, allocationCents - committedCents);
     const shortfallCents = computedTotalCents - availableCents;
     if (institution && shortfallCents > 0) {
@@ -369,7 +383,9 @@
       ],
       invalid_quantity: error => [
         error.message,
-        "The supplier's inventory cannot be increased by entering a larger number in the quantity field.",
+        ...(error.message.includes("exceeds the number")
+          ? ["The supplier's inventory cannot be increased by entering a larger number in the quantity field."]
+          : []),
         "Please amend the requisition."
       ],
       budget_overage: error => [
@@ -411,16 +427,6 @@
       errors: [],
       procedureReferences: [PROCEDURES["3-F"], PROCEDURES["22-D"]]
     };
-  }
-
-  function processedExpenditures(orders, excludeId) {
-    const unique = new Map();
-    for (const order of orders) {
-      if (order.id === excludeId || order.status !== "processed" || unique.has(order.id)) continue;
-      const cents = order.processingRecord?.totalCents;
-      if (Number.isSafeInteger(cents) && cents >= 0) unique.set(order.id, cents);
-    }
-    return [...unique.values()].reduce((sum, cents) => sum + cents, 0);
   }
 
   function setNotice(message, isError = false) {
@@ -475,7 +481,9 @@
     }).map(order => {
       const row = document.createElement("tr");
       row.append(cell(order.id));
-      const date = kind === "processed" ? order.processedAt : order.submittedAt || order.createdAt;
+      const date = kind === "processed" ? order.processedAt :
+        kind === "returned" ? order.submissionAttempts?.at(-1)?.validationOutcome?.reviewedAt :
+          order.submittedAt || order.createdAt;
       row.append(cell(Number.isFinite(Date.parse(date)) ? new Date(date).toLocaleString() : "Date unavailable"));
       if (kind === "returned") {
         row.append(cell(String(order.submissionAttempts?.at(-1)?.validationOutcome?.errors?.length || 0)));
@@ -558,6 +566,25 @@
       correspondenceList.textContent = "Sign in to view Technical Services correspondence.";
       return;
     }
+    const invalidRecord = session.orders.some(order =>
+      !order || typeof order !== "object" || typeof order.id !== "string" ||
+      !Array.isArray(order.lines) ||
+      (order.correspondence !== undefined && (!Array.isArray(order.correspondence) ||
+        order.correspondence.some(record => !record || typeof record !== "object"))) ||
+      (order.submissionAttempts !== undefined && (!Array.isArray(order.submissionAttempts) ||
+        order.submissionAttempts.some(attempt => !attempt || typeof attempt !== "object" ||
+          !Array.isArray(attempt.correspondence) ||
+          attempt.correspondence.some(record => !record || typeof record !== "object"))))
+    );
+    if (invalidRecord) {
+      const message = "Technical Services history contains malformed records. Restore valid saved data before continuing.";
+      emptyRow(pendingBody, message, 7);
+      emptyRow(returnedBody, message, 6);
+      emptyRow(processedBody, message, 7);
+      correspondenceList.textContent = message;
+      setNotice(message, true);
+      return;
+    }
     renderTable(pendingBody, session.orders.filter(order => order.status === "submitted"), "pending");
     renderTable(returnedBody, session.orders.filter(order => order.status === "returned"), "returned");
     renderTable(processedBody, session.orders.filter(order => order.status === "processed"), "processed");
@@ -573,6 +600,18 @@
   }
 
   function reviewRequisition(requisitionId) {
+    try {
+      if (!window.PN_ACQUISITIONS.getCatalogCount()) {
+        throw new Error("Wait for the active catalog to load before requesting review.");
+      }
+      window.PN_ACQUISITIONS.validateSession();
+      performReview(requisitionId);
+    } catch (error) {
+      setNotice(`Technical Services review is unavailable. ${error.message}`, true);
+    }
+  }
+
+  function performReview(requisitionId) {
     const session = getSession();
     const requisition = session?.orders.find(order => order.id === requisitionId);
     if (!requisition) {
@@ -595,15 +634,15 @@
       return;
     }
     const snapshot = attempt.snapshot;
-    const institution = window.PN_INSTITUTIONS.find(item => item.id === snapshot?.institutionSnapshot?.categoryId);
-    const allocationCents = institution ? institution.annualBudget * 100 : 0;
-    const committedCents = processedExpenditures(session.orders, requisition.id);
+    const committedCents = window.PN_ACQUISITIONS.processedTotal(session);
     const hasPriorProcessingRecord = Boolean(requisition.processingRecord) ||
       session.orders.some(order => order.id === requisition.id && order.status === "processed");
     const context = {
       catalog,
       institutions: window.PN_INSTITUTIONS,
       clientId: session.clientId,
+      categoryId: session.categoryId,
+      requisitionId: requisition.id,
       committedCents,
       hasPriorProcessingRecord,
       financialAcknowledgment: attempt.financialAcknowledgment || snapshot?.financialAcknowledgment || null
@@ -653,6 +692,10 @@
     );
     const updated = {
       ...requisition,
+      lines: Array.isArray(snapshot.lines) ? snapshot.lines.map(line => ({ ...line })) : [],
+      totalCents: Number.isSafeInteger(snapshot.totalCents) ? snapshot.totalCents : outcome.computedTotalCents,
+      institutionSnapshot: { ...snapshot.institutionSnapshot },
+      justification: snapshot.justification || "",
       status: outcome.valid ? "processed" : "returned",
       modifiedAt: reviewDate,
       processedAt: outcome.valid ? reviewDate : requisition.processedAt,
@@ -681,6 +724,7 @@
   }
 
   function appendDetailLine(tableBody, line, index) {
+    line = line && typeof line === "object" ? line : {};
     const tr = document.createElement("tr");
     const item = catalog.find(record => record.id === line.catalogId);
     for (const value of [
@@ -697,10 +741,12 @@
     tableBody.append(tr);
   }
 
-  function showDetails(requisitionId) {
+  function showDetails(requisitionId, revision) {
     const order = getSession()?.orders.find(item => item.id === requisitionId);
     if (!order) return;
-    const attempt = order.submissionAttempts?.at(-1);
+    const attempt = revision
+      ? order.submissionAttempts?.find(entry => entry.revision === revision)
+      : order.submissionAttempts?.at(-1);
     const snapshot = attempt?.snapshot || order.submittedSnapshot || order;
     detailTitle.textContent = `Requisition details · ${order.id}`;
     const summary = document.createElement("dl");
@@ -711,7 +757,11 @@
       ["Department", snapshot.institutionSnapshot?.department || "Not required or not recorded"],
       ["Submitted", snapshot.submittedAt ? new Date(snapshot.submittedAt).toLocaleString() : "Not submitted"],
       ["Total", money(snapshot.totalCents || 0)],
-      ["Submission revision", String(attempt?.revision || 0)]
+      ["Submission revision", String(attempt?.revision || 0)],
+      ["Justification", snapshot.justification || "Not supplied"],
+      ["Financial acknowledgment", attempt?.financialAcknowledgment?.acknowledged
+        ? `Recorded ${new Date(attempt.financialAcknowledgment.acknowledgedAt).toLocaleString()} for ${attempt.financialAcknowledgment.committedPercentage}% cumulative allocation use.`
+        : "Not recorded or not required"]
     ]) {
       const pair = document.createElement("div");
       const dt = document.createElement("dt");
@@ -743,18 +793,24 @@
     table.append(caption, thead, body);
     wrap.append(table);
     detailContent.replaceChildren(summary, heading, wrap);
-    if (order.submissionAttempts?.length > 1) {
-      const historyHeading = document.createElement("h3");
-      historyHeading.textContent = "Prior submission revisions";
-      const history = document.createElement("ol");
-      for (const prior of order.submissionAttempts.slice(0, -1)) {
-        const li = document.createElement("li");
-        li.textContent = `Revision ${prior.revision} · ${new Date(prior.submittedAt).toLocaleString()} · ${prior.snapshot.lines.length} lines · ${money(prior.snapshot.totalCents)} · ${prior.validationOutcome?.valid ? "Processed" : "Returned"}`;
-        history.append(li);
+    if (order.submissionAttempts?.length) {
+      const label = document.createElement("label");
+      label.htmlFor = "requisition-revision";
+      label.textContent = "View submitted revision";
+      const select = document.createElement("select");
+      select.id = "requisition-revision";
+      for (const prior of order.submissionAttempts) {
+        const option = document.createElement("option");
+        option.value = String(prior.revision);
+        const status = prior.validationOutcome ? (prior.validationOutcome.valid ? "Processed" : "Returned") : "Awaiting review";
+        option.textContent = `Revision ${prior.revision} · ${new Date(prior.submittedAt).toLocaleString()} · ${status}`;
+        option.selected = prior.revision === attempt.revision;
+        select.append(option);
       }
-      detailContent.append(historyHeading, history);
+      select.addEventListener("change", () => showDetails(order.id, Number(select.value)));
+      detailContent.prepend(label, select);
     }
-    detailDialog.showModal();
+    if (!detailDialog.open) detailDialog.showModal();
   }
 
   function handleActions(event) {
@@ -789,6 +845,7 @@
     composeCorrespondence,
     classifyCollection,
     classifyFund,
+    showDetails,
     procedures: PROCEDURES
   });
   if (window.PN_ACQUISITIONS.getCatalogCount() > 0) {

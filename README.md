@@ -136,9 +136,9 @@ authority notice and does not change budgets or create processed orders.
 
 ### PN-003 Technical Services and Doris
 
-**Implementation checkpoint:** PN-003 is in progress. First-pass processing and
-return/correction/resubmission have been exercised in the browser, but the full
-acceptance checklist and final integration verification are not yet complete.
+**Verification status:** PN-003 acceptance verification is complete. The
+deterministic rule tests, browser lifecycle regressions, and real
+browser refresh/correction workflow passed under `/pembroke-and-newcastle/`.
 PN-004 has not been started.
 
 The Technical Services page is an explicit, browser-local review desk. Opening
@@ -190,7 +190,7 @@ validator:
 | --- | --- |
 | Procedure 14-C, revised March 2009 | Institution-authorized collection lines and explanations for unconventional assignments |
 | Procedure 8-B, revised June 2012 | Institution-authorized accounting codes; no independent fund balances |
-| Procedure 11-A, revised February 2016 | Positive whole-number quantities, catalog limits, and unique-item limits |
+| Procedure 11-A, revised February 2016 | Positive whole-number quantities, catalog and unique-item limits, one line per catalog item, catalog-price and financial-total integrity |
 | Procedure 22-D, revised January 2024 | Integer-cent budget review, 80% acknowledgment, and one-time expenditure justification |
 | Procedure 3-F, revised September 2018 | Complete submissions, explicit resubmission, and retained revision records |
 
@@ -207,6 +207,11 @@ snapshot, validation outcome, correspondence, and its financial acknowledgment.
 Corrected submissions append a new attempt; the previous snapshot and Doris's
 notice remain available. Repeated review of an already reviewed requisition
 shows its existing result and cannot create duplicate correspondence.
+Requisition details include a labeled revision selector for reading every
+previously submitted set of line items. Reopening a returned requisition restores
+its saved corrections rather than overwriting them with the rejected snapshot.
+Saving a correction refreshes the institutional profile snapshot for the new
+submission; the profile recorded in earlier attempts remains unchanged.
 
 Processing occurs only after an explicit review of a `submitted` requisition.
 Doris revalidates the submitted snapshot against the current catalog and budget.
@@ -216,7 +221,9 @@ records, not from an incremented counter. Refreshing or revisiting the page
 does not deduct funds again. If browser storage cannot persist the outcome, the
 application does not report processing success. This is safe, deterministic
 behavior within the existing local session, not a server-side transaction or
-security boundary.
+security boundary. Invalid processing records block further review rather than
+being silently treated as an unspent balance. A profile-category revision cannot
+reduce the allocation below already committed spending.
 
 Available funds are the annual allocation less previously processed
 requisitions. Submitted, saved, and returned requisitions do not commit funds.
@@ -243,6 +250,60 @@ The `window.PN_APP` methods remain `getSession()`, `updateSession(updates)`,
 `refreshDashboard()`, and `navigate(page)`. PN-002 adds
 `window.PN_ACQUISITIONS` helpers for budget refresh and catalog filtering/
 pagination; requisition state itself continues through `PN_APP`.
+
+## Executed PN-003 verification
+
+The application still requires no dependencies or build. Optional development
+tests use Node's built-in test runner:
+
+```sh
+node --test tests/pn003.test.cjs
+```
+
+The **41 rule regressions** cover mandatory fields, all department policies,
+collection compatibility, institution-specific funds, invalid/unique/duplicate
+quantities, catalog prices and totals, exact and insufficient budgets, cumulative
+80% thresholds, stale acknowledgments, all justification policies, and
+deterministic correspondence. All passed.
+
+The browser harness is `tests/pn003-browser.js`; it is not loaded by the
+application. It creates and replaces only its own QA session and refuses to run
+over an active non-QA client. Log out of any real exercise session before
+running it. On the served application page, load and run it from DevTools:
+
+```js
+const script = document.createElement("script");
+script.src = "tests/pn003-browser.js";
+await new Promise((resolve, reject) => {
+  script.onload = resolve;
+  script.onerror = reject;
+  document.head.append(script);
+});
+await window.runPN003BrowserTests();
+```
+
+All **27 browser regression scenarios** passed, including first-review
+acceptance, snapshot-authoritative review, return/correction/resubmission,
+saved-edit reopening, immutable revisions, processed-state locks, duplicate
+review protection, persisted and renewed financial acknowledgments, exact
+balance, overage, one-time justification, legacy PN-002 migration, storage-failure
+recovery, invalid stored records, and safe profile-budget revision. Malformed
+submissions use explicit fixtures because ordinary PN-002 controls already
+prevent several invalid inputs; normal catalog/save/forward/correct actions
+also run through the application UI.
+
+Additional real-browser checks verified combined catalog filters and details,
+live quantity totals, rejection and correction through ordinary controls, and
+full browser reload persistence. Two processed requisitions committed exactly
+$59.85; the $4,940.15 remaining balance and all three correspondence notices
+remained unchanged after reload, including both revisions of the corrected
+requisition. No console errors were observed. A generated 1,500-record fixture
+also verified combined filtering and 75-page pagination without rendering the
+whole catalog.
+
+JavaScript syntax checks, workspace diagnostics, and `git diff --check` passed.
+These results describe a local static-server test at the GitHub Pages-style
+subpath, not a test of a newly deployed GitHub Pages release.
 
 ## QA checklist
 

@@ -99,12 +99,17 @@
     const processed = new Map();
     for (const requisition of session.orders) {
       if (requisition.status !== "processed" || processed.has(requisition.id)) continue;
-      const amount = Number.isSafeInteger(requisition.processingRecord?.totalCents)
-        ? requisition.processingRecord.totalCents
-        : requisition.totalCents;
-      if (Number.isSafeInteger(amount) && amount >= 0) processed.set(requisition.id, amount);
+      const amount = requisition.processingRecord?.totalCents;
+      if (!Number.isSafeInteger(amount) || amount <= 0 ||
+          amount !== requisition.totalCents ||
+          !Number.isFinite(Date.parse(requisition.processingRecord?.processedAt))) {
+        throw new Error("Processing history contains an invalid financial record. Further spending is unavailable.");
+      }
+      processed.set(requisition.id, amount);
     }
-    return [...processed.values()].reduce((sum, amount) => sum + amount, 0);
+    const total = [...processed.values()].reduce((sum, amount) => sum + amount, 0);
+    if (!Number.isSafeInteger(total)) throw new Error("Committed expenditures exceed safe financial calculation limits.");
+    return total;
   }
 
   function budgetDetails(session = getSession()) {
@@ -112,6 +117,9 @@
     if (!session || !institution) return null;
     const allocationCents = institution.annualBudget * 100;
     const committedCents = processedTotal(session);
+    if (committedCents > allocationCents) {
+      throw new Error("Processing history exceeds the annual allocation. Correct the saved data before continuing.");
+    }
     return {
       allocationCents,
       committedCents,
@@ -229,9 +237,8 @@
         const snapshot = attempt?.snapshot;
         if (!attempt || attempt.revision !== index + 1 ||
             !Number.isFinite(Date.parse(attempt.submittedAt)) ||
-            !snapshot || snapshot.requisitionId !== requisition.id ||
+            !snapshot || typeof snapshot !== "object" || Array.isArray(snapshot) ||
             !Array.isArray(snapshot.lines) ||
-            !Number.isFinite(Date.parse(snapshot.submittedAt)) ||
             !Array.isArray(attempt.correspondence)) {
           throw new Error("Submission history contains an invalid immutable snapshot.");
         }
@@ -291,9 +298,9 @@
       element.textContent = `${option.code} — ${option.label}`;
       select.append(element);
     }
-    select.value = [...select.options].some(option => option.value === selected)
+    select.value = options.some(option => option.code === selected)
       ? selected
-      : (options[0]?.code || "");
+      : (includeMissing ? "" : (options[0]?.code || ""));
   }
 
   function makeCell(text) {
@@ -383,7 +390,7 @@
     const readOnly = isReadOnlyWorksheet();
     renderFinancialSummary(lines, institution, budget, readOnly);
     document.getElementById("requisition-justification").disabled = readOnly;
-    document.getElementById("requisition-justification").value = session.workingJustification || currentRequisition()?.justification || "";
+    document.getElementById("requisition-justification").value = session.workingJustification ?? currentRequisition()?.justification ?? "";
 
     if (!lines.length) {
       appendEmptyRow(lineBody, "No items yet. Browse the catalog and add selections to this worksheet.", 8);
@@ -413,10 +420,11 @@
         quantity.disabled = readOnly;
         quantityCell.append(quantity);
         row.append(quantityCell);
-        row.append(makeCell(formatMoney(line.unitPriceCents)));
-        row.append(makeCell(Number.isSafeInteger(line.quantity) && line.quantity > 0
-          ? formatMoney(itemTotal(line))
-          : "Invalid quantity"));
+        row.append(makeCell(Number.isSafeInteger(line.unitPriceCents) && line.unitPriceCents >= 0
+          ? formatMoney(line.unitPriceCents)
+          : "Invalid price"));
+        const extendedPrice = worksheetTotal([line]);
+        row.append(makeCell(extendedPrice === null ? "Invalid quantity or price" : formatMoney(extendedPrice)));
 
         const collectionCell = document.createElement("td");
         const collection = document.createElement("select");
@@ -442,7 +450,7 @@
         const note = document.createElement("input");
         note.type = "text";
         note.maxLength = 300;
-        note.value = line.selectorNote;
+        note.value = typeof line.selectorNote === "string" ? line.selectorNote : "";
         note.placeholder = "Optional note";
         note.setAttribute("aria-label", `Selector note for ${item?.title || line.catalogId}`);
         note.dataset.index = String(index);
@@ -707,6 +715,7 @@
       const institution = getInstitution(session);
       if (!session?.setupComplete || !institution) throw new Error("Complete an institutional profile before saving a requisition.");
       if (isReadOnlyWorksheet()) throw new Error("Submitted requisitions are read-only.");
+      normalizeSession();
       const lines = currentLines().map(canonicalLine);
       const justification = document.getElementById("requisition-justification").value.trim();
       const errors = validationErrors(session, lines, justification);
@@ -728,7 +737,7 @@
         ...existing,
         id: existing?.id || makeRequisitionId(session.clientId, sequence),
         clientId: session.clientId,
-        institutionSnapshot: existing?.institutionSnapshot || {
+        institutionSnapshot: {
           institutionName: session.institutionName,
           categoryId: session.categoryId,
           department: session.department || ""
@@ -808,11 +817,25 @@
   }
 
   function forwardRequisition(requisitionId) {
+    try {
+      submitRequisition(requisitionId);
+    } catch (error) {
+      showNotice(`The requisition could not be submitted. ${error.message}`, true);
+    }
+  }
+
+  function submitRequisition(requisitionId) {
+    normalizeSession();
     const session = getSession();
     const requisition = session?.orders.find(order => order.id === requisitionId);
     if (!requisition || !["saved", "returned"].includes(requisition.status)) {
       showNotice("Only a saved or returned requisition may be submitted. Submitted and processed requisitions cannot be submitted again.", true);
       return;
+    }
+    if (requisition.status === "returned" && session.activeRequisitionId === requisition.id &&
+        (JSON.stringify(session.cart) !== JSON.stringify(requisition.lines) ||
+         (session.workingJustification || "") !== (requisition.justification || ""))) {
+      throw new Error("Save all corrections before resubmitting.");
     }
     const lines = requisition.lines.map(line => ({ ...line }));
     const errors = validationErrors(session, lines, requisition.justification);
@@ -836,8 +859,8 @@
     let acknowledgment = thresholdReached && acknowledgmentReusable ? priorAcknowledgment : null;
     if (thresholdReached && !acknowledgment) {
       if (!window.confirm(acknowledgmentPrompt(projectedAcknowledgment))) {
-      showNotice("Forwarding cancelled. The requisition remains saved and no funds are committed.", false);
-      return;
+        showNotice("Forwarding cancelled. The requisition remains unsubmitted and no funds are committed.", false);
+        return;
       }
       acknowledgment = { ...projectedAcknowledgment };
     }
@@ -960,13 +983,10 @@
       showNotice("Only saved or returned requisitions may be edited.", true);
       return;
     }
-    const latestSnapshot = order.status === "returned"
-      ? order.submissionAttempts?.at(-1)?.snapshot
-      : null;
     window.PN_APP.updateSession({
-      cart: (latestSnapshot?.lines || order.lines).map(line => ({ ...line })),
+      cart: order.lines.map(line => ({ ...line })),
       activeRequisitionId: order.id,
-      workingJustification: latestSnapshot?.justification || order.justification || ""
+      workingJustification: order.justification || ""
     });
     renderWorksheet();
     showNotice(order.status === "returned"
@@ -1062,7 +1082,7 @@
         if (item) addToWorksheet(item);
       } else if (target.dataset.viewOrder) {
         const order = getSession()?.orders.find(item => item.id === target.dataset.viewOrder);
-        if (order) showItemDetails(order, false);
+        if (order) window.PN_TECHNICAL_SERVICES.showDetails(order.id);
       } else if (target.dataset.editOrder) {
         editRequisition(target.dataset.editOrder);
       } else if (target.dataset.forwardOrder) {
@@ -1114,10 +1134,6 @@
     renderCatalog();
   });
   filterForm.addEventListener("submit", event => event.preventDefault());
-  filterForm.addEventListener("change", () => {
-    pageNumber = 1;
-    renderCatalog();
-  });
   filterForm.addEventListener("reset", () => {
     window.setTimeout(() => {
       pageNumber = 1;
@@ -1187,6 +1203,8 @@
     pageCatalog,
     getCatalogCount: () => catalog.length,
     getCatalogRecords: () => catalog.map(item => ({ ...item })),
+    validateSession: normalizeSession,
+    processedTotal,
     editRequisition,
     submitRequisition: forwardRequisition
   });

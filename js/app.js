@@ -67,8 +67,9 @@
   }
 
   function persist(nextSession) {
-    window.localStorage.setItem(STORAGE_KEY, JSON.stringify(nextSession));
-    session = nextSession;
+    const serialized = JSON.stringify(nextSession);
+    window.localStorage.setItem(STORAGE_KEY, serialized);
+    session = JSON.parse(serialized);
     window.dispatchEvent(new CustomEvent("pn:session-change"));
     return session;
   }
@@ -226,6 +227,10 @@
       return;
     }
     try {
+      if (window.PN_ACQUISITIONS &&
+          window.PN_ACQUISITIONS.processedTotal(session) > institution.annualBudget * 100) {
+        throw new Error("This category's allocation is below the institution's committed expenditure. Retain the current category.");
+      }
       updateSession(profile);
       showNotice("Your institutional profile has been saved.", false);
       showApplication("dashboard");

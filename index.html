@@ -164,7 +164,7 @@
       <section id="order-worksheet-page" class="panel" aria-labelledby="worksheet-heading" hidden>
         <p class="eyebrow">Requisition preparation</p>
         <h2 id="worksheet-heading">Order worksheet</h2>
-        <p class="section-intro">Prepare a requisition for review. Saving does not commit funds; only a future processed requisition will count as an expenditure.</p>
+        <p class="section-intro">Prepare a requisition for review. Saving does not commit funds; only a requisition processed by Technical Services counts as an expenditure.</p>
         <div class="budget-summary" aria-label="Requisition budget">
           <div><span>Annual allocation</span><strong id="worksheet-allocation">$0.00</strong></div>
           <div><span>Committed expenditures</span><strong id="worksheet-committed">$0.00</strong></div>
@@ -199,7 +199,7 @@
           <h3>Requisition history</h3>
           <div class="table-wrap">
             <table class="acquisition-table">
-              <caption>Saved and submitted requisitions</caption>
+              <caption>Requisitions and their current procedural status</caption>
               <thead><tr><th scope="col">Requisition ID</th><th scope="col">Date</th><th scope="col">Items</th><th scope="col">Total</th><th scope="col">Status</th><th scope="col">Actions</th></tr></thead>
               <tbody id="requisition-history"></tbody>
             </table>
@@ -260,7 +260,7 @@
           <dl class="procedure-register">
             <div><dt>Procedure 14-C · Collection Designations · revised March 2009</dt><dd>Use an institutionally authorized collection line. Unconventional but defensible assignments require a brief selector note; clearly incompatible assignments require correction.</dd></div>
             <div><dt>Procedure 8-B · Fund Accounting Codes · revised June 2012</dt><dd>Use a fund code authorized for the institution. Fund codes are accounting designations and do not create separate balances. Explain an unusual specialized assignment.</dd></div>
-            <div><dt>Procedure 11-A · Requisition Quantities · revised February 2016</dt><dd>Quantities must be positive whole numbers, within catalog limits, and no greater than one for a unique offering.</dd></div>
+            <div><dt>Procedure 11-A · Requisition Quantities · revised February 2016</dt><dd>Quantities must be positive whole numbers within catalog limits, with one line per catalog item and no more than one unit of a unique offering. Unit prices and recomputed totals must match the active catalog.</dd></div>
             <div><dt>Procedure 22-D · Annual Allocation Review · revised January 2024</dt><dd>Only processed requisitions are committed. Obtain explicit acknowledgment at 80% cumulative annual use; qualifying one-time expenditures also require a brief justification.</dd></div>
             <div><dt>Procedure 3-F · Submission and Resubmission · revised September 2018</dt><dd>Submit a complete requisition for review. Returned requisitions retain their identifier and prior submission record; corrections require explicit resubmission.</dd></div>
           </dl>
@@ -271,7 +271,7 @@
 
   <footer>
     <span>Pembroke &amp; Newcastle · Established in London, 1998</span>
-    <span>PN-002 Acquisitions · Training simulation only</span>
+    <span>PN-003 Technical Services · Training simulation only</span>
   </footer>
   <dialog id="catalog-detail" aria-labelledby="detail-title">
     <div class="dialog-heading">
