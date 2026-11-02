@@ -97,6 +97,37 @@ the existing AV/Media collection designations. Its existing requisition
 validation and review workflow remains in place; it does not determine
 copyright, public-performance, streaming, or software licensing eligibility.
 
+## PN-011 Collection Assessment
+
+The portal attaches a deterministic `collectionAssessment` object to each of
+the 1,800 loaded records from `data/collection-assessments.json`. Regenerate
+the assessments after changing any source catalog with
+`node scripts/generate-collection-assessments.cjs`. The generator uses the
+catalog's audience, material category, format, subject, genre, date, and
+explicit regional context where present. These are qualitative classroom
+indicators, not verified community or institutional evidence and not purchase
+recommendations.
+
+The compact catalog indicator shows community interest for circulating
+materials and collection significance for specialized or unique materials.
+The existing item configuration/details drawer includes the full assessment.
+The portal does not calculate an overall score, rank items, or make selections.
+Moderate expected demand is a neutral fictional baseline for circulating
+books, films, music, audiobooks, and games, not a local circulation forecast.
+Unique archival materials have no circulation-demand forecast.
+
+The current data has no institution-specific holdings or local survey results,
+so existing collection coverage is **Not assessed for all 1,800 records**.
+Community interest is **Not assessed for 1,720 records**; 80 records with
+explicit local, regional, or community subject metadata receive a qualified
+moderate classroom cue, not a claim about a particular community. Audience fit
+is **Unknown for 155 records** where the available metadata does not support a
+category. Explicit game ratings are mapped only to broad audience groups;
+film ratings are not treated as an age recommendation. Demand remains
+**Not applicable / uncertain for 848 records**, including archival and
+non-circulating materials. Every indicator is visibly
+identified as a fictional classroom assessment.
+
 ## PN-006 design baseline
 
 Earlier classroom materials, timings, learning outcomes, discussion prompts,

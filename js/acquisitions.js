@@ -162,6 +162,21 @@
     );
   }
 
+  function isValidCollectionAssessment(assessment) {
+    return Boolean(
+      assessment &&
+      typeof assessment.audienceFit === "string" &&
+      typeof assessment.communityInterest === "string" &&
+      typeof assessment.existingCollectionCoverage === "string" &&
+      typeof assessment.expectedDemand === "string" &&
+      Array.isArray(assessment.collectionSignificance) &&
+      assessment.collectionSignificance.length > 0 &&
+      assessment.collectionSignificance.every(value => typeof value === "string") &&
+      typeof assessment.explanation === "string" &&
+      typeof assessment.assessmentNotice === "string"
+    );
+  }
+
   function validateStoredLine(line, institution, validateCodes = true) {
     if (!line || typeof line !== "object" || Array.isArray(line)) return false;
     const item = catalogById.get(line.catalogId);
@@ -730,7 +745,16 @@
       const description = document.createElement("span");
       description.className = "catalog-description";
       description.textContent = item.description;
-      titleCell.append(title, creator, description);
+      const assessmentIndicator = document.createElement("span");
+      assessmentIndicator.className = "collection-assessment-indicator";
+      const specialized = item.unique ||
+        item.catalogGroup === "Special Collections & Archives" ||
+        (item.collectionAssessment?.audienceFit === "Specialized" &&
+          item.collectionAssessment?.expectedDemand === "Not applicable / uncertain");
+      assessmentIndicator.textContent = specialized
+        ? `Simulated · Collection significance: ${item.collectionAssessment.collectionSignificance[0] || "Not assessed"}`
+        : `Simulated · Community interest: ${item.collectionAssessment.communityInterest}`;
+      titleCell.append(title, creator, description, assessmentIndicator);
       row.append(titleCell);
       row.append(makeCell(`${item.materialCategory} · ${item.format} · ${item.catalogGroup}`));
       row.append(makeCell(formatMoney(item.unitPriceCents)));
@@ -922,6 +946,27 @@
       addMetadataRow(list, "Submission snapshot", item.submittedSnapshot ? "Submitted contents are retained as a read-only snapshot." : "Not submitted");
     }
     content.append(list);
+    if (allowAdd && item.collectionAssessment) {
+      const assessment = item.collectionAssessment;
+      const section = document.createElement("section");
+      section.className = "collection-assessment";
+      const heading = document.createElement("h3");
+      heading.textContent = "Collection Assessment";
+      const notice = document.createElement("p");
+      notice.className = "collection-assessment-notice";
+      notice.textContent = assessment.assessmentNotice;
+      const assessmentList = document.createElement("dl");
+      for (const [label, value] of [
+        ["Audience fit", assessment.audienceFit],
+        ["Community interest", assessment.communityInterest],
+        ["Existing collection coverage", assessment.existingCollectionCoverage],
+        ["Expected demand", assessment.expectedDemand],
+        ["Collection significance", assessment.collectionSignificance.join(", ")],
+        ["Assessment", assessment.explanation]
+      ]) addMetadataRow(assessmentList, label, value);
+      section.append(heading, notice, assessmentList);
+      content.append(section);
+    }
     detailDialog.showModal();
   }
 
@@ -1426,20 +1471,32 @@
   }
 
   function initializeData() {
-    Promise.all(["data/catalog.json", "data/special-collections.json", "data/audiovisual.json"].map(path =>
+    Promise.all([
+      "data/catalog.json",
+      "data/special-collections.json",
+      "data/audiovisual.json",
+      "data/collection-assessments.json"
+    ].map(path =>
       fetch(path).then(response => {
         if (!response.ok) throw new Error(`${path} request failed (${response.status}).`);
         return response.json();
       })
     ))
-      .then(([baseRecords, specialRecords, audiovisualRecords]) => {
+      .then(([baseRecords, specialRecords, audiovisualRecords, assessments]) => {
         const records = [...baseRecords, ...specialRecords, ...audiovisualRecords];
         if (!Array.isArray(records) || records.length < 1 ||
             records.some(item => !isValidCatalogRecord(item)) ||
-            new Set(records.map(item => item.id)).size !== records.length) {
+            new Set(records.map(item => item.id)).size !== records.length ||
+            !assessments || typeof assessments !== "object" || Array.isArray(assessments) ||
+            Object.keys(assessments).length !== records.length ||
+            records.some(item => !Object.hasOwn(assessments, item.id) ||
+              !isValidCollectionAssessment(assessments[item.id]))) {
           throw new Error("Catalog data is malformed or contains duplicate identifiers.");
         }
-        catalog = records;
+        catalog = records.map(item => ({
+          ...item,
+          collectionAssessment: assessments[item.id]
+        }));
         catalogById = new Map(catalog.map(item => [item.id, item]));
         dataReady = true;
         populateCatalogFilters();
