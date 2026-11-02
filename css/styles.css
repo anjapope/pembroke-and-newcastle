@@ -263,6 +263,13 @@ input:focus-visible, select:focus-visible, textarea:focus-visible, button:focus-
 .placeholder-page h2 { margin-top: .5rem; }
 .section-intro { max-width: 76ch; }
 .muted-copy { color: var(--muted); font-family: Arial, sans-serif; font-size: .88rem; }
+.digital-service-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: .85rem; }
+.digital-service-card { min-width: 0; padding: 1rem; border: 1px solid var(--line); background: #f8f6f0; }
+.digital-service-card h3 { font-size: 1.15rem; }
+.digital-service-card label { display: block; margin: .75rem 0 .4rem; }
+.digital-service-card input[type="radio"] { width: auto; min-height: auto; margin: 0 .35rem 0 0; }
+.digital-service-card .button { width: 100%; }
+.digital-service-card input[type="number"] { margin-bottom: .75rem; }
 
 .budget-summary {
   display: grid;

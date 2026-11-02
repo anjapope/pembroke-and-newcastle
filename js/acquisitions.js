@@ -122,13 +122,14 @@
     if (!session || !institution) return null;
     const allocationCents = institution.annualBudget * 100;
     const committedCents = processedTotal(session);
-    if (committedCents > allocationCents) {
+    const totalCommitted = pricing.totalCommittedCents(committedCents, session.digitalServiceEnrollment);
+    if (totalCommitted > allocationCents) {
       throw new Error("Processing history exceeds the annual allocation. Correct the saved data before continuing.");
     }
     return {
       allocationCents,
-      committedCents,
-      availableCents: allocationCents - committedCents
+      committedCents: totalCommitted,
+      availableCents: allocationCents - totalCommitted
     };
   }
 
@@ -139,6 +140,7 @@
     document.getElementById("dashboard-allocation").textContent = formatMoney(details.allocationCents);
     document.getElementById("dashboard-committed").textContent = formatMoney(details.committedCents);
     document.getElementById("dashboard-available").textContent = formatMoney(details.availableCents);
+    renderDigitalServices();
     renderWorksheet();
     renderHistories();
     renderCart();
@@ -460,9 +462,87 @@
     document.getElementById("item-extended-price").textContent = valid
       ? formatMoney(format.unitPriceCents * quantity)
       : "Enter a valid quantity within the catalog limit.";
+    const license = format && pricing.getDigitalLicenseTerms(detailItem, format.id);
+    const licenseNotice = document.getElementById("ebook-license-terms");
+    licenseNotice.hidden = !license;
+    licenseNotice.textContent = license
+      ? `Simulated license: ${license.users} user, up to ${license.termYears} years or ${license.checkoutLimit} checkouts, whichever comes first. The listed price is unchanged. This grants licensed access, not ownership.`
+      : "";
     detailAddButton.textContent = `Add ${Number.isSafeInteger(quantity) && quantity > 0 ? quantity : "selected"} ${quantity === 1 ? "copy" : "copies"} to cart`;
     detailAddButton.disabled = !valid || isReadOnlyWorksheet();
     detailAddButton.setAttribute("aria-label", `Add ${Number.isSafeInteger(quantity) && quantity > 0 ? quantity : "selected"} ${format?.name || "format"} ${detailItem.title} to cart`);
+  }
+
+  function renderDigitalServices() {
+    const session = getSession();
+    if (!session) return;
+    const enrollment = session.digitalServiceEnrollment;
+    const selectedModelId = enrollment?.modelId || session.digitalServiceModelId || "";
+    const locked = Boolean(enrollment);
+    for (const input of document.querySelectorAll('input[name="digital-service-model"]')) {
+      input.checked = input.value === selectedModelId;
+      input.disabled = locked && input.value !== enrollment.modelId;
+    }
+    const usage = document.getElementById("pay-per-circulation-usage");
+    usage.value = String(session.payPerCirculationUsage || 0);
+    usage.disabled = locked || selectedModelId !== "pay-per-circulation";
+    const estimate = pricing.payPerCirculationEstimate(session.payPerCirculationUsage || 0);
+    document.getElementById("pay-per-circulation-estimate").textContent = formatMoney(estimate);
+    const estimateSummary = document.getElementById("dashboard-digital-forecast");
+    if (estimateSummary) estimateSummary.textContent =
+      selectedModelId === "pay-per-circulation" ? formatMoney(estimate) : "Not selected";
+    const fee = enrollment ? pricing.digitalServiceFeeCents(enrollment) : 0;
+    document.getElementById("digital-service-commitment").textContent = formatMoney(fee);
+    const status = document.getElementById("digital-service-status");
+    status.textContent = enrollment
+      ? `${pricing.getDigitalService(enrollment.modelId).name} annual fee is committed for this browser session. Reset the workspace to begin a new scenario.`
+      : "No annual digital service fee is committed.";
+    for (const button of document.querySelectorAll("[data-enroll-digital-service]")) {
+      const service = pricing.getDigitalService(button.dataset.enrollDigitalService);
+      button.disabled = locked || selectedModelId !== service.id;
+    }
+    const payPerButton = document.getElementById("select-pay-per-circulation");
+    payPerButton.disabled = locked || selectedModelId !== "pay-per-circulation";
+  }
+
+  function selectDigitalService(modelId) {
+    const service = pricing.getDigitalService(modelId);
+    if (!service) throw new Error("Choose a supported digital service model.");
+    const session = getSession();
+    if (session.digitalServiceEnrollment) {
+      throw new Error("An annual digital service fee is already committed. Reset the workspace to begin a new service scenario.");
+    }
+    window.PN_APP.updateSession({ digitalServiceModelId: modelId });
+    renderDigitalServices();
+  }
+
+  function enrollDigitalService(modelId) {
+    const service = pricing.getDigitalService(modelId);
+    if (!service || service.annualFeeCents <= 0) {
+      throw new Error("Only an annual-fee digital service can be enrolled here.");
+    }
+    const session = getSession();
+    if (session.digitalServiceEnrollment) {
+      throw new Error("An annual digital service fee has already been committed for this browser session.");
+    }
+    if (session.digitalServiceModelId !== modelId) {
+      throw new Error("Select this digital service model before committing its annual fee.");
+    }
+    if (budgetDetails(session).availableCents < service.annualFeeCents) {
+      throw new Error("The annual service fee exceeds the available budget.");
+    }
+    window.PN_APP.updateSession({
+      digitalServiceEnrollment: { modelId, annualFeeCents: service.annualFeeCents }
+    });
+    showNotice(`${service.name} annual fee committed: ${formatMoney(service.annualFeeCents)}.`, false);
+  }
+
+  function savePayPerCirculationUsage(value) {
+    if (!/^\d+$/.test(value)) throw new Error("Enter annual checkouts as a nonnegative whole number.");
+    const annualUsage = Number(value);
+    pricing.payPerCirculationEstimate(annualUsage);
+    window.PN_APP.updateSession({ payPerCirculationUsage: annualUsage });
+    renderDigitalServices();
   }
 
   function currentRequisition() {
@@ -1614,6 +1694,54 @@
     updateDetailAddButton();
   });
   document.getElementById("close-detail").addEventListener("click", () => detailDialog.close());
+  document.getElementById("digital-services-page").addEventListener("change", event => {
+    const model = event.target.closest('input[name="digital-service-model"]');
+    if (model) {
+      try {
+        selectDigitalService(model.value);
+      } catch (error) {
+        showNotice(error.message, true);
+        renderDigitalServices();
+      }
+      return;
+    }
+    if (event.target.id === "pay-per-circulation-usage") {
+      try {
+        savePayPerCirculationUsage(event.target.value);
+      } catch (error) {
+        showNotice(error.message, true);
+        renderDigitalServices();
+      }
+    }
+  });
+  document.getElementById("digital-services-page").addEventListener("input", event => {
+    if (event.target.id !== "pay-per-circulation-usage" ||
+        !/^\d+$/.test(event.target.value) ||
+        !Number.isSafeInteger(Number(event.target.value)) ||
+        Number(event.target.value) > 1000000) return;
+    const forecast = pricing.payPerCirculationEstimate(Number(event.target.value));
+    document.getElementById("pay-per-circulation-estimate").textContent = formatMoney(forecast);
+  });
+  for (const button of document.querySelectorAll("[data-enroll-digital-service]")) {
+    button.addEventListener("click", () => {
+      try {
+        enrollDigitalService(button.dataset.enrollDigitalService);
+      } catch (error) {
+        showNotice(error.message, true);
+      }
+    });
+  }
+  document.getElementById("select-pay-per-circulation").addEventListener("click", () => {
+    try {
+      if (getSession().digitalServiceModelId !== "pay-per-circulation") {
+        throw new Error("Select Pay-Per-Circulation Service before using it.");
+      }
+      showNotice("Pay-Per-Circulation Service selected. Its checkout estimate remains a forecast, not a committed expenditure.", false);
+      renderDigitalServices();
+    } catch (error) {
+      showNotice(error.message, true);
+    }
+  });
   detailDialog.addEventListener("close", () => { detailItem = null; });
   window.addEventListener("pn:navigate", event => {
     if (event.detail.page === "catalog") renderCatalog();

@@ -27,6 +27,61 @@
     "juvenile-nonfiction-hardcover": { id: "juvenile-nonfiction-hardcover", name: "Juvenile nonfiction hardcover", multiplier: 1.35 }
   });
 
+  const DIGITAL_SERVICES = Object.freeze({
+    consortium: Object.freeze({ id: "consortium", name: "Digital Lending Consortium", annualFeeCents: 250000 }),
+    direct: Object.freeze({ id: "direct", name: "Direct Digital Licensing", annualFeeCents: 75000 }),
+    "pay-per-circulation": Object.freeze({ id: "pay-per-circulation", name: "Pay-Per-Circulation Service", annualFeeCents: 0 })
+  });
+
+  function getDigitalService(modelId) {
+    return Object.hasOwn(DIGITAL_SERVICES, modelId) ? DIGITAL_SERVICES[modelId] : null;
+  }
+
+  function digitalServiceFeeCents(enrollment) {
+    if (enrollment === null || enrollment === undefined) return 0;
+    const service = getDigitalService(enrollment.modelId);
+    if (!service || service.annualFeeCents === 0 ||
+        enrollment.annualFeeCents !== service.annualFeeCents) {
+      throw new Error("The saved digital service enrollment contains an invalid annual fee.");
+    }
+    return service.annualFeeCents;
+  }
+
+  function totalCommittedCents(processedCents, enrollment) {
+    if (!Number.isSafeInteger(processedCents) || processedCents < 0) {
+      throw new Error("Processed expenditures must be nonnegative whole-cent values.");
+    }
+    const total = processedCents + digitalServiceFeeCents(enrollment);
+    if (!Number.isSafeInteger(total)) throw new Error("Committed expenditures exceed safe financial calculation limits.");
+    return total;
+  }
+
+  function payPerCirculationEstimate(annualUsage) {
+    if (!Number.isSafeInteger(annualUsage) || annualUsage < 0 || annualUsage > 1000000) {
+      throw new Error("Annual checkout estimates must be whole numbers from 0 to 1,000,000.");
+    }
+    const estimate = annualUsage * 300;
+    if (!Number.isSafeInteger(estimate)) throw new Error("The usage estimate exceeds safe financial calculation limits.");
+    return estimate;
+  }
+
+  function getDigitalLicenseTerms(item, formatId) {
+    if (!item || typeof item.format !== "string") return null;
+    const isEbook = item.format.toLocaleLowerCase() === "ebook" ||
+      item.simulatedEditions?.some(edition =>
+        edition.id === formatId &&
+        typeof edition.name === "string" &&
+        edition.name.toLocaleLowerCase() === "ebook"
+      );
+    if (!isEbook) return null;
+    return Object.freeze({
+      users: 1,
+      termYears: 2,
+      checkoutLimit: 26,
+      priceCents: item.unitPriceCents
+    });
+  }
+
   function pricedFormat(item, definition) {
     return {
       id: definition.id,
@@ -230,5 +285,16 @@
     return nextLines;
   }
 
-  return { getFormatOptions, getFormat, extendedPrice, projectedRemainingBudget, mergeLine };
+  return {
+    getFormatOptions,
+    getFormat,
+    extendedPrice,
+    projectedRemainingBudget,
+    mergeLine,
+    getDigitalService,
+    digitalServiceFeeCents,
+    totalCommittedCents,
+    payPerCirculationEstimate,
+    getDigitalLicenseTerms
+  };
 }));

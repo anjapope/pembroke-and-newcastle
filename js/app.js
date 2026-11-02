@@ -7,7 +7,8 @@
     catalog: "catalog-page",
     vendors: "vendors-page",
     "order-worksheet": "order-worksheet-page",
-    "technical-services": "technical-services-page"
+    "technical-services": "technical-services-page",
+    "digital-services": "digital-services-page"
   };
   const application = document.getElementById("application");
   const notice = document.getElementById("notice");
@@ -36,6 +37,15 @@
       setupComplete: true,
       cart: Array.isArray(previous.cart) ? previous.cart : [],
       orders: Array.isArray(previous.orders) ? previous.orders : [],
+      digitalServiceModelId: typeof previous.digitalServiceModelId === "string"
+        ? previous.digitalServiceModelId
+        : "",
+      digitalServiceEnrollment: previous.digitalServiceEnrollment ?? null,
+      payPerCirculationUsage: Number.isSafeInteger(previous.payPerCirculationUsage) &&
+        previous.payPerCirculationUsage >= 0 &&
+        previous.payPerCirculationUsage <= 1000000
+        ? previous.payPerCirculationUsage
+        : 0,
       currentPage: "catalog",
       activeRequisitionId: previous.activeRequisitionId ?? null
     };

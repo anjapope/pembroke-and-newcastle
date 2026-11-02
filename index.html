@@ -45,6 +45,7 @@
           <button class="nav-link" type="button" data-page="vendors">Vendors</button>
           <button id="open-cart" class="nav-link cart-nav-link" type="button" aria-haspopup="dialog" aria-controls="cart-dialog"><span>Cart</span><span id="open-cart-count" class="cart-count">0</span></button>
           <button class="nav-link" type="button" data-page="dashboard">Budget</button>
+          <button class="nav-link" type="button" data-page="digital-services">Digital Services</button>
           <button class="nav-link" type="button" data-page="technical-services">Requisition review</button>
         </div>
         <div class="nav-secondary">
@@ -79,6 +80,44 @@
         <div class="history-section">
           <button id="reset-simulation" class="button button-secondary" type="button">Reset workspace</button>
           <p class="form-hint">Clear this browser's selections and requisition history and start a fresh workspace.</p>
+        </div>
+        <p class="form-hint">Pay-per-circulation forecasts are displayed separately and are not included in committed expenditures.</p>
+        <p class="form-hint">Pay-per-circulation forecast: <strong id="dashboard-digital-forecast">Not selected</strong></p>
+      </section>
+
+      <section id="digital-services-page" class="panel" aria-labelledby="digital-services-heading" hidden>
+        <p class="eyebrow">Licensed resources</p>
+        <h2 id="digital-services-heading">Digital Services</h2>
+        <p class="section-intro">All amounts and license terms are fictional teaching examples. Choose one service model; annual membership fees are committed once when enrolled. Individual title licenses remain subject to the existing requisition workflow.</p>
+        <p id="digital-service-status" class="notice" role="status" aria-live="polite">No annual digital service fee is committed.</p>
+        <div class="budget-summary" aria-label="Digital service budget">
+          <div><span>Committed annual service fee</span><strong id="digital-service-commitment">$0.00</strong></div>
+          <div><span>Pay-per-circulation forecast</span><strong id="pay-per-circulation-estimate">$0.00</strong></div>
+        </div>
+        <div class="digital-service-grid">
+          <article class="digital-service-card">
+            <h3>Digital Lending Consortium</h3>
+            <p><strong>$2,500 annual membership</strong></p>
+            <p>Shared ebook and audiobook collection. Individual title licenses are available separately. Collection selection is partly controlled by the consortium.</p>
+            <label><input type="radio" name="digital-service-model" value="consortium"> Select consortium model</label>
+            <button class="button button-primary" type="button" data-enroll-digital-service="consortium">Enroll and commit $2,500 annual fee</button>
+          </article>
+          <article class="digital-service-card">
+            <h3>Direct Digital Licensing</h3>
+            <p><strong>$750 annual platform fee</strong></p>
+            <p>Purchase individual title licenses separately with greater local selection control.</p>
+            <label><input type="radio" name="digital-service-model" value="direct"> Select direct licensing</label>
+            <button class="button button-primary" type="button" data-enroll-digital-service="direct">Enroll and commit $750 annual fee</button>
+          </article>
+          <article class="digital-service-card">
+            <h3>Pay-Per-Circulation Service</h3>
+            <p><strong>No annual platform fee · $3 per checkout</strong></p>
+            <p>Enter an annual usage estimate. The calculated amount is a forecast only and does not reduce the available budget.</p>
+            <label><input type="radio" name="digital-service-model" value="pay-per-circulation"> Select pay-per-circulation</label>
+            <label for="pay-per-circulation-usage">Estimated annual checkouts</label>
+            <input id="pay-per-circulation-usage" type="number" min="0" max="1000000" step="1" value="0" inputmode="numeric">
+            <button id="select-pay-per-circulation" class="button button-secondary" type="button">Use pay-per-circulation model</button>
+          </article>
         </div>
       </section>
 
@@ -292,6 +331,7 @@
         </div>
       </div>
       <p class="form-hint">Format prices are deterministic simulation estimates, not vendor quotations. Existing catalog formats and quantity limits apply.</p>
+      <p id="ebook-license-terms" class="form-hint" hidden></p>
       <div class="budget-summary">
         <div><span>Unit price</span><strong id="item-unit-price">$0.00</strong></div>
         <div><span>Extended price</span><strong id="item-extended-price">$0.00</strong></div>

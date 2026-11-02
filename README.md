@@ -128,6 +128,23 @@ film ratings are not treated as an age recommendation. Demand remains
 non-circulating materials. Every indicator is visibly
 identified as a fictional classroom assessment.
 
+## PN-013 Digital Services
+
+The Digital Services panel compares three fictional teaching models. Selecting
+an annual plan and explicitly enrolling adds its annual fee once to committed
+expenditures and reduces the available budget. Only one annual plan can be
+enrolled in a browser session; reset clears that enrollment. The $3-per-checkout
+pay-per-circulation estimate is derived from the entered annual usage and shown
+separately; it is not treated as an actual expenditure or included in committed
+budget totals.
+
+Catalog Ebook records retain their existing simulated prices without print
+format multipliers. Each is presented as a simulated one-user license for up to
+two years or 26 checkouts, whichever comes first. The license provides access,
+not ownership. Individual title licenses remain part of the existing
+requisition workflow, and count as committed only when Technical Services
+processes their requisition.
+
 ## PN-006 design baseline
 
 Earlier classroom materials, timings, learning outcomes, discussion prompts,
