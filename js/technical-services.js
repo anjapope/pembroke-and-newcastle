@@ -18,6 +18,7 @@
     "Young adult materials", "Academic monographs and reference materials",
     "Periodicals and serials", "Photographic and oral-history collections",
     "Rare books and manuscripts", "Audiovisual resources",
+    "Movies & Television", "Music", "Audiobooks", "Video Games",
     "Archival collections and ephemera", "Museum objects and cultural heritage materials",
     "Natural history and exhibition resources", "Ebooks and licensed digital resources"
   ]);
@@ -66,14 +67,14 @@
       JNF: /\bjuvenile nonfiction\b|\bjuvenile non-fiction\b/,
       YA: /\byoung adult\b/,
       REF: /\breference\b/,
-      AV: /\baudiovisual\b|\baudio\b|\bvideo\b|\bfilm\b/,
+      AV: /\baudiovisual\b|\baudio\b|\baudiobooks?\b|\bvideo\b|\bfilm\b|\bmusic\b|\bgames?\b/,
       LOCAL: /\blocal history\b|\blocal studies\b/,
       DIGITAL: /\bdigital\b|\belectronic\b|\bebook\b|\be-book\b|\blicensed\b/,
       MONO: /\bmonograph\b|\bacademic book\b|\bscholarly book\b/,
       SERIAL: /\bserial\b|\bjournal\b|\bperiodical\b/,
       ERES: /\belectronic\b|\bdigital\b|\blicensed\b|\bebook\b|\be-book\b/,
       SPEC: /\bspecial collections\b|\bmanuscript\b|\brare book\b|\barchival\b/,
-      MEDIA: /\bmedia\b|\baudiovisual\b|\baudio\b|\bvideo\b|\bfilm\b/,
+      MEDIA: /\bmedia\b|\baudiovisual\b|\baudio\b|\baudiobooks?\b|\bvideo\b|\bfilm\b|\bmusic\b|\bgames?\b/,
       MSS: /\bmanuscript\b/,
       PHOTO: /\bphotograph\b|\bphotographic\b|\bimage\b/,
       DIG: /\bdigital\b|\belectronic\b|\blicensed\b/,
@@ -130,7 +131,7 @@
       YOUTH: /\bjuvenile\b|\byoung adult\b|\bpicture book\b/,
       CURRICULUM: /\bcurriculum\b|\btextbook\b|\binstructional\b/,
       LITERACY: /\bliteracy\b|\breader\b|\breading\b/,
-      MEDIA: /\bmedia\b|\baudiovisual\b|\baudio\b|\bvideo\b|\bfilm\b/,
+      MEDIA: /\bmedia\b|\baudiovisual\b|\baudio\b|\baudiobooks?\b|\bvideo\b|\bfilm\b|\bmusic\b|\bgames?\b/,
       DIGITAL: /\bdigital\b|\belectronic\b|\blicensed\b|\bebook\b|\be-book\b/,
       ELECTRONIC: /\bdigital\b|\belectronic\b|\blicensed\b|\bebook\b|\be-book\b/,
       LOCAL: /\blocal histor(y|ical)\b|\blocal studies\b/,
@@ -761,10 +762,14 @@
     line = line && typeof line === "object" ? line : {};
     const tr = document.createElement("tr");
     const item = catalog.find(record => record.id === line.catalogId);
+    const format = line.format ||
+      (item && line.formatId ? window.PN_PRICING.getFormat(item, line.formatId)?.name : "") ||
+      "Not recorded";
     for (const value of [
       String(index + 1),
       item?.title || line.title || "Catalog item unavailable",
       line.catalogId || "",
+      format,
       String(line.quantity ?? ""),
       money(Number.isSafeInteger(line.unitPriceCents) ? line.unitPriceCents : 0),
       money(Number.isSafeInteger(line.extendedPriceCents) ? line.extendedPriceCents : 0),
@@ -818,7 +823,7 @@
     caption.textContent = `${order.id} · revision ${attempt?.revision || "not submitted"}`;
     const thead = document.createElement("thead");
     const headerRow = document.createElement("tr");
-    for (const label of ["Line", "Item", "Catalog ID", "Quantity", "Unit price", "Extended", "Collection", "Fund", "Selector note"]) {
+    for (const label of ["Line", "Item", "Catalog ID", "Edition / Format", "Quantity", "Unit price", "Extended", "Collection", "Fund", "Selector note"]) {
       const th = document.createElement("th");
       th.scope = "col";
       th.textContent = label;

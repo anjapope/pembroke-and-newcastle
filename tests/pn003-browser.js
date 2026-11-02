@@ -34,7 +34,7 @@ window.runPN003BrowserTests = async function () {
     results.push({ name, passed: true });
   };
   const catalog = window.PN_ACQUISITIONS.getCatalogRecords();
-  assert(catalog.length === 1500, "Wait for all 1,500 catalog records before running tests.");
+  assert(catalog.length >= 1800, "Wait for the complete 1,800-record catalog before running tests.");
 
   function login(categoryId = "public-library") {
     if (session()) click("#logout");

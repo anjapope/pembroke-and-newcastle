@@ -26,7 +26,7 @@ module.exports = async function runAcquisitionsAcceptance(hostPage, baseUrl) {
 
   try {
     await page.goto(baseUrl);
-    await page.waitForFunction(() => window.PN_ACQUISITIONS?.getCatalogCount() >= 1650);
+    await page.waitForFunction(() => window.PN_ACQUISITIONS?.getCatalogCount() >= 1800);
     assert(await page.locator("#login-panel").count() === 0, "A login screen is still present");
     assert(await page.locator("#institution-form").count() === 0, "An institution setup form is still present");
     assert(await page.locator("#catalog-page").isVisible(), "The catalog is not the entry view");
@@ -61,11 +61,11 @@ module.exports = async function runAcquisitionsAcceptance(hostPage, baseUrl) {
     await nav("vendors");
     assert(await page.locator("#open-cart-count").innerText() === "4", "Vendor navigation lost cart quantity");
     await page.reload();
-    await page.waitForFunction(() => window.PN_ACQUISITIONS?.getCatalogCount() >= 1650);
+    await page.waitForFunction(() => window.PN_ACQUISITIONS?.getCatalogCount() >= 1800);
     assert((await session()).cart.length === 1 && (await session()).cart[0].quantity === 4,
       "Pending selections did not persist across reload");
     await isolatedPage.goto(baseUrl);
-    await isolatedPage.waitForFunction(() => window.PN_ACQUISITIONS?.getCatalogCount() >= 1650);
+    await isolatedPage.waitForFunction(() => window.PN_ACQUISITIONS?.getCatalogCount() >= 1800);
     assert((await isolatedPage.evaluate(() => window.PN_APP.getSession())).cart.length === 0,
       "An independent browser session inherited pending selections");
 

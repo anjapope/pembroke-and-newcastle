@@ -888,6 +888,13 @@
         addMetadataRow(list, "Review considerations", details.reviewConsiderations?.join(", "));
         addMetadataRow(list, "Ownership and ethics", details.transferAndEthicsNotice);
       }
+      if (item.audiovisualMetadata) {
+        const details = item.audiovisualMetadata;
+        for (const [label, value] of Object.entries(details)) {
+          if (Array.isArray(value)) addMetadataRow(list, label, value.join(", "));
+          else if (value !== null && value !== undefined) addMetadataRow(list, label, String(value));
+        }
+      }
     } else {
       content.replaceChildren();
       addMetadataRow(list, "Requisition ID", item.id);
@@ -904,7 +911,12 @@
         const specialNote = collection
           ? `; ${collection.materialCategory}: extent ${collection.physicalExtent}; condition ${collection.condition}; provenance ${collection.provenanceSummary}; access/rights ${collection.accessRightsRestrictions}; preservation ${collection.preservationConsiderations}; handling ${collection.specialHandlingNotes}; acquisition note ${collection.acquisitionNote}; review considerations ${(collection.reviewConsiderations || []).join(", ")}; ${collection.transferAndEthicsNotice}`
           : "";
-        return `${record?.title || line.title} — ${line.quantity} × ${formatMoney(line.unitPriceCents)}; ${line.format || "format not recorded"}; collection ${line.collectionCode}; fund ${line.fundCode}${line.selectorNote ? `; note: ${line.selectorNote}` : ""}${specialNote}`;
+        const audiovisual = line.audiovisualMetadataSnapshot
+          ? `; media metadata: ${Object.entries(line.audiovisualMetadataSnapshot)
+            .map(([label, value]) => `${label}: ${Array.isArray(value) ? value.join(", ") : value}`)
+            .join("; ")}`
+          : "";
+        return `${record?.title || line.title} — ${line.quantity} × ${formatMoney(line.unitPriceCents)}; ${line.format || "format not recorded"}; collection ${line.collectionCode}; fund ${line.fundCode}${line.selectorNote ? `; note: ${line.selectorNote}` : ""}${specialNote}${audiovisual}`;
       }).join("\n");
       addMetadataRow(list, "Line items", lineSummary);
       addMetadataRow(list, "Submission snapshot", item.submittedSnapshot ? "Submitted contents are retained as a read-only snapshot." : "Not submitted");
@@ -933,6 +945,9 @@
           materialCategory: item.materialCategory,
           ...JSON.parse(JSON.stringify(item.specialCollections))
         }
+      } : {}),
+      ...(item.audiovisualMetadata ? {
+        audiovisualMetadataSnapshot: JSON.parse(JSON.stringify(item.audiovisualMetadata))
       } : {})
     };
   }
@@ -1411,14 +1426,14 @@
   }
 
   function initializeData() {
-    Promise.all(["data/catalog.json", "data/special-collections.json"].map(path =>
+    Promise.all(["data/catalog.json", "data/special-collections.json", "data/audiovisual.json"].map(path =>
       fetch(path).then(response => {
         if (!response.ok) throw new Error(`${path} request failed (${response.status}).`);
         return response.json();
       })
     ))
-      .then(([baseRecords, specialRecords]) => {
-        const records = [...baseRecords, ...specialRecords];
+      .then(([baseRecords, specialRecords, audiovisualRecords]) => {
+        const records = [...baseRecords, ...specialRecords, ...audiovisualRecords];
         if (!Array.isArray(records) || records.length < 1 ||
             records.some(item => !isValidCatalogRecord(item)) ||
             new Set(records.map(item => item.id)).size !== records.length) {

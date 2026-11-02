@@ -7,7 +7,7 @@ external identifiers are represented as verified.
 
 ## Current portal workflow (PN-007 / PN-008)
 
-The portal opens directly to its 1,650-record acquisitions catalog and creates
+The portal opens directly to its 1,800-record acquisitions catalog and creates
 an anonymous, browser-local session. The default allocation is the existing
 Public Library amount of **$5,000**; the other institutional allocations and
 requisition constraints remain in `js/institutions.js`. No login or institution
@@ -71,6 +71,32 @@ Services review engine does not evaluate these metadata-based concerns; it
 does not automatically warn or reject based on provenance, rights, privacy,
 preservation, or ethics. The information remains visible for informed review.
 
+## PN-010 Audiovisual & Gaming
+
+The original 1,500-record core and 150 special-collections records remain
+unchanged. The application adds 150 fictional classroom offerings from
+`data/audiovisual.json` in the **Audiovisual & Gaming** group: 50 Movies &
+Television, 35 Music, 25 Audiobooks, and 40 Video Games. Run
+`node scripts/generate-audiovisual.cjs` to deterministically regenerate this
+dataset.
+
+Each record specifies only its supported editions/platforms and carries that
+edition's stable ID, display label, and price. Movies may have DVD or Blu-ray
+editions; music may have CD or simulated digital editions; audiobooks may have
+CD or Playaway editions; games use individually listed console/PC platform
+prices. The catalog reference price remains the base for multiplier-priced
+editions; games instead use explicit per-platform prices. The deterministic
+simulation estimates are classroom examples, not vendor quotations, verified
+stock, actual licensing terms, or public-performance rights. Digital access,
+game platform compatibility, and rights must be independently assessed; no
+rights are represented as included. This commercial audiovisual inventory is
+separate from PN-009's unique archival Rare Audio objects.
+
+Technical Services accepts the added audiovisual material categories under
+the existing AV/Media collection designations. Its existing requisition
+validation and review workflow remains in place; it does not determine
+copyright, public-performance, streaming, or software licensing eligibility.
+
 ## PN-006 design baseline
 
 Earlier classroom materials, timings, learning outcomes, discussion prompts,
@@ -99,7 +125,7 @@ Use ordinary commits and fast-forward pushes to `main`; then verify Pages has
 finished publishing before assuming the new release is available. Configuration
 alone is not deployment verification.
 
-After deployment, check the acquisitions portal footer, the 1,650-record count, relative CSS/JS
+After deployment, check the acquisitions portal footer, the 1,800-record count, relative CSS/JS
 and catalog requests, and a fresh requisition through Technical Services.
 Hard-refresh and confirm that history and the budget remain unchanged.
 

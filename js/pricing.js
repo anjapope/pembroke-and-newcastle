@@ -124,6 +124,29 @@
         !Number.isSafeInteger(item.unitPriceCents) || item.unitPriceCents < 0) {
       throw new Error("Cannot determine formats for an invalid catalog item.");
     }
+    if (Array.isArray(item.simulatedEditions)) {
+      if (!item.simulatedEditions.length) {
+        throw new Error("The catalog item does not specify any eligible simulated editions.");
+      }
+      return item.simulatedEditions.map(edition => {
+        if (!edition || typeof edition.id !== "string" || !edition.id ||
+            typeof edition.name !== "string" || !edition.name) {
+          throw new Error("The catalog item contains an invalid simulated edition.");
+        }
+        let unitPriceCents;
+        if (Number.isSafeInteger(edition.unitPriceCents) && edition.unitPriceCents > 0) {
+          unitPriceCents = edition.unitPriceCents;
+        } else if (Number.isFinite(edition.multiplier) && edition.multiplier > 0) {
+          unitPriceCents = Math.round(item.unitPriceCents * edition.multiplier);
+        } else {
+          throw new Error(`The simulated edition ${edition.id} has no valid price.`);
+        }
+        if (!Number.isSafeInteger(unitPriceCents) || unitPriceCents <= 0) {
+          throw new Error(`The simulated edition ${edition.id} price is invalid.`);
+        }
+        return { id: edition.id, name: edition.name, unitPriceCents };
+      });
+    }
     const audienceFormats = getAudienceBookFormats(item);
     if (audienceFormats) return audienceFormats;
     if (item.format === "Print book") {
