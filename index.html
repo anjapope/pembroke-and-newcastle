@@ -6,11 +6,12 @@
   <meta name="theme-color" content="#172d36">
   <link rel="icon" href="favicon.svg" type="image/svg+xml">
   <title>Pembroke &amp; Newcastle — Booksellers &amp; Purveyors of Rare Collections</title>
-  <link rel="stylesheet" href="css/styles.css">
-  <script defer src="js/institutions.js"></script>
-  <script defer src="js/app.js"></script>
-  <script defer src="js/acquisitions.js"></script>
-  <script defer src="js/technical-services.js"></script>
+  <link rel="stylesheet" href="css/styles.css?v=pn007">
+  <script defer src="js/institutions.js?v=pn007"></script>
+  <script defer src="js/pricing.js?v=pn007"></script>
+  <script defer src="js/app.js?v=pn007"></script>
+  <script defer src="js/acquisitions.js?v=pn007"></script>
+  <script defer src="js/technical-services.js?v=pn007"></script>
 </head>
 <body>
   <header class="masthead">
@@ -26,120 +27,90 @@
   <main>
     <p id="notice" class="notice" role="status" aria-live="polite" hidden></p>
 
-    <section id="login-panel" class="panel narrow" aria-labelledby="login-heading">
-      <p class="eyebrow">Institutional acquisitions portal</p>
-      <h2 id="login-heading">Welcome to the collections desk</h2>
-      <p>Sign in with your client ID to create an institutional profile. This is a training simulation; do not use a real password or personal information.</p>
-      <p class="form-hint">Your exercise stays in this browser profile on this device. Client IDs are fictional labels, not shared accounts. All transactions are fictional.</p>
-      <form id="login-form">
-        <label for="client-id">Client ID</label>
-        <input id="client-id" name="clientId" type="text" autocomplete="username" maxlength="80" required>
-        <label for="password">Password</label>
-        <input id="password" name="password" type="password" autocomplete="current-password" required>
-        <p class="form-hint">Simulation password: <strong>collections</strong></p>
-        <button class="button button-primary" type="submit">Continue</button>
-      </form>
-    </section>
-
-    <section id="setup-panel" class="panel" aria-labelledby="setup-heading" hidden>
-      <div class="section-heading">
-        <div>
-          <p class="eyebrow">Your institution</p>
-          <h2 id="setup-heading">Build your collecting profile</h2>
+    <div id="application" class="app-shell">
+      <header class="application-header">
+        <div class="application-identity">
+          <span class="application-kicker">Institutional workspace</span>
+          <strong id="active-library">Independent Acquisitions Account</strong>
         </div>
-        <button id="cancel-revision" class="button button-secondary" type="button" hidden>Cancel revision</button>
-      </div>
-      <p>Invent an institution and describe the community it serves and the collections it hopes to build.</p>
-      <p class="form-hint">Choose a category to see its annual allocation. Use your audience and priorities to guide selections; the exercise begins in January with eleven months still ahead.</p>
-      <form id="institution-form">
-        <label for="institution-name">Institution name</label>
-        <input id="institution-name" name="institutionName" type="text" maxlength="100" required>
-
-        <label for="audience">Who is your audience?</label>
-        <textarea id="audience" name="audience" rows="3" maxlength="500" required></textarea>
-
-        <label for="category">Institution category</label>
-        <select id="category" name="categoryId" required>
-          <option value="">Choose a category</option>
-        </select>
-
-        <div id="department-field" hidden>
-          <label for="department">Department</label>
-          <input id="department" name="department" type="text" maxlength="100">
-          <p class="form-hint">A department is required for this institution category.</p>
+        <div class="application-status">
+          <div class="header-balance"><span>Projected remaining</span><strong id="header-remaining">$0.00</strong></div>
+          <button id="header-cart-button" class="button button-secondary header-cart" type="button" aria-haspopup="dialog" aria-controls="cart-dialog"><span id="header-cart-count">My Cart (0)</span></button>
         </div>
-
-        <div id="budget-preview" class="allocation-preview" aria-live="polite" hidden>
-          <span>Annual collecting allocation</span>
-          <strong id="budget-amount"></strong>
-        </div>
-
-        <label for="priorities">Collecting priorities</label>
-        <textarea id="priorities" name="priorities" rows="4" maxlength="1000" required></textarea>
-        <button class="button button-primary" type="submit">Save institutional profile</button>
-      </form>
-    </section>
-
-    <div id="application" hidden>
+      </header>
       <nav class="workspace-nav" aria-label="Main navigation">
+        <p class="nav-heading">Workspace</p>
         <div class="nav-links">
-          <button class="nav-link" type="button" data-page="dashboard">Dashboard</button>
-          <button class="nav-link" type="button" data-page="catalog">Acquisitions catalog</button>
-          <button class="nav-link" type="button" data-page="order-worksheet">Order worksheet</button>
-          <button class="nav-link" type="button" data-page="technical-services">Technical Services</button>
+          <button class="nav-link" type="button" data-page="catalog">Catalog</button>
+          <button class="nav-link" type="button" data-page="vendors">Vendors</button>
+          <button id="open-cart" class="nav-link cart-nav-link" type="button" aria-haspopup="dialog" aria-controls="cart-dialog"><span>Cart</span><span id="open-cart-count" class="cart-count">0</span></button>
+          <button class="nav-link" type="button" data-page="dashboard">Budget</button>
+          <button class="nav-link" type="button" data-page="technical-services">Requisition review</button>
         </div>
-        <div class="account">
-          <span id="signed-in-client"></span>
-          <button id="logout" class="button button-secondary" type="button">Log out</button>
+        <div class="nav-secondary">
+          <span>Requisition workflow</span>
+          <button class="nav-link" type="button" data-page="order-worksheet">Order worksheet</button>
         </div>
       </nav>
-      <p id="acq-notice" class="notice" role="status" aria-live="polite" hidden></p>
+      <div id="workspace-content">
+        <p id="acq-notice" class="notice" role="status" aria-live="polite" hidden></p>
 
-      <section id="dashboard-page" class="panel" aria-labelledby="dashboard-heading">
+      <section id="dashboard-page" class="panel" aria-labelledby="dashboard-heading" hidden>
         <div class="section-heading">
           <div>
-            <p class="eyebrow">Institutional overview</p>
-            <h2 id="dashboard-heading">Your dashboard</h2>
+            <p class="eyebrow">Financial stewardship</p>
+            <h2 id="dashboard-heading">Budget</h2>
           </div>
-          <button id="revise-profile" class="button button-secondary" type="button">Revise profile</button>
-        </div>
-        <div class="dashboard-grid">
-          <article class="profile-card">
-            <h3 id="profile-name"></h3>
-            <p id="profile-category" class="eyebrow"></p>
-            <dl>
-              <div id="department-summary" hidden><dt>Department</dt><dd id="profile-department"></dd></div>
-              <div><dt>Audience</dt><dd id="profile-audience"></dd></div>
-              <div><dt>Collecting priorities</dt><dd id="profile-priorities"></dd></div>
-            </dl>
-          </article>
-          <article class="budget-card">
-            <p class="eyebrow">Annual allocation</p>
-            <p id="profile-budget" class="budget-amount"></p>
-            <p>Available for your institution’s collecting programme.</p>
-          </article>
         </div>
         <div class="budget-summary" aria-label="Annual budget stewardship">
           <div><span>Annual allocation</span><strong id="dashboard-allocation">$0.00</strong></div>
           <div><span>Committed expenditures</span><strong id="dashboard-committed">$0.00</strong></div>
+          <div><span>Pending cart selections</span><strong id="dashboard-pending">$0.00</strong></div>
           <div><span>Available balance</span><strong id="dashboard-available">$0.00</strong></div>
+          <div><span>Projected remaining</span><strong id="dashboard-projected">$0.00</strong></div>
         </div>
-        <p>Begin with the <button class="text-button" type="button" data-page="catalog">acquisitions catalog</button>, add selections, then assign collection and fund codes in the <button class="text-button" type="button" data-page="order-worksheet">order worksheet</button>. Save before forwarding to Technical Services for Doris's explicit review.</p>
-        <p class="form-hint">Available balance is the annual allocation less processed requisitions. Saved, submitted and returned requisitions reserve no funds. Refresh preserves this browser's work; logging out clears it.</p>
+        <div class="spending-meter">
+          <div><span>Committed allocation</span><strong id="dashboard-spending-label">0% committed</strong></div>
+          <progress id="dashboard-spending-progress" max="100" value="0" aria-label="Percentage of allocation committed">0%</progress>
+          <p class="form-hint">Pending selections are shown separately and do not count as finalized expenditures.</p>
+        </div>
+        <p>Selections remain pending until you prepare and submit a requisition for review.</p>
+        <p class="form-hint">Available balance is the annual allocation less processed requisitions. Pending cart selections are displayed separately; saved, submitted, and returned requisitions reserve no funds.</p>
         <div class="history-section">
-          <button id="reset-simulation" class="button button-secondary" type="button">Reset Simulation</button>
-          <p class="form-hint">Permanently clear this browser's profile and all exercise history, then return to login. Confirmation is required. Other browser profiles and the shared catalog are unaffected.</p>
+          <button id="reset-simulation" class="button button-secondary" type="button">Reset workspace</button>
+          <p class="form-hint">Clear this browser's selections and requisition history and start a fresh workspace.</p>
         </div>
+      </section>
+
+      <section id="vendors-page" class="panel" aria-labelledby="vendors-heading" hidden>
+        <p class="eyebrow">Supplier directory</p>
+        <h2 id="vendors-heading">Vendors</h2>
+        <p class="section-intro">Browse the supplier and inventory groups represented in the catalog.</p>
+        <article class="vendor-profile">
+          <div>
+            <p class="eyebrow">Catalog supplier</p>
+            <h3>Pembroke &amp; Newcastle</h3>
+            <p>Institutional acquisitions · Established in London, 1998</p>
+          </div>
+          <button class="button button-primary" type="button" data-page="catalog">Browse catalog</button>
+        </article>
+        <h3>Catalog groups</h3>
+        <p class="form-hint">Catalog groups are based on the supplier's existing subject and material classifications.</p>
+        <div id="vendor-catalog-groups" class="vendor-group-grid"></div>
       </section>
 
       <section id="catalog-page" class="panel" aria-labelledby="catalog-heading" hidden>
         <p class="eyebrow">Shared institutional vendor catalog</p>
         <h2 id="catalog-heading">Acquisitions catalog</h2>
-        <p class="section-intro">Browse simulated materials across formats and collecting areas. Catalog records and descriptive metadata are fictional training data.</p>
-        <p class="form-hint">Combine search, category, format and price filters. Use Details to compare offerings. Add selections here, then open the worksheet; adding does not spend funds.</p>
+        <p class="section-intro">Browse catalog materials across formats and collecting areas. Catalog records and descriptive metadata are fictional.</p>
+        <p class="form-hint">Search and filter the catalog by vendor, group, material category, format, and price. Configure item formats and quantities before adding selections.</p>
         <form id="catalog-filters" class="catalog-filters">
+          <label for="catalog-vendor">Vendor</label>
+          <select id="catalog-vendor"><option value="">All vendors</option><option value="Pembroke &amp; Newcastle">Pembroke &amp; Newcastle</option></select>
           <label for="catalog-search">Keyword search</label>
           <input id="catalog-search" type="search" placeholder="Title, creator, description, ID…">
+          <label for="catalog-group">Catalog group</label>
+          <select id="catalog-group"><option value="">All groups</option></select>
           <label for="catalog-category">Material category</label>
           <select id="catalog-category"><option value="">All categories</option></select>
           <label for="catalog-format">Format</label>
@@ -158,10 +129,10 @@
           <button class="button button-secondary" type="reset">Clear filters</button>
         </form>
         <p id="catalog-count" class="muted-copy" aria-live="polite"></p>
-        <div class="table-wrap" tabindex="0" role="region" aria-label="Catalog results; scroll for all columns">
+        <div class="table-wrap catalog-results-wrap" tabindex="0" role="region" aria-label="Catalog results; scroll for all columns">
           <table class="acquisition-table">
-            <caption>Available simulated acquisitions</caption>
-            <thead><tr><th scope="col">Title and creator</th><th scope="col">Category / format</th><th scope="col">Unit price</th><th scope="col">Availability</th><th scope="col">Actions</th></tr></thead>
+            <caption>Available simulated acquisitions from Pembroke &amp; Newcastle</caption>
+            <thead><tr><th scope="col">Package and vendor</th><th scope="col">Material and group</th><th scope="col">Price</th><th scope="col">Availability</th><th scope="col">Actions</th></tr></thead>
             <tbody id="catalog-results"></tbody>
           </table>
         </div>
@@ -176,7 +147,7 @@
         <p class="eyebrow">Requisition preparation</p>
         <h2 id="worksheet-heading">Order worksheet</h2>
         <p class="section-intro">Prepare a requisition for review. Saving does not commit funds; only a requisition processed by Technical Services counts as an expenditure.</p>
-        <p class="form-hint">Collection lines describe where materials belong; fund codes describe the accounting purpose, not separate budgets. GENERAL is permitted. Explain unconventional assignments in the selector note. Save, then Forward from history; afterward open Technical Services and request review.</p>
+        <p class="form-hint">Collection lines describe where materials belong; fund codes describe accounting purposes, not separate budgets. Explain unconventional assignments in the selector note. Save, then forward the requisition for review.</p>
         <div class="budget-summary" aria-label="Requisition budget">
           <div><span>Annual allocation</span><strong id="worksheet-allocation">$0.00</strong></div>
           <div><span>Committed expenditures</span><strong id="worksheet-committed">$0.00</strong></div>
@@ -184,7 +155,7 @@
           <div><span>Proposed requisition</span><strong id="worksheet-proposed">$0.00</strong></div>
           <div><span>Projected remaining funds</span><strong id="worksheet-projected">$0.00</strong></div>
         </div>
-        <p class="muted-copy">Exercise begins in January. The annual allocation supports acquisitions needs across the remaining eleven months.</p>
+        <p class="muted-copy">Annual allocation period: January–December.</p>
         <p id="budget-warning" class="budget-warning" role="status" hidden></p>
         <p id="overspend-warning" class="budget-warning is-error" role="alert" hidden></p>
         <div class="table-wrap" tabindex="0" role="region" aria-label="Worksheet lines; scroll for all columns">
@@ -203,10 +174,9 @@
             <button id="save-requisition" class="button button-primary" type="submit">Save requisition</button>
             <button id="resubmit-requisition" class="button button-primary" type="button" hidden>Resubmit to Technical Services</button>
             <button id="new-requisition" class="button button-secondary" type="button">Start new requisition</button>
-            <button id="direct-purchase" class="button button-secondary" type="button">Attempt direct purchase</button>
           </div>
         </form>
-        <p class="authority-notice"><strong>Purchasing authority:</strong> Students do not have direct purchasing privileges. Save requisitions and forward them to Technical Services.</p>
+        <p class="authority-notice">Submit completed requisitions for Technical Services review before processing.</p>
         <div class="history-section">
           <h3>Requisition history</h3>
           <div class="table-wrap" tabindex="0" role="region" aria-label="Requisition history; scroll for all columns">
@@ -223,12 +193,7 @@
         <p class="eyebrow">Institutional processing desk · January</p>
         <h2 id="technical-heading">Technical Services Correspondence</h2>
         <p class="section-intro">Procedural review of submitted requisitions. Collection-development selections remain the institution's responsibility.</p>
-        <p class="form-hint">Request Review for each forwarded requisition. If returned, read Doris's findings, choose Edit and correct, save the changes and explicitly Resubmit. Only processed requisitions reduce the available balance.</p>
-        <div class="doris-identity">
-          <strong>Doris</strong>
-          <span>Technical Services Clerk II · 45 years of service · No MLS · No supervisory authority</span>
-          <span>Operational authority: requisition processing and procedural compliance</span>
-        </div>
+        <p class="form-hint">Request review for each forwarded requisition. If flagged, address the listed findings, save the correction, and explicitly resubmit. Only processed requisitions reduce the available balance.</p>
 
         <section class="history-section" aria-labelledby="review-heading">
           <h3 id="review-heading">Requisition Review</h3>
@@ -273,7 +238,7 @@
           <dl class="procedure-register">
             <div><dt>Procedure 14-C · Collection Designations · revised March 2009</dt><dd>Use an institutionally authorized collection line. Unconventional but defensible assignments require a brief selector note; clearly incompatible assignments require correction.</dd></div>
             <div><dt>Procedure 8-B · Fund Accounting Codes · revised June 2012</dt><dd>Use a fund code authorized for the institution. Fund codes are accounting designations and do not create separate balances. Explain an unusual specialized assignment.</dd></div>
-            <div><dt>Procedure 11-A · Requisition Quantities · revised February 2016</dt><dd>Quantities must be positive whole numbers within catalog limits, with one line per catalog item and no more than one unit of a unique offering. Unit prices and recomputed totals must match the active catalog.</dd></div>
+            <div><dt>Procedure 11-A · Requisition Quantities · revised February 2016</dt><dd>Quantities must be positive whole numbers within catalog limits, with one line per item and format and no more than one unit of a unique offering. Unit prices and recomputed totals must match the active catalog format.</dd></div>
             <div><dt>Procedure 22-D · Annual Allocation Review · revised January 2024</dt><dd>Only processed requisitions are committed. Obtain explicit acknowledgment at 80% cumulative annual use; qualifying one-time expenditures also require a brief justification.</dd></div>
             <div><dt>Procedure 3-F · Submission and Resubmission · revised September 2018</dt><dd>Submit a complete requisition for review. Returned requisitions retain their identifier and prior submission record; corrections require explicit resubmission.</dd></div>
           </dl>
@@ -284,15 +249,55 @@
 
   <footer>
     <span>Pembroke &amp; Newcastle · Established in London, 1998</span>
-    <span>PN-004 Classroom Simulation · All transactions fictional</span>
+    <span>Acquisitions Portal · All transactions fictional</span>
   </footer>
+  <dialog id="cart-dialog" class="cart-drawer" aria-labelledby="cart-heading">
+    <div class="dialog-heading">
+      <div>
+        <p class="eyebrow">Pending selections</p>
+        <h2 id="cart-heading">Your Cart</h2>
+      </div>
+      <button id="close-cart" class="button button-secondary" type="button">Close cart</button>
+    </div>
+    <p id="cart-empty" class="cart-empty">Your cart is empty. Configure an item from the catalog to begin.</p>
+    <ul id="cart-items" class="cart-items" aria-label="Cart selections"></ul>
+    <div class="budget-summary" aria-label="Cart budget summary">
+      <div><span>Annual allocation</span><strong id="cart-allocation">$0.00</strong></div>
+      <div><span>Committed expenditures</span><strong id="cart-committed">$0.00</strong></div>
+      <div><span>Cart subtotal</span><strong id="cart-subtotal">$0.00</strong></div>
+      <div><span>Projected remaining</span><strong id="cart-remaining">$0.00</strong></div>
+    </div>
+    <p id="cart-budget-warning" class="budget-warning" role="status" hidden></p>
+    <p id="cart-overspend-warning" class="budget-warning is-error" role="alert" hidden></p>
+    <p class="form-hint">Cart selections are pending, not purchases. Review the itemized worksheet, then submit a requisition for review.</p>
+    <div class="cart-actions">
+      <button id="review-selections" class="button button-primary" type="button">Review Selections</button>
+    </div>
+  </dialog>
   <dialog id="catalog-detail" aria-labelledby="detail-title">
     <div class="dialog-heading">
-      <h2 id="detail-title"></h2>
-      <button id="close-detail" class="button button-secondary" type="button">Close</button>
+      <h2 id="detail-title">Configure item</h2>
+      <button id="close-detail" class="button button-secondary" type="button" aria-label="Close item configuration">Close</button>
     </div>
     <div id="detail-content"></div>
-    <button id="detail-add" class="button button-primary" type="button">Add to worksheet</button>
+    <div id="item-configuration" class="item-configuration">
+      <label for="item-format">Edition / Format</label>
+      <select id="item-format"></select>
+      <div class="quantity-control">
+        <label for="item-quantity">Copies</label>
+      <div class="quantity-input-group">
+          <button id="quantity-decrement" class="button button-secondary compact-button" type="button" aria-label="Decrease copies">−</button>
+          <input id="item-quantity" type="number" min="1" step="1" value="1" inputmode="numeric">
+          <button id="quantity-increment" class="button button-secondary compact-button" type="button" aria-label="Increase copies">+</button>
+        </div>
+      </div>
+      <p class="form-hint">Format prices are deterministic simulation estimates, not vendor quotations. Existing catalog formats and quantity limits apply.</p>
+      <div class="budget-summary">
+        <div><span>Unit price</span><strong id="item-unit-price">$0.00</strong></div>
+        <div><span>Extended price</span><strong id="item-extended-price">$0.00</strong></div>
+      </div>
+    </div>
+    <button id="detail-add" class="button button-primary" type="button">Add to Cart</button>
   </dialog>
   <dialog id="requisition-detail" aria-labelledby="requisition-detail-title">
     <div class="dialog-heading">

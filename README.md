@@ -1,17 +1,82 @@
 # Pembroke & Newcastle
 
-Pembroke & Newcastle is a static, fictional training simulation for institutional
-acquisitions. The bookseller identity is established in London in 1998. There is
-no real authentication, supplier integration, purchase, payment, or server-side
-processing. All catalog offerings and bibliographic/provenance metadata are
-simulated; no ISBNs or other external identifiers are represented as verified.
+Pembroke & Newcastle is a static acquisitions portal backed by fictional
+catalog and bibliographic data. There is no real authentication, supplier
+integration, purchase, payment, or server-side processing. No ISBNs or other
+external identifiers are represented as verified.
 
-## PN-004 classroom release
+## Current portal workflow (PN-007 / PN-008)
 
-The complete simulation supports independent browser-local exercises using a
-shared **1,500-record** catalog. Instructor timings, learning outcomes,
-discussion prompts and troubleshooting are in
-[the instructor guide](docs/INSTRUCTOR_GUIDE.md). All transactions are fictional.
+The portal opens directly to its 1,650-record acquisitions catalog and creates
+an anonymous, browser-local session. The default allocation is the existing
+Public Library amount of **$5,000**; the other institutional allocations and
+requisition constraints remain in `js/institutions.js`. No login or institution
+profile is required. Reset clears that browser's cart and requisition history
+and starts a clean catalog session.
+
+Catalog Add opens an item configuration drawer with an Edition / Format
+selector. Adult print-book records offer Trade paperback (1.00×), Mass-market
+paperback (0.75×), and Hardcover (1.35×). Large print (1.40× paperback; 1.65×
+hardcover) is offered only when catalog metadata explicitly supports it. Young
+adult print books offer Paperback (1.00×) and Hardcover (1.35×).
+
+Juvenile options depend on catalog evidence: Picture book records offer
+Picture book paperback (1.00×) and hardcover (1.35×); explicit Chapter book and
+Early reader records receive their matching editions; Juvenile nonfiction
+records receive paperback (1.00×) and hardcover (1.35×); Board book requires an
+explicit board-book classification. Juvenile fiction records without specific
+format evidence retain their existing formats. Catalog metadata can opt an item
+into additional formats through `metadata.eligibleFormats`, `metadata.bookType`,
+or the explicit large-print fields. New format prices are deterministic
+classroom estimates, not vendor quotations, rounded to the nearest cent from
+the catalog reference price. Other material types keep their existing catalog
+format and price; no digital licensing or lending terms are inferred.
+
+Cart entries are pending requisition lines, not finalized purchases. A line is
+identified by catalog ID and format; repeated additions of the same combination
+merge quantities, while another format remains a separate line. Students can
+edit quantities or formats, remove lines, and review the itemized worksheet.
+The existing save, submit, flag/correction, review, and processing path remains
+the only way to record expenditures. Only processed requisitions reduce the
+available balance. Review flags and notices are presented under Technical
+Services rather than a named employee.
+
+Session state persists within the current browser profile and is isolated from
+other profiles. The shared inventory contains only the Pembroke & Newcastle
+supplier; catalog groups and material categories are metadata, not additional
+vendors.
+
+## PN-009 Special Collections & Archives
+
+The original 1,500-record `data/catalog.json` inventory is unchanged. The
+application loads it alongside 150 simulated classroom offerings in
+`data/special-collections.json`: 25 each under Rare Books, Manuscripts,
+Historical Maps, Rare Audio, Ethnographic Collections, and Ephemera &
+Photographs, all in the **Special Collections & Archives** catalog group.
+`scripts/generate-special-collections.cjs` reproducibly creates the added
+dataset with `node scripts/generate-special-collections.cjs`.
+
+Each record includes structured physical extent, condition, provenance summary,
+acquisition price, access/rights restrictions, preservation considerations,
+special handling, and review-consideration metadata. All records are fictional
+composites: no real ownership, provenance, community authority, or permission
+is asserted. Most are unique one-of-a-kind offerings with quantity one and the
+listed price. Fifteen explicitly reproducible facsimile or study editions allow
+quantities up to 25. Special-collections materials retain their listed format
+and do not receive ordinary book-format multipliers.
+
+The configuration details display these considerations, and requisition lines
+retain a snapshot for later requisition inspection. The current Technical
+Services review engine does not evaluate these metadata-based concerns; it
+does not automatically warn or reject based on provenance, rights, privacy,
+preservation, or ethics. The information remains visible for informed review.
+
+## PN-006 design baseline
+
+Earlier classroom materials, timings, learning outcomes, discussion prompts,
+and troubleshooting remain in [the instructor guide](docs/INSTRUCTOR_GUIDE.md).
+The PN-006 interface description below and in older sections is historical;
+PN-007 is the current student-facing workflow.
 
 ## Run locally and deploy
 
@@ -34,7 +99,7 @@ Use ordinary commits and fast-forward pushes to `main`; then verify Pages has
 finished publishing before assuming the new release is available. Configuration
 alone is not deployment verification.
 
-After deployment, check the PN-004 footer, the 1,500-record count, relative CSS/JS
+After deployment, check the acquisitions portal footer, the 1,650-record count, relative CSS/JS
 and catalog requests, and a fresh requisition through Technical Services.
 Hard-refresh and confirm that history and the budget remain unchanged.
 
@@ -82,7 +147,10 @@ category/format compatibility policy. Ebook and audio versions may be grouped
 with digital offerings rather than their print audience. Search includes the
 group name; material-category and format filters retain their established meaning.
 
-`data/catalog.json` is a JSON array with this record schema:
+`data/catalog.json` is the unchanged core inventory. The added records use the
+same base fields in `data/special-collections.json` and include an optional
+`specialCollections` object, which is copied into requisition lines. The base
+record schema is:
 
 | Field | Type | Meaning |
 | --- | --- | --- |
@@ -100,10 +168,12 @@ group name; material-category and format filters retain their established meanin
 | `maxQuantity` | integer | Maximum line quantity |
 | `unique` | boolean | Whether the offering is a unique simulated item |
 | `metadata` | object | Additional descriptive/disclaimer metadata |
+| `specialCollections` | object (optional) | PN-009 physical, condition, provenance, rights, preservation, handling, and review notes |
 
-Search, category, format, minimum/maximum price, and title/price sorting combine
-as filters. Twenty records are displayed per page; the complete catalog is never
-inserted into the DOM at once.
+Search, the represented vendor, catalog group, material category, format,
+minimum/maximum price, and title/price sorting combine as filters. Twenty
+records are displayed per page; the complete catalog is never inserted into the
+DOM at once.
 
 ### Reproducible inventory generation
 
@@ -194,7 +264,15 @@ authority notice and does not change budgets or create processed orders.
 **Verification status:** PN-003 acceptance verification is complete. The
 deterministic rule tests, browser lifecycle regressions, and real
 browser refresh/correction workflow passed under `/pembroke-and-newcastle/`.
-PN-004 has not been started.
+The PN-006 workspace presents Catalog, Vendors, My Cart, Budget and Doris as its
+primary areas. Catalog search and filters use the existing material categories,
+formats, catalog groups and prices. The Vendors directory truthfully shows the
+single vendor represented in the existing inventory. My Cart shares the
+worksheet's browser-local `session.cart`; it is not a second selection store.
+The cart derives prices from catalog IDs, shows committed and pending amounts
+separately, and links Review Selections to the established order worksheet.
+The application header displays the active institution, projected balance and
+cart count. On narrow screens the navigation becomes a horizontal strip.
 
 The Technical Services page is an explicit, browser-local review desk. Opening
 the page never processes an order. A staff-style **Review by Technical
@@ -306,29 +384,20 @@ The `window.PN_APP` methods remain `getSession()`, `updateSession(updates)`,
 `window.PN_ACQUISITIONS` helpers for budget refresh and catalog filtering/
 pagination; requisition state itself continues through `PN_APP`.
 
-## Local sessions and Reset Simulation
+## Local sessions and workspace reset
 
-The only application storage key is `pn-foundation-session`. Reloading preserves
-profile, worksheet, requisitions, correspondence, revisions and processing
-history in this browser profile on this device and origin. Client IDs are
-fictional labels, not remote accounts: entering the same ID in a different
-browser does not retrieve or modify the first browser's state. There is no
-central storage, instructor dashboard or cross-device synchronization.
+The application opens directly into Catalog with a default anonymous acquisitions
+session and the existing public-library allocation. The `pn-foundation-session`
+storage key preserves the cart, worksheet, requisitions, correspondence,
+revisions and processing history in this browser profile on this device and
+origin. There is no central storage or cross-device synchronization. Use
+separate browser profiles or devices for independent sessions.
 
-Tabs/windows sharing the same browser profile and origin are not separate
-student sessions. Use separate devices/profiles for independent exercises.
-Private/incognito sessions are separate from regular storage, may share storage
-with other private windows, and normally lose data when that private session
-closes. The password `collections` provides no real security.
-
-Dashboard **Reset Simulation** presents an explicit destructive confirmation
-listing the profile, worksheet, requisitions, correspondence and budget history.
-Cancel changes nothing. Confirm removes only the application key, returns to
-login, and restores a full allocation with the next newly established profile.
-The catalog, code and unrelated storage keys are untouched. Reset never runs on
-refresh. A storage failure is reported rather than silently claiming success.
-**Logout also clears this browser's session**; it is not a way to save an exercise
-for retrieval by Client ID.
+Budget **Reset workspace** presents an explicit destructive confirmation.
+Cancel changes nothing. Confirm clears this browser's application session and
+starts a clean anonymous workspace with the default allocation. The catalog,
+code and unrelated storage keys are untouched. Reset never runs on refresh. A
+storage failure is reported rather than silently claiming success.
 
 ## PN-004 policy and verification
 
@@ -354,35 +423,11 @@ quantities, simulation disclaimers and catalog-policy coverage. The **27 origina
 browser scenarios** also passed with all 1,500 records loaded; their initial
 catalog-readiness guard now requires the expanded inventory's exact record count.
 
-`tests/pn004-browser.cjs` exports an async acceptance helper accepting a Playwright
-`Page` and a base URL ending in `/`. Supply it from a development browser runner
-with Playwright and an installed browser; those tools are not website dependencies.
-For example, from such a runner:
-
-```js
-const run = require("./tests/pn004-browser.cjs");
-console.log(await run(page, "http://localhost:8000/"));
-```
-
-The helper creates and closes two independent private browser contexts. Student
-actions use visible UI controls, not injected application state. An unrelated
-storage sentinel is used only to test reset isolation. The complete scenario
-selects three materials, receives a deliberate rejection, saves corrections,
-resubmits under the same ID, processes a second requisition, verifies cumulative
-spending, reloads, cancels and confirms reset, and establishes a new profile.
-It also tests combined filters, all four sort orders, pagination, details,
-keyboard dialog dismissal/focus, same-ID browser independence and responsive
-layouts at 1440, 1366, 768 and 375 pixels.
-
-Local Chromium verification processed **$90.96**, left **$4,909.04**, and retained
-two requisitions, both revisions and three correspondence notices after reload.
-Reset restored $5,000 and empty history without changing the other browser or
-unrelated storage. No page-level horizontal overflow or console errors occurred;
-wide tables remain keyboard-focusable horizontal scroll regions. Local initial
-load was about 80 ms and a combined 1,500-record filter about 2 ms on the
-development machine. Automated task timings are not evidence of human completion
-speed; the instructor guide proposes a 20-minute exercise, not a usability-study
-result. No physical-device, cross-browser or 20-student classroom pilot is claimed.
+The PN-004 browser totals and workflow notes above are historical results from
+the previous interface. `tests/pn004-browser.cjs` now aliases the current
+`tests/pn007-browser.cjs` acceptance helper; run the latter against a Playwright
+`Page` and a local base URL ending in `/`. Playwright and its browser are
+development-only and are not website dependencies.
 
 ## Executed PN-003 verification
 
@@ -438,12 +483,34 @@ JavaScript syntax checks, workspace diagnostics, and `git diff --check` passed.
 These results describe a local static-server test at the GitHub Pages-style
 subpath, not a test of a newly deployed GitHub Pages release.
 
+## PN-007 verification
+
+Run the unit and requisition-policy regression suites with:
+
+```sh
+node --test tests/pn003.test.cjs tests/pn004.test.cjs tests/pn007-pricing.test.cjs
+```
+
+`tests/pn007-pricing.test.cjs` covers deterministic format prices, audience-
+appropriate eligibility, whole-number extended prices, same-format cart
+merging, unique and maximum-quantity limits, and budget projections. The Playwright acceptance
+helper `tests/pn007-browser.cjs` covers direct anonymous entry, configuration,
+cart editing/removal, session isolation and persistence, requisition processing,
+reset, and a narrow viewport. It accepts a Playwright `Page` and a base URL
+ending in `/`, as documented for the earlier acceptance helper below.
+
 ## QA checklist
 
-- Sign in, create/revise a profile, navigate among all pages, refresh, and log out.
+- Open directly into Catalog; verify no login, institution setup, or named clerk
+  appears in the student-facing interface.
+- Configure multiple formats and quantities; verify deterministic prices,
+  combination merging, distinct-format lines, edits, removal, and re-addition.
 - At `/pembroke-and-newcastle/`, verify relative CSS, scripts, and catalog data.
 - Combine search, category, format, and price filters; verify sorting, detail
   metadata, and pagination.
+- Add, remove, and re-add selections; verify the cart count, authoritative
+  subtotal, projected balance, warning removal, vendor-group navigation, and
+  responsive access to the worksheet.
 - Add several items, edit quantities/codes/funds/notes, remove lines, and confirm
   unique acquisitions reject quantities above one.
 - Save, edit, and create multiple requisitions; reload and confirm session,
@@ -462,12 +529,11 @@ subpath, not a test of a newly deployed GitHub Pages release.
   ID, then verify both submitted snapshots and correspondence remain intact.
 - Confirm processed requisitions cannot be edited or resubmitted and that
   multiple processing records produce accurate cumulative commitments.
-- Test direct-purchase denial, the cumulative 80% warning, required
-  justifications, overspending, exact-balance forwarding, and uncommitted saved
-  requisitions.
+- Test the cumulative 80% warning, required justifications, overspending,
+  exact-balance forwarding, and uncommitted saved requisitions.
 - Exercise filtering and pagination helpers with at least 1,500 generated records.
 - Run all workflows under `/pembroke-and-newcastle/`; verify no active GBP
   currency or ordinary-workflow console errors.
 
-All package files are static HTML, CSS, JavaScript, and JSON. PN-004 may later
-expand the inventory; no backend or build process is needed.
+All application files are static HTML, CSS, JavaScript, and JSON. PN-007 adds no
+backend or build process.

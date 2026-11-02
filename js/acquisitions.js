@@ -3,20 +3,25 @@
 
   const PAGE_SIZE = 20;
   const VALID_STATUSES = new Set(["draft", "saved", "submitted", "returned", "processed"]);
+  const VENDOR_NAME = "Pembroke & Newcastle";
+  const pricing = window.PN_PRICING;
   const REQUIRED_JUSTIFICATION_CATEGORIES = new Set([
     "archive-special-collections",
     "museum-cultural-heritage",
     "school-library-media-center"
   ]);
-  const directPurchaseMessage = "Direct purchasing privileges are not assigned to your account. Please save your requisition and forward it to Technical Services using the established procedure.";
   const categoryFilter = document.getElementById("catalog-category");
   const formatFilter = document.getElementById("catalog-format");
+  const groupFilter = document.getElementById("catalog-group");
+  const vendorGroups = document.getElementById("vendor-catalog-groups");
   const filterForm = document.getElementById("catalog-filters");
   const resultBody = document.getElementById("catalog-results");
   const lineBody = document.getElementById("worksheet-lines");
   const historyBody = document.getElementById("requisition-history");
   const detailDialog = document.getElementById("catalog-detail");
   const detailAddButton = document.getElementById("detail-add");
+  const cartDialog = document.getElementById("cart-dialog");
+  const cartItems = document.getElementById("cart-items");
   const acquisitionNotice = document.getElementById("acq-notice");
   let catalog = [];
   let catalogById = new Map();
@@ -136,6 +141,8 @@
     document.getElementById("dashboard-available").textContent = formatMoney(details.availableCents);
     renderWorksheet();
     renderHistories();
+    renderCart();
+    renderVendorGroups();
     return true;
   }
 
@@ -158,11 +165,13 @@
   function validateStoredLine(line, institution, validateCodes = true) {
     if (!line || typeof line !== "object" || Array.isArray(line)) return false;
     const item = catalogById.get(line.catalogId);
+    const format = item && pricing.getFormat(item, line.formatId);
     return Boolean(
       item &&
       Number.isSafeInteger(line.quantity) &&
       line.quantity > 0 && line.quantity <= item.maxQuantity &&
-      Number.isSafeInteger(line.unitPriceCents) && line.unitPriceCents === item.unitPriceCents &&
+      format && line.format === format.name &&
+      Number.isSafeInteger(line.unitPriceCents) && line.unitPriceCents === format.unitPriceCents &&
       Number.isSafeInteger(line.extendedPriceCents) && line.extendedPriceCents === line.unitPriceCents * line.quantity &&
       typeof line.collectionCode === "string" && line.collectionCode &&
       typeof line.fundCode === "string" && line.fundCode &&
@@ -213,8 +222,26 @@
     const activeRequisition = session.activeRequisitionId
       ? session.orders.find(order => order.id === session.activeRequisitionId)
       : null;
+    const normalizedCart = session.cart.map(line => {
+      const item = catalogById.get(line.catalogId);
+      if (!item) return line;
+      const format = line.formatId
+        ? pricing.getFormat(item, line.formatId)
+        : pricing.getFormatOptions(item)[0];
+      if (!format) return line;
+      if (line.formatId === format.id && line.format === format.name &&
+          line.unitPriceCents === format.unitPriceCents) return line;
+      return {
+        ...line,
+        title: item.title,
+        formatId: format.id,
+        format: format.name,
+        unitPriceCents: format.unitPriceCents,
+        extendedPriceCents: format.unitPriceCents * line.quantity
+      };
+    });
     if (activeRequisition?.status !== "returned" &&
-        session.cart.some(line => !validateStoredLine(line, institution, false))) {
+        normalizedCart.some(line => !validateStoredLine(line, institution, false))) {
       throw new Error("The saved worksheet contains invalid or outdated line data. No requisition data was changed.");
     }
     const migration = migrateSubmissionHistory(session);
@@ -256,7 +283,7 @@
     }
 
     const updates = {};
-    if (session.schemaVersion !== 3) updates.schemaVersion = 3;
+    if (session.schemaVersion !== 4) updates.schemaVersion = 4;
     if (migration.changed) updates.orders = migration.orders;
     if (!Number.isSafeInteger(session.requisitionSequence) || session.requisitionSequence < 0) {
       updates.requisitionSequence = session.orders.length;
@@ -264,12 +291,163 @@
     if (session.activeRequisitionId !== null && typeof session.activeRequisitionId !== "string") {
       updates.activeRequisitionId = null;
     }
+    if (JSON.stringify(normalizedCart) !== JSON.stringify(session.cart)) updates.cart = normalizedCart;
     if (Object.keys(updates).length) window.PN_APP.updateSession(updates);
   }
 
   function currentLines() {
     const session = getSession();
     return session && Array.isArray(session.cart) ? session.cart : [];
+  }
+
+  function authoritativeCartTotal(lines) {
+    let total = 0;
+    for (const line of lines) {
+      const item = catalogById.get(line.catalogId);
+      const format = item && pricing.getFormat(item, line.formatId);
+      if (!format || !Number.isSafeInteger(line.quantity) || line.quantity < 1) return null;
+      total += format.unitPriceCents * line.quantity;
+      if (!Number.isSafeInteger(total)) return null;
+    }
+    return total;
+  }
+
+  function renderCart() {
+    const lines = currentLines();
+    const quantity = totalQuantity(lines);
+    const cartButton = document.getElementById("open-cart");
+    document.getElementById("open-cart-count").textContent = String(quantity);
+    cartButton.setAttribute("aria-label", `Shopping cart, ${quantity} item${quantity === 1 ? "" : "s"}`);
+    document.getElementById("header-cart-count").textContent = `Cart (${quantity})`;
+
+    document.getElementById("cart-empty").hidden = lines.length > 0;
+    const rows = lines.map((line, index) => {
+      const item = catalogById.get(line.catalogId);
+      const entry = document.createElement("li");
+      entry.className = "cart-item";
+      const details = document.createElement("div");
+      const title = document.createElement("strong");
+      title.textContent = item?.title || line.title || "Unknown catalog item";
+      const vendor = document.createElement("span");
+      vendor.className = "table-subtitle";
+      vendor.textContent = `Vendor: ${VENDOR_NAME}`;
+      const quantityAndPrice = document.createElement("span");
+      quantityAndPrice.className = "cart-price";
+      quantityAndPrice.textContent = `${line.quantity} × ${formatMoney(line.unitPriceCents)} · ${line.format || "Format unavailable"}`;
+      const formatLabel = document.createElement("label");
+      formatLabel.textContent = "Format";
+      const formatSelect = document.createElement("select");
+      formatSelect.dataset.cartIndex = String(index);
+      formatSelect.dataset.cartField = "formatId";
+      formatSelect.setAttribute("aria-label", `Format for ${item?.title || line.title || line.catalogId}`);
+      for (const option of item ? pricing.getFormatOptions(item) : []) {
+        const element = document.createElement("option");
+        element.value = option.id;
+        element.textContent = `${option.name} — ${formatMoney(option.unitPriceCents)}`;
+        formatSelect.append(element);
+      }
+      formatSelect.value = line.formatId;
+      formatSelect.disabled = isReadOnlyWorksheet();
+      formatLabel.append(formatSelect);
+      details.append(title, vendor, quantityAndPrice, formatLabel);
+
+      const actions = document.createElement("div");
+      actions.className = "cart-item-actions";
+      const extendedPrice = document.createElement("strong");
+      extendedPrice.textContent = item
+        ? formatMoney(line.unitPriceCents * line.quantity)
+        : "Unavailable";
+      const quantityInput = document.createElement("input");
+      quantityInput.type = "number";
+      quantityInput.min = "1";
+      const otherFormatQuantity = item ? lines.reduce((sum, candidate, candidateIndex) =>
+        sum + (candidateIndex !== index && candidate.catalogId === line.catalogId ? candidate.quantity : 0), 0) : 0;
+      quantityInput.max = String(Math.max(line.quantity, (item?.maxQuantity || 1) - otherFormatQuantity));
+      quantityInput.step = "1";
+      quantityInput.value = String(line.quantity);
+      quantityInput.dataset.cartIndex = String(index);
+      quantityInput.dataset.cartField = "quantity";
+      quantityInput.setAttribute("aria-label", `Copies of ${item?.title || line.title || line.catalogId}`);
+      quantityInput.disabled = isReadOnlyWorksheet();
+      const remove = document.createElement("button");
+      remove.type = "button";
+      remove.className = "button button-secondary compact-button";
+      remove.textContent = "Remove";
+      remove.setAttribute("aria-label", `Remove ${item?.title || line.title || line.catalogId}, ${line.format || "selected format"}, from cart`);
+      remove.dataset.removeCartId = line.catalogId;
+      remove.dataset.removeFormatId = line.formatId;
+      remove.disabled = isReadOnlyWorksheet();
+      actions.append(quantityInput, extendedPrice, remove);
+      entry.append(details, actions);
+      return entry;
+    });
+    cartItems.replaceChildren(...rows);
+
+    const total = authoritativeCartTotal(lines);
+    const budget = budgetDetails();
+    const subtotal = document.getElementById("cart-subtotal");
+    const remaining = document.getElementById("cart-remaining");
+    const warning = document.getElementById("cart-budget-warning");
+    const overspend = document.getElementById("cart-overspend-warning");
+    document.getElementById("cart-allocation").textContent = budget ? formatMoney(budget.allocationCents) : "Unavailable";
+    document.getElementById("cart-committed").textContent = budget ? formatMoney(budget.committedCents) : "Unavailable";
+    subtotal.textContent = total === null ? "Unavailable" : formatMoney(total);
+    const projectedCents = total === null || !budget
+      ? null
+      : pricing.projectedRemainingBudget(budget.allocationCents, budget.committedCents, total);
+    remaining.textContent = projectedCents === null ? "Unavailable" : formatMoney(projectedCents);
+    document.getElementById("header-remaining").textContent = projectedCents === null
+      ? "Unavailable"
+      : formatMoney(projectedCents);
+    if (budget && total !== null) {
+      document.getElementById("dashboard-pending").textContent = formatMoney(total);
+      document.getElementById("dashboard-projected").textContent = formatMoney(projectedCents);
+      const committedPercentage = budget.allocationCents
+        ? Math.min(100, budget.committedCents / budget.allocationCents * 100)
+        : 0;
+      const progress = document.getElementById("dashboard-spending-progress");
+      progress.value = committedPercentage;
+      document.getElementById("dashboard-spending-label").textContent =
+        `${committedPercentage.toFixed(committedPercentage % 1 ? 1 : 0)}% committed`;
+    }
+
+    const thresholdReached = Boolean(
+      lines.length && total !== null && budget &&
+      (budget.committedCents + total) * 100 >= budget.allocationCents * 80
+    );
+    warning.hidden = !thresholdReached;
+    warning.textContent = thresholdReached
+      ? `Early-fiscal-year budget warning: committed spending plus this cart would use ${formatMoney(budget.committedCents + total)} of the ${formatMoney(budget.allocationCents)} annual allocation (80% or more). Confirm explicitly before forwarding.`
+      : "";
+    const exceedsBudget = Boolean(lines.length && projectedCents !== null && projectedCents < 0);
+    overspend.hidden = !exceedsBudget;
+    overspend.textContent = exceedsBudget
+      ? `This cart exceeds the available annual balance by ${formatMoney(Math.abs(projectedCents))}. Reduce selections before forwarding; budget rules are checked in the requisition workflow.`
+      : "";
+    document.getElementById("review-selections").disabled = !lines.length;
+
+    if (detailItem) updateDetailAddButton();
+  }
+
+  function updateDetailAddButton() {
+    if (!detailItem) return;
+    const format = pricing.getFormat(detailItem, document.getElementById("item-format").value);
+    const quantityValue = document.getElementById("item-quantity").value;
+    const quantity = Number(quantityValue);
+    const sameItemQuantity = currentLines()
+      .filter(line => line.catalogId === detailItem.id)
+      .reduce((sum, line) => sum + line.quantity, 0);
+    const valid = format && /^\d+$/.test(quantityValue) &&
+      Number.isSafeInteger(quantity) && quantity > 0 &&
+      sameItemQuantity + quantity <= detailItem.maxQuantity &&
+      (!detailItem.unique || sameItemQuantity + quantity <= 1);
+    document.getElementById("item-unit-price").textContent = format ? formatMoney(format.unitPriceCents) : "Unavailable";
+    document.getElementById("item-extended-price").textContent = valid
+      ? formatMoney(format.unitPriceCents * quantity)
+      : "Enter a valid quantity within the catalog limit.";
+    detailAddButton.textContent = `Add ${Number.isSafeInteger(quantity) && quantity > 0 ? quantity : "selected"} ${quantity === 1 ? "copy" : "copies"} to cart`;
+    detailAddButton.disabled = !valid || isReadOnlyWorksheet();
+    detailAddButton.setAttribute("aria-label", `Add ${Number.isSafeInteger(quantity) && quantity > 0 ? quantity : "selected"} ${format?.name || "format"} ${detailItem.title} to cart`);
   }
 
   function currentRequisition() {
@@ -325,7 +503,9 @@
 
   function renderFinancialSummary(lines, institution, budget, readOnly) {
     const proposedCents = worksheetTotal(lines);
-    const projectedCents = proposedCents === null ? null : budget.availableCents - proposedCents;
+    const projectedCents = proposedCents === null
+      ? null
+      : pricing.projectedRemainingBudget(budget.allocationCents, budget.committedCents, proposedCents);
     document.getElementById("worksheet-allocation").textContent = formatMoney(budget.allocationCents);
     document.getElementById("worksheet-committed").textContent = formatMoney(budget.committedCents);
     document.getElementById("worksheet-available").textContent = formatMoney(budget.availableCents);
@@ -371,7 +551,6 @@
       ? "Submit this corrected revision for a new review."
       : "Save all corrections before resubmitting.";
     document.getElementById("new-requisition").disabled = false;
-    document.getElementById("direct-purchase").disabled = false;
   }
 
   function renderWorksheet() {
@@ -383,7 +562,7 @@
     const institution = getInstitution(session);
     const budget = budgetDetails(session);
     if (!session || !session.setupComplete || !institution || !budget) {
-      appendEmptyRow(lineBody, "Sign in and complete an institutional profile to prepare requisitions.", 8);
+      appendEmptyRow(lineBody, "The active acquisitions session or budget allocation is unavailable.", 8);
       return;
     }
     const lines = currentLines();
@@ -403,7 +582,7 @@
         title.textContent = item?.title || line.title || "Unknown catalog item";
         const identifier = document.createElement("span");
         identifier.className = "table-subtitle";
-        identifier.textContent = item?.id || line.catalogId;
+        identifier.textContent = `${item?.id || line.catalogId} · ${line.format || "Format unavailable"}`;
         name.append(title, identifier);
         row.append(name);
 
@@ -480,6 +659,8 @@
     const maxText = document.getElementById("catalog-max-price").value;
     return {
       query: document.getElementById("catalog-search").value.trim().toLocaleLowerCase(),
+      vendor: document.getElementById("catalog-vendor").value,
+      catalogGroup: groupFilter.value,
       category: categoryFilter.value,
       format: formatFilter.value,
       minPriceCents: minText ? parseCents(minText) : null,
@@ -494,9 +675,11 @@
       const searchable = [
         item.id, item.title, item.creator, item.catalogGroup, item.materialCategory, item.format,
         item.creationDate, item.publisherDescription, item.description,
-        JSON.stringify(item.metadata || {})
+        JSON.stringify(item.metadata || {}), JSON.stringify(item.specialCollections || {})
       ].join(" ").toLocaleLowerCase();
       return (!query || searchable.includes(query)) &&
+        (!filters.vendor || filters.vendor === VENDOR_NAME) &&
+        (!filters.catalogGroup || item.catalogGroup === filters.catalogGroup) &&
         (!filters.category || item.materialCategory === filters.category) &&
         (!filters.format || item.format === filters.format) &&
         (filters.minPriceCents === null || filters.minPriceCents === undefined ||
@@ -544,9 +727,12 @@
       const creator = document.createElement("span");
       creator.className = "table-subtitle";
       creator.textContent = `${item.creator || "Creator not supplied"} · ${item.id}`;
-      titleCell.append(title, creator);
+      const description = document.createElement("span");
+      description.className = "catalog-description";
+      description.textContent = item.description;
+      titleCell.append(title, creator, description);
       row.append(titleCell);
-      row.append(makeCell(`${item.materialCategory} · ${item.format}`));
+      row.append(makeCell(`${item.materialCategory} · ${item.format} · ${item.catalogGroup}`));
       row.append(makeCell(formatMoney(item.unitPriceCents)));
       row.append(makeCell(item.availability));
       const actionCell = document.createElement("td");
@@ -560,7 +746,12 @@
       const add = document.createElement("button");
       add.type = "button";
       add.className = "button button-primary compact-button";
-      add.textContent = "Add";
+      const alreadySelected = currentLines().some(line => line.catalogId === item.id);
+      add.textContent = alreadySelected ? "Added ✓" : "Add";
+      add.disabled = isReadOnlyWorksheet();
+      add.setAttribute("aria-label", alreadySelected
+        ? `${item.title} is in cart; configure another quantity or format`
+        : `Configure ${item.title} before adding to cart`);
       add.dataset.addId = item.id;
       actions.append(details, add);
       actionCell.append(actions);
@@ -573,7 +764,8 @@
   function populateCatalogFilters() {
     const categories = [...new Set(catalog.map(item => item.materialCategory))].sort();
     const formats = [...new Set(catalog.map(item => item.format))].sort();
-    for (const [select, values] of [[categoryFilter, categories], [formatFilter, formats]]) {
+    const groups = [...new Set(catalog.map(item => item.catalogGroup).filter(Boolean))].sort();
+    for (const [select, values] of [[categoryFilter, categories], [formatFilter, formats], [groupFilter, groups]]) {
       for (const value of values) {
         const option = document.createElement("option");
         option.value = value;
@@ -581,36 +773,59 @@
         select.append(option);
       }
     }
+    renderVendorGroups();
   }
 
-  function addToWorksheet(item) {
+  function renderVendorGroups() {
+    if (!dataReady) return;
+    const groups = new Map();
+    for (const item of catalog) {
+      if (item.catalogGroup) groups.set(item.catalogGroup, (groups.get(item.catalogGroup) || 0) + 1);
+    }
+    const cards = [...groups].sort(([left], [right]) => left.localeCompare(right)).map(([name, count]) => {
+      const card = document.createElement("article");
+      card.className = "vendor-group";
+      const heading = document.createElement("h4");
+      heading.textContent = name;
+      const total = document.createElement("p");
+      total.textContent = `${count} catalog record${count === 1 ? "" : "s"}`;
+      const browse = document.createElement("button");
+      browse.type = "button";
+      browse.className = "button button-secondary compact-button";
+      browse.textContent = "Browse group";
+      browse.dataset.catalogGroup = name;
+      card.append(heading, total, browse);
+      return card;
+    });
+    vendorGroups.replaceChildren(...cards);
+  }
+
+  function addToWorksheet(item, formatId, quantity) {
     const session = getSession();
     const institution = getInstitution(session);
-    if (!session?.setupComplete || !institution) throw new Error("Complete an institutional profile before selecting acquisitions.");
+    if (!session?.setupComplete || !institution) throw new Error("The acquisitions session or budget allocation is unavailable.");
     if (isReadOnlyWorksheet()) throw new Error("Submitted requisitions are read-only. Start a new requisition to continue.");
-    const lines = currentLines().map(line => ({ ...line }));
-    const existing = lines.find(line => line.catalogId === item.id);
-    if (existing) {
-      if (item.unique || existing.quantity >= item.maxQuantity) {
-        throw new Error(`${item.title} is limited to ${item.maxQuantity} ${item.maxQuantity === 1 ? "item" : "copies"}.`);
+    const lines = pricing.mergeLine(currentLines(), item, formatId, quantity);
+    for (const line of lines) {
+      if (line.catalogId === item.id && line.formatId === formatId) {
+        line.collectionCode ||= institution.collectionLines[0].code;
+        line.fundCode ||= institution.funds[0].code;
+        line.selectorNote ||= "";
       }
-      existing.quantity += 1;
-      existing.extendedPriceCents = itemTotal(existing);
-    } else {
-      lines.push({
-        catalogId: item.id,
-        title: item.title,
-        quantity: 1,
-        unitPriceCents: item.unitPriceCents,
-        extendedPriceCents: item.unitPriceCents,
-        collectionCode: institution.collectionLines[0].code,
-        fundCode: institution.funds[0].code,
-        selectorNote: ""
-      });
     }
     window.PN_APP.updateSession({ cart: lines });
     renderWorksheet();
-    showNotice(`${item.title} added to the worksheet. Assign its collection line and fund before saving.`, false);
+    const format = pricing.getFormat(item, formatId);
+    showNotice(`Added ${quantity} ${format.name.toLocaleLowerCase()} ${quantity === 1 ? "copy" : "copies"} of ${item.title} to the cart.`, false);
+  }
+
+  function removeFromCart(itemId, formatId) {
+    if (isReadOnlyWorksheet()) throw new Error("Submitted requisitions are read-only. Start a new requisition to change selections.");
+    const lines = currentLines();
+    const removed = lines.find(line => line.catalogId === itemId && line.formatId === formatId);
+    if (!removed) return;
+    window.PN_APP.updateSession({ cart: lines.filter(line => !(line.catalogId === itemId && line.formatId === formatId)) });
+    showNotice(`${catalogById.get(itemId)?.title || removed.title || itemId}, ${removed.format}, removed from cart.`, false);
   }
 
   function addMetadataRow(parent, label, value) {
@@ -625,26 +840,58 @@
 
   function showItemDetails(item, allowAdd = true) {
     detailItem = allowAdd ? item : null;
-    document.getElementById("detail-title").textContent = item.title || "Requisition details";
+    document.getElementById("detail-title").textContent = allowAdd ? "Configure item" : "Requisition details";
     detailAddButton.hidden = !allowAdd;
+    document.getElementById("item-configuration").hidden = !allowAdd;
+    if (allowAdd) {
+      const formatSelect = document.getElementById("item-format");
+      const quantityInput = document.getElementById("item-quantity");
+      const formats = pricing.getFormatOptions(item);
+      formatSelect.replaceChildren(...formats.map(format => {
+        const option = document.createElement("option");
+        option.value = format.id;
+        option.textContent = `${format.name} — ${formatMoney(format.unitPriceCents)}`;
+        return option;
+      }));
+      const existing = currentLines().find(line => line.catalogId === item.id);
+      formatSelect.value = formats.some(format => format.id === existing?.formatId)
+        ? existing.formatId
+        : formats[0].id;
+      quantityInput.min = "1";
+      quantityInput.max = String(item.maxQuantity);
+      quantityInput.value = "1";
+      quantityInput.disabled = Boolean(item.unique) || isReadOnlyWorksheet();
+      document.getElementById("quantity-increment").disabled = Boolean(item.unique) || isReadOnlyWorksheet();
+      document.getElementById("quantity-decrement").disabled = Boolean(item.unique) || isReadOnlyWorksheet();
+      updateDetailAddButton();
+    }
     const content = document.getElementById("detail-content");
     const list = document.createElement("dl");
     if (allowAdd) {
-      addMetadataRow(list, "Catalog identifier", item.id);
-      if (item.catalogGroup) addMetadataRow(list, "Catalog grouping", item.catalogGroup);
+      const title = document.createElement("h3");
+      title.textContent = item.title || "Untitled catalog item";
+      content.replaceChildren(title);
       addMetadataRow(list, "Creator / originating organization", item.creator);
       addMetadataRow(list, "Material category", item.materialCategory);
-      addMetadataRow(list, "Format", item.format);
       addMetadataRow(list, "Publication / creation date", item.creationDate);
       addMetadataRow(list, "Publisher / provenance", item.publisherDescription);
       addMetadataRow(list, "Description", item.description);
-      addMetadataRow(list, "Unit price", formatMoney(item.unitPriceCents));
-      addMetadataRow(list, "Availability", item.availability);
-      addMetadataRow(list, "Maximum quantity", String(item.maxQuantity));
-      addMetadataRow(list, "Record note", item.metadata?.identifierStatus || "Fictional training data");
+      if (item.specialCollections) {
+        const details = item.specialCollections;
+        addMetadataRow(list, "Physical extent", details.physicalExtent);
+        addMetadataRow(list, "Condition", details.condition);
+        addMetadataRow(list, "Provenance summary", details.provenanceSummary);
+        addMetadataRow(list, "Access / rights restrictions", details.accessRightsRestrictions);
+        addMetadataRow(list, "Preservation considerations", details.preservationConsiderations);
+        addMetadataRow(list, "Special handling", details.specialHandlingNotes);
+        addMetadataRow(list, "Acquisition considerations", details.acquisitionNote);
+        addMetadataRow(list, "Review considerations", details.reviewConsiderations?.join(", "));
+        addMetadataRow(list, "Ownership and ethics", details.transferAndEthicsNotice);
+      }
     } else {
+      content.replaceChildren();
       addMetadataRow(list, "Requisition ID", item.id);
-      addMetadataRow(list, "Status", item.status);
+      addMetadataRow(list, "Status", item.status === "returned" ? "Flagged" : item.status);
       addMetadataRow(list, "Institution snapshot", item.institutionSnapshot?.institutionName || "Not supplied");
       addMetadataRow(list, "Department snapshot", item.institutionSnapshot?.department || "Not applicable");
       addMetadataRow(list, "Created", new Date(item.createdAt).toLocaleString());
@@ -653,25 +900,40 @@
       addMetadataRow(list, "Justification", item.justification || "None supplied");
       const lineSummary = item.lines.map(line => {
         const record = catalogById.get(line.catalogId);
-        return `${record?.title || line.title} — ${line.quantity} × ${formatMoney(line.unitPriceCents)}; collection ${line.collectionCode}; fund ${line.fundCode}${line.selectorNote ? `; note: ${line.selectorNote}` : ""}`;
+        const collection = line.specialCollectionsSnapshot;
+        const specialNote = collection
+          ? `; ${collection.materialCategory}: extent ${collection.physicalExtent}; condition ${collection.condition}; provenance ${collection.provenanceSummary}; access/rights ${collection.accessRightsRestrictions}; preservation ${collection.preservationConsiderations}; handling ${collection.specialHandlingNotes}; acquisition note ${collection.acquisitionNote}; review considerations ${(collection.reviewConsiderations || []).join(", ")}; ${collection.transferAndEthicsNotice}`
+          : "";
+        return `${record?.title || line.title} — ${line.quantity} × ${formatMoney(line.unitPriceCents)}; ${line.format || "format not recorded"}; collection ${line.collectionCode}; fund ${line.fundCode}${line.selectorNote ? `; note: ${line.selectorNote}` : ""}${specialNote}`;
       }).join("\n");
       addMetadataRow(list, "Line items", lineSummary);
       addMetadataRow(list, "Submission snapshot", item.submittedSnapshot ? "Submitted contents are retained as a read-only snapshot." : "Not submitted");
     }
-    content.replaceChildren(list);
+    content.append(list);
     detailDialog.showModal();
   }
 
   function canonicalLine(line) {
+    const item = catalogById.get(line.catalogId);
+    const format = item && pricing.getFormat(item, line.formatId);
+    if (!item || !format) throw new Error("A requisition line refers to an unavailable item format.");
     return {
       catalogId: line.catalogId,
-      title: catalogById.get(line.catalogId).title,
+      title: item.title,
+      formatId: format.id,
+      format: format.name,
       quantity: line.quantity,
-      unitPriceCents: line.unitPriceCents,
-      extendedPriceCents: itemTotal(line),
+      unitPriceCents: format.unitPriceCents,
+      extendedPriceCents: pricing.extendedPrice(format.unitPriceCents, line.quantity),
       collectionCode: line.collectionCode,
       fundCode: line.fundCode,
-      selectorNote: line.selectorNote || ""
+      selectorNote: line.selectorNote || "",
+      ...(item.specialCollections ? {
+        specialCollectionsSnapshot: {
+          materialCategory: item.materialCategory,
+          ...JSON.parse(JSON.stringify(item.specialCollections))
+        }
+      } : {})
     };
   }
 
@@ -681,20 +943,30 @@
     if (!institution) errors.push("The institution profile is unavailable.");
     if (!lines.length) errors.push("Add at least one catalog item.");
     const seen = new Set();
+    const itemQuantities = new Map();
     for (const line of lines) {
       const item = catalogById.get(line.catalogId);
       if (!item) {
         errors.push(`Catalog item ${line.catalogId} is no longer available.`);
         continue;
       }
-      if (!Number.isSafeInteger(line.quantity) || line.quantity < 1 || line.quantity > item.maxQuantity) {
+      const format = pricing.getFormat(item, line.formatId);
+      if (!format) {
+        errors.push(`${item.title}: select an available format.`);
+      }
+      const totalItemQuantity = (itemQuantities.get(item.id) || 0) +
+        (Number.isSafeInteger(line.quantity) && line.quantity > 0 ? line.quantity : 0);
+      itemQuantities.set(item.id, totalItemQuantity);
+      if (!Number.isSafeInteger(line.quantity) || line.quantity < 1 ||
+          totalItemQuantity > item.maxQuantity || (item.unique && totalItemQuantity > 1)) {
         errors.push(`${item.title}: quantity must be a whole number from 1 to ${item.maxQuantity}.`);
       }
-      if (line.unitPriceCents !== item.unitPriceCents) errors.push(`${item.title}: catalog price has changed; remove and re-add the item.`);
+      if (format && line.unitPriceCents !== format.unitPriceCents) errors.push(`${item.title}: format price has changed; remove and re-add the item.`);
       if (!institution || !selectedCollectionCodes(institution).has(line.collectionCode)) errors.push(`${item.title}: select a collection line for this institution.`);
       if (!institution || !selectedFundCodes(institution).has(line.fundCode)) errors.push(`${item.title}: select a fund code for this institution.`);
-      if (seen.has(line.catalogId)) errors.push(`${item.title}: duplicate catalog lines are not allowed.`);
-      seen.add(line.catalogId);
+      const lineKey = `${line.catalogId}\u0000${line.formatId}`;
+      if (seen.has(lineKey)) errors.push(`${item.title} (${line.format}): duplicate catalog-format lines are not allowed.`);
+      seen.add(lineKey);
     }
     if (institution && REQUIRED_JUSTIFICATION_CATEGORIES.has(institution.id) &&
         linesTotal(lines) * 100 >= institution.annualBudget * 100 * 80 &&
@@ -767,7 +1039,7 @@
         activeRequisitionId: requisition.id,
         workingJustification: justification,
         requisitionSequence: sequence,
-        schemaVersion: 3
+        schemaVersion: 4
       });
       renderWorksheet();
       renderHistories();
@@ -904,7 +1176,7 @@
       cart: [],
       activeRequisitionId: null,
       workingJustification: "",
-      schemaVersion: 3
+      schemaVersion: 4
     });
     renderWorksheet();
     renderHistories();
@@ -929,7 +1201,7 @@
       row.append(makeCell(new Date(order.createdAt).toLocaleDateString()));
       row.append(makeCell(String(totalQuantity(order.lines))));
       row.append(makeCell(formatMoney(order.totalCents)));
-      const status = makeCell(order.status);
+      const status = makeCell(order.status === "returned" ? "Flagged" : order.status);
       status.className = `status-cell status-${order.status}`;
       row.append(status);
       const actions = document.createElement("td");
@@ -1071,6 +1343,50 @@
     showNotice("Requisition line removed.", false);
   }
 
+  function handleCartChange(event) {
+    const control = event.target.closest("[data-cart-index][data-cart-field]");
+    if (!control || isReadOnlyWorksheet()) return;
+    const index = Number(control.dataset.cartIndex);
+    const field = control.dataset.cartField;
+    const lines = currentLines().map(line => ({ ...line }));
+    const line = lines[index];
+    if (!line) return;
+    try {
+      const item = catalogById.get(line.catalogId);
+      if (!item) throw new Error("The selected catalog item is unavailable.");
+      if (field === "quantity") {
+        if (!/^\d+$/.test(control.value)) throw new Error("Quantity must be a positive whole number.");
+        const quantity = Number(control.value);
+        const otherQuantity = lines.reduce((sum, candidate, candidateIndex) =>
+          sum + (candidateIndex !== index && candidate.catalogId === line.catalogId ? candidate.quantity : 0), 0);
+        if (!Number.isSafeInteger(quantity) || quantity < 1 ||
+            quantity + otherQuantity > item.maxQuantity ||
+            (item.unique && quantity + otherQuantity > 1)) {
+          throw new Error(`${item.title} quantity must be from 1 to ${item.maxQuantity}.`);
+        }
+        line.quantity = quantity;
+        line.extendedPriceCents = pricing.extendedPrice(line.unitPriceCents, quantity);
+      } else if (field === "formatId") {
+        const replacement = pricing.getFormat(item, control.value);
+        if (!replacement) throw new Error("Choose a format available for this catalog item.");
+        const remaining = lines.filter((_, lineIndex) => lineIndex !== index);
+        const updated = pricing.mergeLine(remaining, item, replacement.id, line.quantity);
+        const target = updated.find(candidate => candidate.catalogId === item.id && candidate.formatId === replacement.id);
+        const prior = remaining.find(candidate => candidate.catalogId === item.id && candidate.formatId === replacement.id);
+        target.collectionCode = prior?.collectionCode || line.collectionCode;
+        target.fundCode = prior?.fundCode || line.fundCode;
+        target.selectorNote = prior?.selectorNote || line.selectorNote || "";
+        lines.splice(0, lines.length, ...updated);
+      }
+      window.PN_APP.updateSession({ cart: lines });
+      renderCart();
+      renderWorksheet();
+    } catch (error) {
+      showNotice(error.message, true);
+      renderCart();
+    }
+  }
+
   function handleTableAction(event) {
     const target = event.target.closest("button");
     if (!target) return;
@@ -1080,7 +1396,7 @@
         if (item) showItemDetails(item);
       } else if (target.dataset.addId) {
         const item = catalogById.get(target.dataset.addId);
-        if (item) addToWorksheet(item);
+        if (item) showItemDetails(item);
       } else if (target.dataset.viewOrder) {
         const order = getSession()?.orders.find(item => item.id === target.dataset.viewOrder);
         if (order) window.PN_TECHNICAL_SERVICES.showDetails(order.id);
@@ -1095,12 +1411,14 @@
   }
 
   function initializeData() {
-    fetch("data/catalog.json")
-      .then(response => {
-        if (!response.ok) throw new Error(`Catalog request failed (${response.status}).`);
+    Promise.all(["data/catalog.json", "data/special-collections.json"].map(path =>
+      fetch(path).then(response => {
+        if (!response.ok) throw new Error(`${path} request failed (${response.status}).`);
         return response.json();
       })
-      .then(records => {
+    ))
+      .then(([baseRecords, specialRecords]) => {
+        const records = [...baseRecords, ...specialRecords];
         if (!Array.isArray(records) || records.length < 1 ||
             records.some(item => !isValidCatalogRecord(item)) ||
             new Set(records.map(item => item.id)).size !== records.length) {
@@ -1150,6 +1468,40 @@
     renderCatalog();
   });
   resultBody.addEventListener("click", handleTableAction);
+  vendorGroups.addEventListener("click", event => {
+    const button = event.target.closest("[data-catalog-group]");
+    if (!button) return;
+    groupFilter.value = button.dataset.catalogGroup;
+    pageNumber = 1;
+    window.PN_APP.navigate("catalog");
+  });
+  document.getElementById("header-cart-button").addEventListener("click", () => {
+    renderCart();
+    cartDialog.showModal();
+  });
+  cartItems.addEventListener("click", event => {
+    const button = event.target.closest("[data-remove-cart-id]");
+    if (!button) return;
+    try {
+      removeFromCart(button.dataset.removeCartId, button.dataset.removeFormatId);
+    } catch (error) {
+      showNotice(error.message, true);
+    }
+  });
+  cartItems.addEventListener("change", handleCartChange);
+  document.getElementById("open-cart").addEventListener("click", () => {
+    renderCart();
+    cartDialog.showModal();
+  });
+  document.getElementById("close-cart").addEventListener("click", () => cartDialog.close());
+  document.getElementById("review-selections").addEventListener("click", () => {
+    try {
+      cartDialog.close();
+      window.PN_APP.navigate("order-worksheet");
+    } catch (error) {
+      showNotice(error.message, true);
+    }
+  });
   lineBody.addEventListener("input", previewQuantity);
   lineBody.addEventListener("change", handleLineChange);
   lineBody.addEventListener("click", handleLineRemove);
@@ -1163,19 +1515,37 @@
     const active = currentRequisition();
     if (active?.status === "returned") forwardRequisition(active.id);
   });
-  document.getElementById("direct-purchase").addEventListener("click", () => showNotice(directPurchaseMessage, true));
   detailAddButton.addEventListener("click", () => {
     try {
-      if (detailItem) addToWorksheet(detailItem);
-      detailDialog.close();
+      if (detailItem) {
+        addToWorksheet(
+          detailItem,
+          document.getElementById("item-format").value,
+          Number(document.getElementById("item-quantity").value)
+        );
+        detailDialog.close();
+      }
     } catch (error) {
       showNotice(error.message, true);
     }
+  });
+  document.getElementById("item-format").addEventListener("change", updateDetailAddButton);
+  document.getElementById("item-quantity").addEventListener("input", updateDetailAddButton);
+  document.getElementById("quantity-decrement").addEventListener("click", () => {
+    const input = document.getElementById("item-quantity");
+    input.value = String(Math.max(1, Number(input.value || "1") - 1));
+    updateDetailAddButton();
+  });
+  document.getElementById("quantity-increment").addEventListener("click", () => {
+    const input = document.getElementById("item-quantity");
+    input.value = String(Math.min(Number(input.max), Number(input.value || "1") + 1));
+    updateDetailAddButton();
   });
   document.getElementById("close-detail").addEventListener("click", () => detailDialog.close());
   detailDialog.addEventListener("close", () => { detailItem = null; });
   window.addEventListener("pn:navigate", event => {
     if (event.detail.page === "catalog") renderCatalog();
+    if (event.detail.page === "vendors") renderVendorGroups();
     if (event.detail.page === "order-worksheet") {
       renderWorksheet();
       renderHistories();
@@ -1190,6 +1560,7 @@
       normalizeSession();
       sessionError = null;
       refreshBudget();
+      renderCatalog();
     } catch (error) {
       sessionError = error.message;
       showNotice(error.message, true);

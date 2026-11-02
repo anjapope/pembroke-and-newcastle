@@ -218,7 +218,8 @@
     }
 
     const itemsById = new Map((context.catalog || []).map(item => [item.id, item]));
-    const seenItems = new Set();
+    const seenLines = new Set();
+    const quantitiesByItem = new Map();
     (Array.isArray(snapshot.lines) ? snapshot.lines : []).forEach((line, index) => {
       const lineInfo = {
         lineNumber: index + 1,
@@ -231,43 +232,62 @@
       }
 
       const item = itemsById.get(line.catalogId);
-      if (seenItems.has(line.catalogId)) {
-        addError(errors, "duplicate_catalog_line", `Line ${index + 1} repeats catalog item ${line.catalogId}.`,
-          "Combine quantities on one line within the catalog limit. Unique offerings may be requested only once.", "11-A", lineInfo, details);
+      const format = item
+        ? (line.formatId ? window.PN_PRICING.getFormat(item, line.formatId) : window.PN_PRICING.getFormatOptions(item)[0])
+        : null;
+      const formatKey = format?.id || line.formatId || "invalid-format";
+      const lineKey = `${line.catalogId}\u0000${formatKey}`;
+      if (seenLines.has(lineKey)) {
+        addError(errors, "duplicate_catalog_line", `Line ${index + 1} repeats catalog item ${line.catalogId} in the same format.`,
+          "Combine quantities on one line per item and format within the catalog limit. Unique offerings may be requested only once.", "11-A", lineInfo, details);
       }
-      seenItems.add(line.catalogId);
+      seenLines.add(lineKey);
       if (!item) {
         addError(errors, "invalid_catalog_reference", `Requisition line ${index + 1} refers to a catalog item that is not available in the active catalog.`,
           "Select an item from the current acquisitions catalog.", "3-F", lineInfo, details);
       }
 
+      const totalItemQuantity = item && Number.isSafeInteger(line.quantity) && line.quantity > 0
+        ? (quantitiesByItem.get(item.id) || 0) + line.quantity
+        : quantitiesByItem.get(item?.id) || 0;
+      if (item && Number.isSafeInteger(line.quantity) && line.quantity > 0) {
+        quantitiesByItem.set(item.id, totalItemQuantity);
+      }
       if (!Number.isSafeInteger(line.quantity) || line.quantity <= 0 ||
-          (item && (line.quantity > item.maxQuantity || (item.unique && line.quantity > 1)))) {
+          (item && (totalItemQuantity > item.maxQuantity || (item.unique && totalItemQuantity > 1)))) {
         const exceedsAvailable = item && Number.isSafeInteger(line.quantity) &&
-          (line.quantity > item.maxQuantity || (item.unique && line.quantity > 1));
+          (totalItemQuantity > item.maxQuantity || (item.unique && totalItemQuantity > 1));
         addError(errors, "invalid_quantity",
           exceedsAvailable
-            ? `Line ${index + 1}, ${item.title}: the requested quantity exceeds the number of units available for acquisition.`
+            ? `Line ${index + 1}, ${item.title}: the combined requested quantity across formats exceeds the number of units available for acquisition.`
             : `Line ${index + 1}${item ? `, ${item.title}` : ""}: quantity must be a positive whole number within the catalog limit.`,
           "Amend the quantity to a positive whole number within the available catalog limit.", "11-A", lineInfo, details);
       }
 
       if (item && Number.isSafeInteger(line.quantity) && line.quantity > 0) {
-        const computedUnit = item.unitPriceCents;
-        const extended = computedUnit * line.quantity;
-        if (!Number.isSafeInteger(extended) || !Number.isSafeInteger(computedTotalCents + extended)) {
-          addError(errors, "unsafe_financial_value", `Line ${index + 1} exceeds safe financial calculation limits.`,
-            "Reduce the quantity or select a valid catalog item.", "11-A", lineInfo, details);
+        if (!format) {
+          addError(errors, "invalid_catalog_format", `Line ${index + 1}, ${item.title}: the requested format is not available for this catalog item.`,
+            "Select a format offered in the item configuration.", "11-A", lineInfo, details);
         } else {
-          computedTotalCents += extended;
-        }
-        if (line.unitPriceCents !== computedUnit) {
-          addError(errors, "catalog_price_mismatch", `Line ${index + 1}, ${item.title}: the submitted unit price does not match the active catalog price.`,
-            "Use the current catalog price for this item.", "11-A", lineInfo, details);
-        }
-        if (line.extendedPriceCents !== extended) {
-          addError(errors, "line_total_mismatch", `Line ${index + 1}, ${item.title}: the stored extended price does not match the catalog price and quantity.`,
-            "Recalculate the line total and resubmit.", "11-A", lineInfo, details);
+          const extended = format.unitPriceCents * line.quantity;
+          if (!Number.isSafeInteger(extended) || !Number.isSafeInteger(computedTotalCents + extended)) {
+            addError(errors, "unsafe_financial_value", `Line ${index + 1} exceeds safe financial calculation limits.`,
+              "Reduce the quantity or select a valid catalog item.", "11-A", lineInfo, details);
+          } else {
+            computedTotalCents += extended;
+          }
+          if (line.unitPriceCents !== format.unitPriceCents) {
+            addError(errors, "catalog_price_mismatch", `Line ${index + 1}, ${item.title}: the submitted unit price does not match the active catalog price.`,
+              "Use the current simulation price for the selected format.", "11-A", lineInfo, details);
+          }
+          if (line.format && line.format !== format.name) {
+            addError(errors, "catalog_format_mismatch", `Line ${index + 1}, ${item.title}: the submitted format label does not match its format identifier.`,
+              "Use the format label associated with the selected catalog format.", "11-A", lineInfo, details);
+          }
+          if (line.extendedPriceCents !== extended) {
+            addError(errors, "line_total_mismatch", `Line ${index + 1}, ${item.title}: the stored extended price does not match the catalog price and quantity.`,
+              "Recalculate the line total and resubmit.", "11-A", lineInfo, details);
+          }
         }
       }
 
@@ -418,7 +438,7 @@
       requisitionId,
       reviewDate,
       status: "returned",
-      message: [header, ...body, "I have retained a record of the original submission.", "Doris", "Technical Services Clerk II"].join("\n\n"),
+      message: [header, ...body, "Technical Services has retained a record of the original submission."].join("\n\n"),
       errors: outcome.errors.map(error => ({ ...error })),
       procedureReferences: references
     };
@@ -433,8 +453,7 @@
         "Your purchase order has been accepted for processing.",
         "All required fields have been completed correctly.",
         "This is the expected outcome of the procedure.",
-        "Doris",
-        "Technical Services Clerk II"
+        "Technical Services"
       ].join("\n\n"),
       errors: [],
       procedureReferences: [PROCEDURES["3-F"], PROCEDURES["22-D"]]
@@ -473,7 +492,7 @@
   }
 
   function statusCell(status) {
-    const td = cell(status);
+    const td = cell(status === "returned" ? "Flagged" : status);
     td.className = `status-cell status-${status}`;
     return td;
   }
@@ -482,7 +501,7 @@
     if (!orders.length) {
       emptyRow(body,
         kind === "pending" ? "No submitted requisitions are awaiting review." :
-          kind === "returned" ? "No outstanding corrections." : "No requisitions have been processed.",
+          kind === "returned" ? "No flagged requisitions." : "No requisitions have been processed.",
         kind === "returned" ? 6 : 7);
       return;
     }
@@ -546,13 +565,16 @@
       article.className = "correspondence-notice";
       article.setAttribute("aria-label", `${order.id} revision ${attempt?.revision || "record"} correspondence`);
       const heading = document.createElement("h4");
-      heading.textContent = `${record.requisitionId || order.id} · Revision ${attempt?.revision || "record"} · ${record.status}`;
+      const displayedStatus = record.status === "returned" ? "Flagged" : record.status;
+      heading.textContent = `${record.requisitionId || order.id} · Revision ${attempt?.revision || "record"} · ${displayedStatus}`;
       const metadata = document.createElement("p");
       metadata.className = "correspondence-metadata";
-      metadata.textContent = `Reviewed ${Number.isFinite(Date.parse(record.reviewDate)) ? new Date(record.reviewDate).toLocaleString() : "on an unrecorded date"} · ${record.status}`;
+      metadata.textContent = `Reviewed ${Number.isFinite(Date.parse(record.reviewDate)) ? new Date(record.reviewDate).toLocaleString() : "on an unrecorded date"} · ${displayedStatus}`;
       const message = document.createElement("p");
       message.className = "correspondence-message";
-      message.textContent = record.message || "No correspondence text was recorded.";
+      message.textContent = (record.message || "No correspondence text was recorded.")
+        .replace(/\bDoris\b/gi, "Technical Services")
+        .replace(/Technical Services Clerk II/gi, "Technical Services");
       article.append(heading, metadata, message);
       if (record.errors?.length) {
         const list = document.createElement("ul");
@@ -572,10 +594,10 @@
   function render() {
     const session = getSession();
     if (!session?.setupComplete || !Array.isArray(session.orders)) {
-      emptyRow(pendingBody, "Sign in to view submitted requisitions.", 7);
-      emptyRow(returnedBody, "Sign in to view outstanding corrections.", 6);
-      emptyRow(processedBody, "Sign in to view processing history.", 7);
-      correspondenceList.textContent = "Sign in to view Technical Services correspondence.";
+      emptyRow(pendingBody, "No requisition session is available.", 7);
+      emptyRow(returnedBody, "No requisition session is available.", 6);
+      emptyRow(processedBody, "No requisition session is available.", 7);
+      correspondenceList.textContent = "No requisition session is available.";
       return;
     }
     const invalidRecord = session.orders.some(order =>
@@ -729,7 +751,7 @@
       render();
       setNotice(outcome.valid
         ? `${requisition.id} was processed. Its expenditure is now reflected in the annual budget.`
-        : `${requisition.id} was returned for correction. Doris's findings and required actions are recorded below.`, !outcome.valid);
+        : `${requisition.id} was flagged for correction. Review the findings and required actions below.`, !outcome.valid);
     } catch (error) {
       setNotice(`The review could not be saved. No processing result was recorded. ${error.message}`, true);
     }
@@ -764,7 +786,7 @@
     const summary = document.createElement("dl");
     summary.className = "requisition-metadata";
     for (const [label, value] of [
-      ["Current procedural status", order.status],
+      ["Current procedural status", order.status === "returned" ? "Flagged" : order.status],
       ["Institution", snapshot.institutionSnapshot?.institutionName || order.institutionSnapshot?.institutionName || "Not recorded"],
       ["Department", snapshot.institutionSnapshot?.department || "Not required or not recorded"],
       ["Submitted", snapshot.submittedAt ? new Date(snapshot.submittedAt).toLocaleString() : "Not submitted"],

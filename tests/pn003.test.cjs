@@ -19,7 +19,7 @@ const context = vm.createContext({
   },
   Intl
 });
-for (const file of ["institutions.js", "technical-services.js"]) {
+for (const file of ["institutions.js", "pricing.js", "technical-services.js"]) {
   vm.runInContext(readFileSync(path.join(root, "js", file), "utf8"), context);
 }
 const api = context.window.PN_TECHNICAL_SERVICES;

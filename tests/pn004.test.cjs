@@ -15,7 +15,7 @@ const context = vm.createContext({
   },
   Intl
 });
-for (const name of ["institutions", "technical-services"]) {
+for (const name of ["institutions", "pricing", "technical-services"]) {
   vm.runInContext(fs.readFileSync(path.join(root, "js", `${name}.js`), "utf8"), context);
 }
 const policy = context.window.PN_TECHNICAL_SERVICES;
